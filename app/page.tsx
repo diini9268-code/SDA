@@ -81,25 +81,25 @@ export default async function Home() {
 
   return (
     <PublicPageShell>
-      <main className="bg-slate-50 text-slate-950">
+      <main className="bg-slate-50 text-slate-950 dark:bg-slate-50 dark:text-slate-950">
         <section className="mx-auto max-w-6xl px-5 pb-16 pt-6 sm:px-8 lg:px-10">
           <div
-            className="relative min-h-[520px] overflow-hidden rounded-sm bg-slate-950 px-6 py-20 text-white shadow-2xl sm:px-10 lg:px-14"
+            className="relative min-h-[520px] overflow-hidden rounded-sm bg-slate-950 px-6 py-20 text-white shadow-2xl sm:px-10 lg:px-14 dark:bg-slate-950 dark:text-white"
             style={{
               backgroundImage:
-                "linear-gradient(90deg, rgba(2, 6, 23, 0.94) 0%, rgba(2, 6, 23, 0.78) 44%, rgba(2, 6, 23, 0.42) 100%), url('https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1600&q=80')",
+                "linear-gradient(90deg, rgba(2, 6, 23, 0.97) 0%, rgba(2, 6, 23, 0.86) 48%, rgba(2, 6, 23, 0.58) 100%), url('https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1600&q=80')",
               backgroundPosition: "center",
               backgroundSize: "cover",
             }}
           >
             <div className="max-w-xl pt-12 sm:pt-20">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-300">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-200 dark:text-sky-200">
                 Somali Student Diplomacy Union
               </p>
-              <h1 className="mt-5 text-4xl font-black leading-tight tracking-normal sm:text-5xl lg:text-6xl">
+              <h1 className="mt-5 text-4xl font-black leading-tight tracking-normal text-white drop-shadow-sm sm:text-5xl lg:text-6xl dark:text-white">
                 Shaping the Future of Somali Diplomacy
               </h1>
-              <p className="mt-5 max-w-lg text-base leading-7 text-slate-200 sm:text-lg">
+              <p className="mt-5 max-w-lg text-base leading-7 text-slate-100 sm:text-lg dark:text-slate-100">
                 Empowering the next generation of Somali scholars and leaders
                 to navigate the complexities of international relations and
                 global governance.
@@ -107,13 +107,13 @@ export default async function Home() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/membership"
-                  className="rounded bg-sky-700 px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-sky-600"
+                  className="rounded bg-sky-600 px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200 focus:ring-offset-2 focus:ring-offset-slate-950 dark:bg-sky-600 dark:text-white dark:hover:bg-sky-500"
                 >
                   Join Us
                 </Link>
                 <Link
                   href="/about"
-                  className="rounded border border-white/40 px-5 py-3 text-center text-sm font-bold text-white transition hover:border-white hover:bg-white/10"
+                  className="rounded border border-white/70 px-5 py-3 text-center text-sm font-bold text-white transition hover:border-white hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-slate-950 dark:border-white/70 dark:text-white"
                 >
                   Our Mission
                 </Link>
@@ -122,14 +122,14 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="bg-white px-5 py-16 sm:px-8 lg:px-10">
+        <section className="bg-white px-5 py-16 text-slate-950 sm:px-8 lg:px-10 dark:bg-white dark:text-slate-950">
           <div className="mx-auto max-w-6xl">
             <SectionHeading eyebrow="Core pillars" title="What We Do" centered />
             <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {focusAreas.map((area, index) => (
                 <article
                   key={area.label}
-                  className="rounded border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                  className="rounded border border-slate-200 bg-white p-6 text-slate-950 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-slate-200 dark:bg-white dark:text-slate-950"
                 >
                   <div className="flex size-9 items-center justify-center rounded border border-slate-200 bg-slate-50 text-xs font-black text-sky-800">
                     {String(index + 1).padStart(2, "0")}
@@ -144,7 +144,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="px-5 py-16 sm:px-8 lg:px-10">
+        <section className="px-5 py-16 text-slate-950 sm:px-8 lg:px-10 dark:text-slate-950">
           <div className="mx-auto max-w-6xl">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <SectionHeading
@@ -168,7 +168,7 @@ export default async function Home() {
                   return (
                     <article
                       key={post.id}
-                      className="overflow-hidden rounded border border-slate-200 bg-white shadow-sm"
+                      className="overflow-hidden rounded border border-slate-200 bg-white text-slate-950 shadow-sm dark:border-slate-200 dark:bg-white dark:text-slate-950"
                     >
                       {media ? (
                         // Blog media URLs are admin-entered and can point to multiple hosts.
@@ -215,7 +215,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="bg-white px-5 py-16 sm:px-8 lg:px-10">
+        <section className="bg-white px-5 py-16 text-slate-950 sm:px-8 lg:px-10 dark:bg-white dark:text-slate-950">
           <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <SectionHeading
               eyebrow="Programs"
@@ -227,7 +227,7 @@ export default async function Home() {
                 {data.programs.map((program) => (
                   <article
                     key={program.id}
-                    className="relative rounded border border-slate-200 bg-white p-5 shadow-sm"
+                    className="relative rounded border border-slate-200 bg-white p-5 text-slate-950 shadow-sm dark:border-slate-200 dark:bg-white dark:text-slate-950"
                   >
                     <span className="absolute -left-[34px] top-6 size-3 rounded-full border-2 border-white bg-sky-700 shadow" />
                     <p className="text-xs font-bold uppercase tracking-[0.14em] text-sky-800">
@@ -256,7 +256,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="bg-slate-200 px-5 py-16 sm:px-8 lg:px-10">
+        <section className="bg-slate-200 px-5 py-16 text-slate-950 sm:px-8 lg:px-10 dark:bg-slate-200 dark:text-slate-950">
           <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_0.85fr]">
             <div className="border-l-4 border-sky-600 pl-6">
               <p className="text-2xl font-black leading-snug text-slate-950">
@@ -291,7 +291,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="bg-white px-5 py-12 sm:px-8 lg:px-10">
+        <section className="bg-white px-5 py-12 text-slate-950 sm:px-8 lg:px-10 dark:bg-white dark:text-slate-950">
           <dl className="mx-auto grid max-w-4xl gap-6 text-center sm:grid-cols-4">
             <Stat label="Leaders" value={data.leadershipCount} />
             <Stat label="Programs" value={data.programCount} />
@@ -300,7 +300,7 @@ export default async function Home() {
           </dl>
         </section>
 
-        <section className="bg-sky-950 px-5 py-16 text-center text-white sm:px-8 lg:px-10">
+        <section className="bg-sky-950 px-5 py-16 text-center text-white sm:px-8 lg:px-10 dark:bg-sky-950 dark:text-white">
           <div className="mx-auto max-w-3xl">
             <h2 className="text-3xl font-black sm:text-4xl">
               Join the Union Today
@@ -346,17 +346,21 @@ function SectionHeading({
       <p className="text-xs font-black uppercase tracking-[0.2em] text-sky-800">
         {eyebrow}
       </p>
-      <h2 className="mt-2 text-3xl font-black tracking-normal text-slate-950">
+      <h2 className="mt-2 text-3xl font-black tracking-normal text-slate-950 dark:text-slate-950">
         {title}
       </h2>
-      {note ? <p className="mt-3 text-sm leading-6 text-slate-600">{note}</p> : null}
+      {note ? (
+        <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-600">
+          {note}
+        </p>
+      ) : null}
     </div>
   );
 }
 
 function EmptyPanel({ message }: { message: string }) {
   return (
-    <div className="mt-8 rounded border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-600">
+    <div className="mt-8 rounded border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-600 dark:border-slate-300 dark:bg-white dark:text-slate-600">
       {message}
     </div>
   );
@@ -368,7 +372,9 @@ function Stat({ label, value }: { label: string; value: number }) {
       <dt className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
         {label}
       </dt>
-      <dd className="mt-2 text-3xl font-black text-slate-950">{value}</dd>
+      <dd className="mt-2 text-3xl font-black text-slate-950 dark:text-slate-950">
+        {value}
+      </dd>
     </div>
   );
 }
