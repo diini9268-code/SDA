@@ -10,12 +10,10 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Students building diplomacy, leadership, and public service capacity.",
+        name: "Shaping the Future of Somali Diplomacy",
       }),
     ).toBeDefined();
-    expect(
-      screen.getByRole("link", { name: "Apply for membership" }),
-    ).toBeDefined();
+    expect(screen.getByRole("link", { name: "Join Us" })).toBeDefined();
   });
 
   it("renders the about page with public navigation", () => {
@@ -28,7 +26,7 @@ describe("Public pages", () => {
         name: "A student platform for diplomacy, leadership, and public service.",
       }),
     ).toBeDefined();
-    expect(screen.getByRole("link", { name: "Programs" })).toBeDefined();
-    expect(screen.getByRole("link", { name: "Contact" })).toBeDefined();
+    expect(screen.getAllByRole("link", { name: "Programs" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("link", { name: "Contact" }).length).toBeGreaterThan(0);
   });
 });

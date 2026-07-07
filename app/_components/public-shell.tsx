@@ -1,59 +1,109 @@
 import Link from "next/link";
 
 const navigationItems = [
-  { href: "/", label: "Home" },
   { href: "/about", label: "About" },
+  { href: "/blog", label: "Research" },
   { href: "/leadership", label: "Leadership" },
   { href: "/programs", label: "Programs" },
-  { href: "/blog", label: "Blog" },
   { href: "/archive", label: "Archive" },
-  { href: "/membership", label: "Membership" },
   { href: "/contact", label: "Contact" },
 ];
 
 export function PublicHeader() {
   return (
-    <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 sm:px-10 lg:px-16">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/" className="text-lg font-semibold text-slate-950">
-            SSDU
-          </Link>
-          <Link
-            href="/admin"
-            className="w-fit rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-950 hover:text-slate-950"
-          >
-            Admin
-          </Link>
-        </div>
-        <nav aria-label="Primary navigation" className="overflow-x-auto">
-          <ul className="flex min-w-max gap-x-5 gap-y-2 text-sm font-medium text-slate-600 sm:flex-wrap sm:min-w-0">
+    <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10">
+        <Link
+          href="/"
+          className="text-base font-black tracking-tight text-slate-950"
+        >
+          SSDU
+        </Link>
+        <nav aria-label="Primary navigation" className="hidden md:block">
+          <ul className="flex items-center gap-7 text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
             {navigationItems.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="hover:text-slate-950">
+                <Link href={item.href} className="transition hover:text-sky-800">
                   {item.label}
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/membership"
+            className="rounded bg-slate-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-white transition hover:bg-sky-900"
+          >
+            Join SSDU
+          </Link>
+          <Link
+            href="/admin"
+            className="hidden rounded border border-slate-300 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-slate-700 transition hover:border-slate-950 hover:text-slate-950 sm:inline-flex"
+          >
+            Admin
+          </Link>
+        </div>
       </div>
+      <nav
+        aria-label="Mobile primary navigation"
+        className="border-t border-slate-100 px-5 py-3 md:hidden"
+      >
+        <ul className="flex gap-5 overflow-x-auto text-xs font-bold uppercase tracking-[0.08em] text-slate-600">
+          {navigationItems.map((item) => (
+            <li key={item.href} className="shrink-0">
+              <Link href={item.href} className="transition hover:text-sky-800">
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </header>
   );
 }
 
 export function PublicFooter() {
   return (
-    <footer className="border-t border-slate-200 bg-slate-50">
-      <div className="mx-auto grid max-w-6xl gap-4 px-6 py-8 text-sm text-slate-600 sm:px-10 lg:px-16">
-        <p className="font-semibold text-slate-950">
-          Somali Student Diplomacy Union
-        </p>
-        <p className="max-w-3xl leading-6">
-          SSDU connects students with diplomacy, leadership, public service, and
-          civic engagement opportunities through programs, publications, and
-          organizational initiatives.
-        </p>
+    <footer className="bg-slate-950 text-white">
+      <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 sm:grid-cols-[1.2fr_0.8fr_0.8fr] sm:px-8 lg:px-10">
+        <div className="space-y-3">
+          <p className="text-lg font-black tracking-tight">SSDU</p>
+          <p className="max-w-sm text-sm leading-6 text-slate-300">
+            Empowering Somali students through diplomacy, leadership, public
+            service, and civic engagement.
+          </p>
+        </div>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+            Quick links
+          </p>
+          <ul className="mt-4 grid gap-2 text-sm text-slate-300">
+            {navigationItems.slice(0, 4).map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="hover:text-white">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+            Connect
+          </p>
+          <div className="mt-4 grid gap-2 text-sm text-slate-300">
+            <Link href="/membership" className="hover:text-white">
+              Membership
+            </Link>
+            <Link href="/contact" className="hover:text-white">
+              Contact SSDU
+            </Link>
+            <Link href="/admin" className="hover:text-white">
+              Admin portal
+            </Link>
+          </div>
+        </div>
       </div>
     </footer>
   );
