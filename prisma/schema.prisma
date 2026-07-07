@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+}
+
+enum ProgramStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+  CANCELLED
+}
+
+enum ResearchStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ContactMessageStatus {
+  UNREAD
+  READ
+  ARCHIVED
+}
+
+model User {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  fullName     String   @map("full_name") @db.VarChar(160)
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password") @db.VarChar(255)
+  role         UserRole @default(ADMIN)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("users")
+}
+
+model Leadership {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  fullName     String   @map("full_name") @db.VarChar(160)
+  position     String   @db.VarChar(160)
+  biography    String   @db.Text
+  photo        String?  @db.VarChar(2048)
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([fullName, position])
+  @@map("leadership")
+}
+
+model Program {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String        @db.VarChar(220)
+  slug        String        @unique @db.VarChar(240)
+  description String        @db.Text
+  eventDate   DateTime      @map("event_date") @db.Timestamptz(6)
+  location    String        @db.VarChar(220)
+  status      ProgramStatus @default(DRAFT)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([eventDate])
+  @@index([status])
+  @@map("programs")
+}
+
+model Research {
+  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String         @db.VarChar(220)
+  slug        String         @unique @db.VarChar(240)
+  category    String         @db.VarChar(120)
+  excerpt     String?        @db.Text
+  content     String         @db.Text
+  status      ResearchStatus @default(DRAFT)
+  publishedAt DateTime       @map("published_at") @db.Timestamptz(6)
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([category])
+  @@index([publishedAt])
+  @@index([status])
+  @@map("research")
+}
+
+model Archive {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String   @db.VarChar(220)
+  slug         String   @unique @db.VarChar(240)
+  summary      String   @db.Text
+  activityDate DateTime @map("activity_date") @db.Timestamptz(6)
+  images       String[] @default([])
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([activityDate])
+  @@map("archive")
+}
+
+model MembershipApplication {
+  id             String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  fullName       String            @map("full_name") @db.VarChar(160)
+  email          String            @db.VarChar(255)
+  phone          String            @db.VarChar(40)
+  university     String            @db.VarChar(180)
+  areaOfInterest String            @map("area_of_interest") @db.VarChar(180)
+  status         ApplicationStatus @default(PENDING)
+  submittedAt    DateTime          @default(now()) @map("submitted_at") @db.Timestamptz(6)
+  updatedAt      DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([email])
+  @@index([status])
+  @@map("membership_applications")
+}
+
+model ContactMessage {
+  id        String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  fullName  String               @map("full_name") @db.VarChar(160)
+  email     String               @db.VarChar(255)
+  subject   String               @db.VarChar(220)
+  message   String               @db.Text
+  status    ContactMessageStatus @default(UNREAD)
+  createdAt DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime             @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([email])
+  @@index([status])
+  @@map("contact_messages")
+}

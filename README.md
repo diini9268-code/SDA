@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SSDU Website
+
+Somali Student Diplomacy Union website and administrator content management
+system.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies and configure local environment variables:
+
+```bash
+npm install
+cp .env.example .env
+```
+
+In PowerShell, use `Copy-Item .env.example .env` instead of `cp` if needed.
+
+Set `DATABASE_URL`, `DIRECT_URL`, and a long random `JWT_SECRET` in `.env`.
+For production, `JWT_SECRET` must be at least 32 characters.
+
+Prepare Prisma and create the first administrator account:
+
+```bash
+npm run prisma:generate
+npm run prisma:migrate:dev
+npm run admin:create
+```
+
+`npm run admin:create` reads `ADMIN_FULL_NAME`, `ADMIN_EMAIL`, and
+`ADMIN_PASSWORD` from the environment. The password is stored with the same
+scrypt hash format used by the login system.
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser. Use
+`/admin` for administrator content management after signing in.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Quality Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run typecheck
+npm run lint
+npm run test
+npm run build
+npm run prisma:validate
+```
 
-## Learn More
+## Project Docs
 
-To learn more about Next.js, take a look at the following resources:
+Read these before implementation work:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `docs/ARCHITECTURE.md`
+- `docs/CONSTRAINTS.md`
+- `docs/PROJECT_SETUP.md`
+- `docs/PROJECT_DEFINITION.md`
+- `docs/DEVELOPMENT_PLAN.md`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project uses Next.js 16. Read the relevant local guide in
+`node_modules/next/dist/docs/` before changing Next.js-specific code.
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The intended production target is Vercel with Supabase PostgreSQL. Store all
+production secrets in the hosting provider environment, not in source control.
