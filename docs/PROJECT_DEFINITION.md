@@ -10,14 +10,14 @@ SSDU Development Team
 
 ## Purpose
 
-The Somali Student Diplomacy Union (SSDU) Website is a centralized digital platform designed to present the organization's mission, leadership, research publications, programs, membership opportunities, and organizational activities. It provides a professional online presence while enabling administrators to manage website content efficiently and allowing visitors to engage with SSDU through research, programs, membership applications, and contact services.
+The Somali Student Diplomacy Union (SSDU) Website is a centralized digital platform designed to present the organization's mission, leadership, blog updates, programs, membership opportunities, and organizational activities. It provides a professional online presence while enabling administrators to manage website content efficiently and allowing visitors to engage with SSDU through blog content, programs, membership applications, and contact services.
 
 ## Problem Statement
 
 SSDU currently lacks a centralized digital platform to present its activities and organizational information. Information is often shared through different communication channels, making it difficult for students, partners, and the public to access accurate and up-to-date content. This creates several challenges:
 
 - No centralized platform for organizational information
-- Limited visibility of research publications and programs
+- Limited visibility of organizational updates and programs
 - No structured system for managing leadership information
 - Manual handling of membership applications
 - No centralized archive of organizational activities
@@ -27,7 +27,7 @@ SSDU currently lacks a centralized digital platform to present its activities an
 ## Product Goals
 
 - Establish a professional online presence for SSDU
-- Publish research articles and organizational programs
+- Publish blog updates and organizational programs
 - Present leadership information in a structured manner
 - Allow visitors to apply for membership online
 - Provide an archive of organizational activities and publications
@@ -39,7 +39,7 @@ SSDU currently lacks a centralized digital platform to present its activities an
 ### Visitor
 
 - Browse website content
-- Read research publications
+- Read blog updates
 - View programs and events
 - Explore leadership information
 - Submit membership applications
@@ -49,13 +49,13 @@ SSDU currently lacks a centralized digital platform to present its activities an
 
 - Access public organizational information
 - Participate in programs and activities
-- Stay informed about research and publications
+- Stay informed about blog updates and publications
 - Apply for organizational opportunities
 
 ### Administrator
 
 - Manage website content
-- Publish research articles
+- Publish blog posts
 - Manage programs and archive entries
 - Manage leadership profiles
 - Review membership applications
@@ -72,12 +72,12 @@ The MVP should include:
 - About page
 - Leadership page
 - Programs page
-- Research page
+- Blog page
 - Archive page
 - Membership application system
 - Contact page
 - Administrator content management
-- Media upload and management
+- Blog-owned media upload and management
 - Website reports and analytics
 
 ## Future Scope

@@ -48,6 +48,20 @@ npm run build
 npm run prisma:validate
 ```
 
+## Production Readiness
+
+Run the deployment readiness check with production-like environment variables:
+
+```bash
+npm run deploy:check
+```
+
+The app also exposes a health endpoint:
+
+```text
+GET /api/health
+```
+
 ## Project Docs
 
 Read these before implementation work:
@@ -57,6 +71,8 @@ Read these before implementation work:
 - `docs/PROJECT_SETUP.md`
 - `docs/PROJECT_DEFINITION.md`
 - `docs/DEVELOPMENT_PLAN.md`
+- `docs/DEPLOYMENT.md`
+- `docs/MVP_ACCEPTANCE.md`
 
 This project uses Next.js 16. Read the relevant local guide in
 `node_modules/next/dist/docs/` before changing Next.js-specific code.
@@ -65,3 +81,4 @@ This project uses Next.js 16. Read the relevant local guide in
 
 The intended production target is Vercel with Supabase PostgreSQL. Store all
 production secrets in the hosting provider environment, not in source control.
+Use `docs/DEPLOYMENT.md` for the deployment checklist.

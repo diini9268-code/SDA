@@ -16,7 +16,8 @@
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:status": "prisma migrate status",
     "prisma:migration:diff": "prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "deploy:check": "node scripts/check-production-readiness.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",

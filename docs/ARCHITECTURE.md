@@ -4,7 +4,7 @@
 
 ## System Overview
 
-The SSDU Website follows a full-stack web architecture designed to provide information, publish research, manage organizational content, and support membership applications.
+The SSDU Website follows a full-stack web architecture designed to provide information, publish blog content, manage organizational content, and support membership applications.
 
 ```
 Visitors / Members / Leadership / Administrators
@@ -17,7 +17,7 @@ Prisma ORM
         ->
 Supabase PostgreSQL
         ->
-Research, Programs, Membership, Archive, and Contact Services
+Blog, Programs, Membership, Archive, and Contact Services
 ```
 
 ## Core Layers
@@ -30,7 +30,7 @@ The UI layer provides user-friendly interfaces for visitors, members, and admini
 - About page
 - Leadership profiles
 - Programs page
-- Research publications
+- Blog posts
 - Archive page
 - Membership application form
 - Contact page
@@ -44,7 +44,7 @@ Route Handlers and server-side modules manage business logic and application ser
 - Authorization
 - Input validation
 - Membership application processing
-- Research management
+- Blog management
 - Program management
 - Leadership management
 - Archive management
@@ -53,7 +53,7 @@ Route Handlers and server-side modules manage business logic and application ser
 
 ### Data Access Layer
 
-Prisma provides type-safe database access to Supabase PostgreSQL. PostgreSQL stores website content, research publications, leadership information, membership applications, archived activities, and contact messages.
+Prisma provides type-safe database access to Supabase PostgreSQL. PostgreSQL stores website content, blog posts, blog-owned media, leadership information, membership applications, archived activities, and contact messages.
 
 ---
 
@@ -95,14 +95,15 @@ Responsibilities:
 - Manage upcoming programs
 - Archive completed activities
 
-### Research
+### Blog
 
 Responsibilities:
 
-- Publish research articles
-- Categorize publications
-- Manage research content
-- Display featured research
+- Publish blog posts
+- Categorize blog content
+- Manage blog-owned media attachments
+- Display featured and recent blog posts
+- Ensure media is attached to blog posts only, not managed as a standalone library
 
 ### Archive
 
@@ -176,14 +177,26 @@ The website content follows a structured publishing process:
 - `location`
 - `status`
 
-### research
+### blog
 
 - `id`
 - `title`
+- `slug`
 - `category`
 - `excerpt`
 - `content`
+- `status`
 - `published_at`
+
+### blog_media
+
+- `id`
+- `blog_id`
+- `url`
+- `alt_text`
+- `mime_type`
+- `size_bytes`
+- `created_at`
 
 ### archive
 
@@ -221,16 +234,17 @@ The website content follows a structured publishing process:
 - `GET /leadership`
 - `GET /programs`
 - `GET /programs/:id`
-- `GET /research`
-- `GET /research/:id`
+- `GET /blog`
+- `GET /blog/:slug`
 - `GET /archive`
 - `GET /archive/:id`
 - `POST /contact`
 - `GET /admin/dashboard`
 - `POST /admin/programs`
 - `PATCH /admin/programs/:id`
-- `POST /admin/research`
-- `PATCH /admin/research/:id`
+- `POST /admin/blog`
+- `PATCH /admin/blog/:id`
+- `DELETE /admin/blog/:id`
 - `POST /admin/archive`
 - `PATCH /admin/archive/:id`
 
@@ -240,9 +254,9 @@ Exact route names may change during implementation, but the API should preserve 
 
 # Authorization Model
 
-- Visitors can browse all public website pages, research, programs, leadership information, and archived content.
+- Visitors can browse all public website pages, blog posts, programs, leadership information, and archived content.
 - Visitors can submit membership applications and contact messages.
-- Administrators can manage website content, research publications, programs, leadership profiles, archive records, and membership applications.
+- Administrators can manage website content, blog posts and blog-owned media, programs, leadership profiles, archive records, and membership applications.
 - Administrative functions are restricted to authenticated users with the appropriate role.
 
 ---
@@ -253,9 +267,9 @@ Exact route names may change during implementation, but the API should preserve 
 
 Used to acknowledge membership applications and deliver responses to contact inquiries.
 
-### Media Storage
+### Blog Media Storage
 
-Used to store leadership photos, research images, program galleries, and archived media files.
+Used only for media attached to blog posts. The MVP does not include a standalone media library.
 
 ### Content Management Service
 

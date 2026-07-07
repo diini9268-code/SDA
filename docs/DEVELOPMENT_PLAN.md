@@ -16,17 +16,18 @@ Build in this order:
 4. Role-based authorization
 5. Leadership management
 6. Programs management
-7. Research management
+7. Blog management with blog-owned media
 8. Archive management
 9. Membership application system
 10. Contact management
 11. Public website pages
 12. Administrator dashboard
 13. Reports and analytics
-14. Media upload and management
-15. Website optimization
-16. Security hardening
-17. Production deployment readiness
+14. Website optimization
+15. Security hardening
+16. Production deployment readiness
+
+Standalone media management is intentionally out of scope. Media uploads belong to blog posts only unless a later approved feature changes that decision.
 
 ---
 
@@ -52,7 +53,7 @@ Each feature is complete only when:
 
 Every implementation prompt begins with:
 
-```
+```text
 Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
 ```
 
@@ -68,8 +69,6 @@ Agents must:
 - Avoid future-scope features unless specifically required.
 
 ---
-
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
 
 # Feature 1: Project Foundation And Development Environment
 
@@ -108,10 +107,6 @@ Prepare the project structure, development tools, and testing environment.
 
 ---
 
----
-
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
-
 # Feature 2: Database Design And Migrations
 
 ### Goal
@@ -142,8 +137,6 @@ Prepare the production database.
 - Verify tables
 
 ---
-
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
 
 # Feature 3: Authentication And Administrator Session Management
 
@@ -178,8 +171,6 @@ Allow administrators to securely access the content management system.
 - Verify session persistence
 
 ---
-
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
 
 # Feature 4: Role-Based Authorization
 
@@ -226,7 +217,7 @@ Allow administrators to manage leadership profiles.
 ### Security Checks
 
 - Admin-only management
-- Validate uploaded data
+- Validate profile data
 
 ### Automated Tests
 
@@ -241,8 +232,6 @@ Allow administrators to manage leadership profiles.
 - Remove member
 
 ---
-
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
 
 # Feature 6: Programs Management
 
@@ -274,40 +263,49 @@ Allow administrators to manage programs.
 
 ---
 
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
-
-# Feature 7: Research Management
+# Feature 7: Blog Management With Blog-Owned Media
 
 ### Goal
 
-Publish research articles.
+Allow administrators to publish blog posts and attach media that belongs only to each blog post.
 
 ### Scope
 
-- Create research
-- Edit research
-- Delete research
-- Categorize research
+- Create blog post
+- Edit blog post
+- Delete blog post
+- Categorize blog posts
+- Publish, draft, and archive blog posts
+- Attach images or files to a blog post
+- Remove attached blog media when it is removed from the post
+- Display public blog listing and post detail pages
 
 ### Security Checks
 
-- Validate content
-- Restrict publishing permissions
+- Validate blog content
+- Validate attached media size and file type
+- Restrict publishing and media changes to administrators
+- Do not expose unpublished blog posts publicly
+- Do not create standalone media library behavior
 
 ### Automated Tests
 
-- Research CRUD
-- Category validation
+- Blog CRUD
+- Blog category validation
+- Blog status visibility
+- Blog-owned media attach/remove validation
+- Unauthorized mutation rejection
 
 ### Manual Checklist
 
-- Publish article
-- Edit article
-- Delete article
+- Create draft blog post
+- Attach blog image or file
+- Publish post
+- Verify public listing/detail display
+- Edit post and media
+- Archive or delete post
 
 ---
-
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
 
 # Feature 8: Archive Management
 
@@ -317,14 +315,15 @@ Maintain historical organizational records.
 
 ### Scope
 
-- Archive entries
-- Edit archive
-- Delete archive
+- Create archive entry
+- Edit archive entry
+- Delete archive entry
 - Display archive
 
 ### Security Checks
 
 - Admin-only access
+- Validate archive dates and content
 
 ### Automated Tests
 
@@ -337,8 +336,6 @@ Maintain historical organizational records.
 
 ---
 
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
-
 # Feature 9: Membership Application System
 
 ### Goal
@@ -350,25 +347,27 @@ Allow visitors to apply for SSDU membership.
 - Membership application form
 - Store applications
 - Administrator review
+- Application status management
 
 ### Security Checks
 
 - Validate application data
 - Prevent spam submissions
+- Protect applicant personal information from public access
 
 ### Automated Tests
 
 - Valid application accepted
 - Invalid application rejected
+- Admin status updates
 
 ### Manual Checklist
 
 - Submit application
 - Verify storage
+- Review and update status as administrator
 
 ---
-
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
 
 # Feature 10: Contact Management
 
@@ -381,25 +380,26 @@ Allow visitors to contact SSDU.
 - Contact form
 - Store messages
 - Administrator message management
+- Message status management
 
 ### Security Checks
 
 - Validate inputs
 - Prevent malicious submissions
+- Protect sender personal information from public access
 
 ### Automated Tests
 
 - Contact submission
 - Validation
+- Admin status updates
 
 ### Manual Checklist
 
 - Send message
-- Verify administrator receives message
+- Verify administrator can review it
 
 ---
-
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
 
 # Feature 11: Public Website Pages
 
@@ -413,7 +413,7 @@ Publish all public website pages.
 - About
 - Leadership
 - Programs
-- Research
+- Blog
 - Archive
 - Membership
 - Contact
@@ -435,8 +435,6 @@ Publish all public website pages.
 
 ---
 
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
-
 # Feature 12: Administrator Dashboard
 
 ### Goal
@@ -446,9 +444,10 @@ Provide administrators with website management tools.
 ### Scope
 
 - Dashboard overview
-- Content management
-- Membership management
-- Contact messages
+- Content management links
+- Blog management summary
+- Membership management summary
+- Contact messages summary
 
 ### Security Checks
 
@@ -466,24 +465,23 @@ Provide administrators with website management tools.
 
 ---
 
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
-
 # Feature 13: Reports And Analytics
 
 ### Goal
 
-Generate website statistics.
+Generate website statistics from actual database records.
 
 ### Scope
 
 - Membership reports
 - Contact statistics
-- Published research statistics
+- Published blog statistics
 - Programs statistics
 
 ### Security Checks
 
 - Administrator-only reports
+- Avoid exposing sensitive personal information
 
 ### Automated Tests
 
@@ -497,52 +495,19 @@ Generate website statistics.
 
 ---
 
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
-
-# Feature 14: Media Upload And Management
+# Feature 14: Website Optimization
 
 ### Goal
 
-Manage website media.
+Improve website performance and presentation quality.
 
 ### Scope
 
-- Upload images
-- Store files
-- Delete files
-
-### Security Checks
-
-- Validate file size
-- Validate file type
-- Restrict uploads
-
-### Automated Tests
-
-- Image upload
-- Invalid file rejection
-
-### Manual Checklist
-
-- Upload image
-- Delete image
-
----
-
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
-
-# Feature 15: Website Optimization
-
-### Goal
-
-Improve website performance.
-
-### Scope
-
-- Image optimization
+- Blog image optimization
 - SEO improvements
 - Metadata
 - Performance optimization
+- Responsive layout pass
 
 ### Security Checks
 
@@ -550,7 +515,8 @@ Improve website performance.
 
 ### Automated Tests
 
-- Performance validation
+- Production build
+- Page rendering
 
 ### Manual Checklist
 
@@ -559,9 +525,7 @@ Improve website performance.
 
 ---
 
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
-
-# Feature 16: Security Hardening
+# Feature 15: Security Hardening
 
 ### Goal
 
@@ -574,28 +538,30 @@ Prepare the application for production security.
 - Error handling
 - Input sanitization
 - Rate limiting
+- Blog media upload hardening
 
 ### Security Checks
 
 - Secure cookies
 - Hidden error details
 - Protected administrator routes
+- Protected applicant and contact data
 
 ### Automated Tests
 
 - Authentication security
 - Error handling
+- Rate limiting
 
 ### Manual Checklist
 
 - Verify login security
 - Verify protected routes
+- Verify public pages cannot access private records
 
 ---
 
-Read docs/ARCHITECTURE.md, docs/CONSTRAINTS.md, docs/PROJECT_SETUP.md, docs/PROJECT_DEFINITION.md, and docs/DEVELOPMENT_PLAN.md before making changes.
-
-# Feature 17: Production Deployment Readiness
+# Feature 16: Production Deployment Readiness
 
 ### Goal
 
@@ -607,21 +573,25 @@ Prepare SSDU Website for production deployment.
 - Environment variables
 - Deployment documentation
 - Health checks
+- Supabase and Vercel setup
 
 ### Security Checks
 
 - Secure environment variables
 - Production secrets management
+- No real secrets committed
 
 ### Automated Tests
 
 - Production build
 - Environment validation
+- Health check response
 
 ### Manual Checklist
 
 - Configure environment variables
 - Run production build
+- Verify `/api/health`
 - Deploy application
 - Verify website functionality
 
@@ -634,14 +604,14 @@ Complete this only after all features are implemented:
 - Administrator authentication works.
 - Leadership management works.
 - Programs management works.
-- Research management works.
+- Blog management works.
+- Blog-owned media works securely.
 - Archive management works.
 - Membership applications are stored.
 - Contact messages are received.
 - Public website pages display correctly.
 - Administrator dashboard functions correctly.
 - Reports generate accurate statistics.
-- Media uploads work securely.
 - Protected routes enforce authorization.
 - `npm run test` passes.
 - `npm run typecheck` passes.

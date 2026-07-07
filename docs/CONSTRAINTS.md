@@ -25,7 +25,7 @@
 
 - `email` should be unique for administrator accounts.
 - Leadership members should have unique profiles.
-- Research publications should have unique identifiers.
+- Blog posts should have unique slugs.
 - Programs and archived activities must store valid dates.
 - Membership applications must contain complete applicant information.
 - Contact messages must always include a sender name, email, subject, and message.
@@ -49,7 +49,7 @@ Required contact form fields:
 - Subject
 - Message
 
-Required research fields:
+Required blog fields:
 
 - Title
 - Category
@@ -71,7 +71,7 @@ Required program fields:
 - Hash administrator passwords before storage.
 - Validate all incoming request data.
 - Sanitize all user-generated content before storing it.
-- Validate uploaded files by size and format.
+- Validate blog media files by size and format.
 - Restrict administrative pages to authenticated users.
 - Prevent unauthorized users from modifying website content.
 - Protect membership and contact information from unauthorized access.
@@ -92,7 +92,8 @@ Required program fields:
 ## Content Management Constraints
 
 - Only administrators can publish or edit website content.
-- Research publications must be categorized before publishing.
+- Blog posts must be categorized before publishing.
+- Blog media must belong to a blog post; do not build standalone media library behavior.
 - Programs and archive entries should include dates and descriptions.
 - Leadership information should remain accurate and up to date.
 - Deleted content should not affect existing website functionality.
@@ -114,7 +115,7 @@ Required program fields:
 - Production secrets must be managed through environment variables.
 - Database migrations must be repeatable and version controlled.
 - Deployment should include application health checks.
-- Uploaded media should be stored securely.
+- Blog-owned uploaded media should be stored securely.
 
 ---
 

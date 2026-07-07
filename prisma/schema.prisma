@@ -19,7 +19,7 @@ enum ProgramStatus {
   CANCELLED
 }
 
-enum ResearchStatus {
+enum BlogStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
@@ -80,22 +80,39 @@ model Program {
   @@map("programs")
 }
 
-model Research {
-  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String         @db.VarChar(220)
-  slug        String         @unique @db.VarChar(240)
-  category    String         @db.VarChar(120)
-  excerpt     String?        @db.Text
-  content     String         @db.Text
-  status      ResearchStatus @default(DRAFT)
-  publishedAt DateTime       @map("published_at") @db.Timestamptz(6)
-  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+model Blog {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String      @db.VarChar(220)
+  slug        String      @unique @db.VarChar(240)
+  category    String      @db.VarChar(120)
+  excerpt     String?     @db.Text
+  content     String      @db.Text
+  status      BlogStatus  @default(DRAFT)
+  publishedAt DateTime    @map("published_at") @db.Timestamptz(6)
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime    @updatedAt @map("updated_at") @db.Timestamptz(6)
+  media       BlogMedia[]
 
   @@index([category])
   @@index([publishedAt])
   @@index([status])
-  @@map("research")
+  @@map("blog")
+}
+
+model BlogMedia {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  blogId       String   @map("blog_id") @db.Uuid
+  url          String   @db.VarChar(2048)
+  altText      String?  @map("alt_text") @db.VarChar(220)
+  mimeType     String   @map("mime_type") @db.VarChar(120)
+  sizeBytes    Int?     @map("size_bytes")
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  blog         Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([blogId])
+  @@map("blog_media")
 }
 
 model Archive {

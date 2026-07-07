@@ -56,7 +56,7 @@ ssdu-website/
       auth/
       leadership/
       programs/
-      research/
+      blog/
       archive/
       membership/
       contact/
@@ -76,6 +76,7 @@ ssdu-website/
   package.json
   tsconfig.json
   README.md
+  docs/DEPLOYMENT.md
 ```
 
 ## Application Direction
@@ -93,7 +94,7 @@ Use one Next.js TypeScript codebase for both frontend and backend functionality.
 - `auth`
 - `leadership`
 - `programs`
-- `research`
+- `blog`
 - `archive`
 - `membership`
 - `contact`
@@ -109,7 +110,7 @@ Recommended API areas:
 - `src/app/api/auth`
 - `src/app/api/leadership`
 - `src/app/api/programs`
-- `src/app/api/research`
+- `src/app/api/blog`
 - `src/app/api/archive`
 - `src/app/api/membership`
 - `src/app/api/contact`
@@ -152,10 +153,10 @@ Do not commit real secrets. Use local `.env` files for development and Vercel/Su
 4. Define database models and relationships in `prisma/schema.prisma`.
 5. Generate the Prisma client.
 6. Create administrator authentication and authorization helpers.
-7. Implement leadership, programs, research, archive, membership, and contact modules.
+7. Implement leadership, programs, blog, archive, membership, and contact modules.
 8. Build the administrator dashboard and content management features.
 9. Implement reports and analytics.
-10. Configure media upload and storage.
+10. Configure blog-owned media upload and storage.
 11. Add tests for validation, authorization, and core website functionality.
 12. Configure Vercel deployment and Supabase production environment variables.
 
@@ -168,6 +169,7 @@ npm run lint
 npm run typecheck
 npm run test
 npm run build
+npm run deploy:check
 npx prisma generate
 npx prisma migrate dev
 ```
@@ -182,7 +184,8 @@ Before finalizing implementation changes:
 - Verify administrator authentication and authorization.
 - Verify membership application submission.
 - Verify contact form validation.
-- Verify research, program, and archive management.
+- Verify blog, program, and archive management.
 - Verify reports and analytics using actual database records.
-- Verify media upload validation.
-- Confirm responsive behavior across supported devices. 
+- Verify blog-owned media upload validation.
+- Confirm responsive behavior across supported devices.
+- Confirm `/api/health`, `/robots.txt`, and `/sitemap.xml` respond in production.
