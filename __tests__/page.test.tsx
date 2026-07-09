@@ -23,7 +23,7 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "A student platform for diplomacy, leadership, and public service.",
+        name: "SSDU Institutional Profile",
       }),
     ).toBeDefined();
     expect(screen.getAllByRole("link", { name: "Programs" }).length).toBeGreaterThan(0);

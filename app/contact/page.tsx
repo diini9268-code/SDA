@@ -90,8 +90,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
 
   return (
     <PublicPageShell>
-      <main className="bg-[#f8f9fa] pb-16 pt-20 text-[#191c1d]">
-        <section className="border-b border-[#c4c6cf] bg-[#f3f4f5] py-16">
+      <main className="bg-[#f8f9fa] pb-16 pt-24 text-[#191c1d] md:pt-20">
+        <section className="border-b border-[#c4c6cf] bg-[#f3f4f5] pb-14 pt-16">
           <div className="mx-auto max-w-4xl px-4 text-center md:px-0">
             <span className="mb-4 inline-block rounded-full bg-[#ffdea5] px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#261900]">
               Official Contact
@@ -107,8 +107,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           </div>
         </section>
 
-        <section className="mx-auto mt-12 max-w-4xl px-4">
-          <div className="relative mb-12 flex items-center justify-between">
+        <section className="mx-auto mt-10 max-w-4xl px-4">
+          <div className="relative mb-10 flex items-center justify-between">
             <div className="absolute left-0 top-1/2 -z-10 h-0.5 w-full -translate-y-1/2 bg-[#c4c6cf]" />
             <div className="flex flex-col items-center bg-[#f8f9fa] px-4">
               <div className="flex size-10 items-center justify-center rounded-full border-2 border-[#000613] bg-[#000613] font-bold text-white">
@@ -219,7 +219,9 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           <div className="mt-8 grid grid-cols-1 gap-8 px-4 md:grid-cols-2">
             <div className="flex items-start gap-4">
               <div className="rounded-full bg-[#e7e8e9] p-3 text-[#000613]">
-                <span aria-hidden="true">▣</span>
+                <span className="text-xs font-bold" aria-hidden="true">
+                  S
+                </span>
               </div>
               <div>
                 <h3 className="font-serif text-base font-bold text-[#000613]">
@@ -233,7 +235,9 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             </div>
             <div className="flex items-start gap-4">
               <div className="rounded-full bg-[#e7e8e9] p-3 text-[#000613]">
-                <span aria-hidden="true">⌂</span>
+                <span className="text-xs font-bold" aria-hidden="true">
+                  O
+                </span>
               </div>
               <div>
                 <h3 className="font-serif text-base font-bold text-[#000613]">

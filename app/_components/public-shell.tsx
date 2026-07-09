@@ -9,7 +9,7 @@ const navigationItems = [
   { href: "/membership", label: "Membership" },
 ];
 
-export function PublicHeader() {
+export function PublicHeader({ activeHref }: { activeHref?: string }) {
   return (
     <header className="fixed top-0 z-50 w-full border-b-2 border-[#e9c176] bg-[#f8f9fa]/95 shadow-sm backdrop-blur dark:bg-[#f8f9fa]/95">
       <nav className="mx-auto flex h-20 max-w-[1280px] items-center justify-between gap-6 px-6 md:px-16">
@@ -27,7 +27,7 @@ export function PublicHeader() {
               <Link
                 href={item.href}
                 className={
-                  item.href === "/"
+                  item.href === activeHref
                     ? "border-b-2 border-[#e9c176] pb-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#000613]"
                     : "text-xs font-semibold uppercase tracking-[0.08em] text-[#43474e] transition-colors hover:text-[#000613]"
                 }
@@ -56,7 +56,7 @@ export function PublicHeader() {
               <Link
                 href={item.href}
                 className={
-                  item.href === "/"
+                  item.href === activeHref
                     ? "text-[#000613]"
                     : "transition-colors hover:text-[#000613]"
                 }
@@ -88,8 +88,8 @@ export function PublicFooter() {
           </p>
           <div className="flex gap-4 text-[#e1e3e4]/80" aria-label="Social links">
             <span aria-hidden="true">@</span>
-            <span aria-hidden="true">◎</span>
-            <span aria-hidden="true">✣</span>
+            <span aria-hidden="true">web</span>
+            <span aria-hidden="true">hub</span>
           </div>
         </div>
 
@@ -139,17 +139,23 @@ export function PublicFooter() {
 
       <div className="mx-auto max-w-[1280px] border-t border-white/10 px-6 py-6 md:px-16">
         <p className="text-center text-sm text-[#e1e3e4]/60">
-          © 2024 Somali Student Diplomacy Union. All rights reserved.
+          &copy; 2024 Somali Student Diplomacy Union. All rights reserved.
         </p>
       </div>
     </footer>
   );
 }
 
-export function PublicPageShell({ children }: { children: React.ReactNode }) {
+export function PublicPageShell({
+  activeHref,
+  children,
+}: {
+  activeHref?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-[#191c1d]">
-      <PublicHeader />
+      <PublicHeader activeHref={activeHref} />
       {children}
       <PublicFooter />
     </div>

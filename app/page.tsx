@@ -106,7 +106,7 @@ export default async function Home() {
   const leaderPosition = data.featuredLeader?.position ?? "Chairperson, SSDU";
 
   return (
-    <PublicPageShell>
+    <PublicPageShell activeHref="/">
       <main className="bg-[#f8f9fa] pt-20 text-[#191c1d]">
         <section className="relative flex h-[870px] items-center overflow-hidden">
           <div className="absolute inset-0 z-0">
