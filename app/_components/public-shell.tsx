@@ -1,62 +1,75 @@
 import Link from "next/link";
 
 const navigationItems = [
+  { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/blog", label: "Research" },
-  { href: "/leadership", label: "Leadership" },
   { href: "/programs", label: "Programs" },
+  { href: "/blog", label: "Research" },
   { href: "/archive", label: "Archive" },
-  { href: "/contact", label: "Contact" },
+  { href: "/membership", label: "Membership" },
 ];
 
 export function PublicHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 text-slate-950 backdrop-blur dark:border-slate-200/80 dark:bg-white/95 dark:text-slate-950">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10">
+    <header className="fixed top-0 z-50 w-full border-b-2 border-[#e9c176] bg-[#f8f9fa]/95 shadow-sm backdrop-blur dark:bg-[#f8f9fa]/95">
+      <nav className="mx-auto flex h-20 max-w-[1280px] items-center justify-between gap-6 px-6 md:px-16">
         <Link
           href="/"
-          className="text-base font-black tracking-tight text-slate-950 dark:text-slate-950"
+          className="font-serif text-xl font-bold text-[#000613]"
+          aria-label="SSDU home"
         >
           SSDU
         </Link>
-        <nav aria-label="Primary navigation" className="hidden md:block">
-          <ul className="flex items-center gap-7 text-xs font-bold uppercase tracking-[0.08em] text-slate-600 dark:text-slate-600">
-            {navigationItems.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="transition hover:text-sky-800">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/membership"
-            className="rounded bg-slate-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-white transition hover:bg-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-700 focus:ring-offset-2 dark:bg-slate-950 dark:text-white"
-          >
-            Join SSDU
-          </Link>
-          <Link
-            href="/admin"
-            className="hidden rounded border border-slate-300 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-slate-700 transition hover:border-slate-950 hover:text-slate-950 focus:outline-none focus:ring-2 focus:ring-sky-700 focus:ring-offset-2 sm:inline-flex dark:border-slate-300 dark:text-slate-700 dark:hover:text-slate-950"
-          >
-            Admin
-          </Link>
-        </div>
-      </div>
-      <nav
-        aria-label="Mobile primary navigation"
-        className="border-t border-slate-100 px-5 py-3 md:hidden dark:border-slate-100"
-      >
-        <ul className="flex gap-5 overflow-x-auto text-xs font-bold uppercase tracking-[0.08em] text-slate-600 dark:text-slate-600">
+
+        <ul className="hidden items-center gap-8 md:flex">
           {navigationItems.map((item) => (
-            <li key={item.href} className="shrink-0">
-              <Link href={item.href} className="transition hover:text-sky-800">
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className={
+                  item.href === "/"
+                    ? "border-b-2 border-[#e9c176] pb-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#000613]"
+                    : "text-xs font-semibold uppercase tracking-[0.08em] text-[#43474e] transition-colors hover:text-[#000613]"
+                }
+              >
                 {item.label}
               </Link>
             </li>
           ))}
+        </ul>
+
+        <Link
+          href="/membership"
+          className="rounded-lg bg-[#000613] px-6 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-all duration-200 hover:bg-[#40acfe] hover:text-[#001f3f] focus:outline-none focus:ring-2 focus:ring-[#40acfe] focus:ring-offset-2"
+        >
+          Join SSDU
+        </Link>
+      </nav>
+
+      <nav
+        aria-label="Mobile primary navigation"
+        className="border-t border-[#e1e3e4] bg-[#f8f9fa] px-4 py-3 md:hidden"
+      >
+        <ul className="flex gap-5 overflow-x-auto text-xs font-semibold uppercase tracking-[0.08em] text-[#43474e]">
+          {navigationItems.map((item) => (
+            <li key={item.href} className="shrink-0">
+              <Link
+                href={item.href}
+                className={
+                  item.href === "/"
+                    ? "text-[#000613]"
+                    : "transition-colors hover:text-[#000613]"
+                }
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+          <li className="shrink-0">
+            <Link href="/contact" className="transition-colors hover:text-[#000613]">
+              Contact
+            </Link>
+          </li>
         </ul>
       </nav>
     </header>
@@ -65,45 +78,69 @@ export function PublicHeader() {
 
 export function PublicFooter() {
   return (
-    <footer className="bg-slate-950 text-white dark:bg-slate-950 dark:text-white">
-      <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 sm:grid-cols-[1.2fr_0.8fr_0.8fr] sm:px-8 lg:px-10">
-        <div className="space-y-3">
-          <p className="text-lg font-black tracking-tight">SSDU</p>
-          <p className="max-w-sm text-sm leading-6 text-slate-300">
-            Empowering Somali students through diplomacy, leadership, public
-            service, and civic engagement.
+    <footer className="mt-auto w-full bg-[#000613] text-white">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-6 px-6 py-12 md:grid-cols-4 md:px-16">
+        <div className="space-y-6">
+          <div className="font-serif text-xl font-bold">SSDU</div>
+          <p className="text-sm leading-6 text-[#e1e3e4]/80">
+            Empowering Somali youth to lead in international diplomacy and
+            research.
           </p>
-        </div>
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-            Quick links
-          </p>
-          <ul className="mt-4 grid gap-2 text-sm text-slate-300">
-            {navigationItems.slice(0, 4).map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="hover:text-white">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-            Connect
-          </p>
-          <div className="mt-4 grid gap-2 text-sm text-slate-300">
-            <Link href="/membership" className="hover:text-white">
-              Membership
-            </Link>
-            <Link href="/contact" className="hover:text-white">
-              Contact SSDU
-            </Link>
-            <Link href="/admin" className="hover:text-white">
-              Admin portal
-            </Link>
+          <div className="flex gap-4 text-[#e1e3e4]/80" aria-label="Social links">
+            <span aria-hidden="true">@</span>
+            <span aria-hidden="true">◎</span>
+            <span aria-hidden="true">✣</span>
           </div>
         </div>
+
+        <div>
+          <h2 className="mb-6 font-serif text-xl font-bold">Quick Links</h2>
+          <ul className="space-y-4 text-sm text-[#e1e3e4]/80">
+            <li>
+              <Link className="hover:text-white hover:underline" href="/">
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-white hover:underline" href="/blog">
+                Research
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-white hover:underline" href="/programs">
+                Programs
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-white hover:underline" href="/membership">
+                Join Us
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 className="mb-6 font-serif text-xl font-bold">Contact Info</h2>
+          <address className="space-y-4 text-sm not-italic leading-6 text-[#e1e3e4]/80">
+            <p>Mogadishu, Somalia</p>
+            <p>contact@ssdu.org</p>
+            <p>+252 61 XXX XXXX</p>
+          </address>
+        </div>
+
+        <div>
+          <h2 className="mb-6 font-serif text-xl font-bold">Mission Statement</h2>
+          <p className="text-sm leading-6 text-[#e1e3e4]/80">
+            To cultivate a generation of diplomats who are academically
+            proficient, culturally grounded, and globally competitive.
+          </p>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-[1280px] border-t border-white/10 px-6 py-6 md:px-16">
+        <p className="text-center text-sm text-[#e1e3e4]/60">
+          © 2024 Somali Student Diplomacy Union. All rights reserved.
+        </p>
       </div>
     </footer>
   );
@@ -111,7 +148,7 @@ export function PublicFooter() {
 
 export function PublicPageShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-white text-slate-950 dark:bg-white dark:text-slate-950">
+    <div className="min-h-screen bg-[#f8f9fa] text-[#191c1d]">
       <PublicHeader />
       {children}
       <PublicFooter />
@@ -130,15 +167,13 @@ export function PageIntro({
 }) {
   return (
     <div className="max-w-3xl space-y-4">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-600 dark:text-slate-600">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00639c]">
         {eyebrow}
       </p>
-      <h1 className="text-3xl font-semibold tracking-normal text-slate-950 sm:text-4xl dark:text-slate-950">
+      <h1 className="font-serif text-3xl font-bold tracking-normal text-[#000613] sm:text-4xl">
         {title}
       </h1>
-      <p className="text-lg leading-8 text-slate-700 dark:text-slate-700">
-        {description}
-      </p>
+      <p className="text-lg leading-8 text-[#43474e]">{description}</p>
     </div>
   );
 }

@@ -13,7 +13,7 @@ describe("Public pages", () => {
         name: "Shaping the Future of Somali Diplomacy",
       }),
     ).toBeDefined();
-    expect(screen.getByRole("link", { name: "Join Us" })).toBeDefined();
+    expect(screen.getAllByRole("link", { name: "Join Us" }).length).toBeGreaterThan(0);
   });
 
   it("renders the about page with public navigation", () => {
