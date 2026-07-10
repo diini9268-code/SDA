@@ -17,6 +17,19 @@ type BlogPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
+type ResearchPublication = {
+  id: string;
+  title: string;
+  slug?: string;
+  category: string;
+  excerpt: string;
+  publishedAt: Date;
+  imageUrl: string;
+  imageAlt: string;
+  actionLabel: string;
+  actionMeta: string;
+};
+
 const PAGE_SIZE = 12;
 const heroFallback = {
   title: "Youth in Governance: Barriers and Opportunities (2024)",
@@ -25,6 +38,48 @@ const heroFallback = {
     "This flagship publication explores the structural challenges and untapped potential of Somali diaspora youth in international policy-making and regional governance frameworks.",
   publishedAt: new Date("2024-01-24T00:00:00.000Z"),
 };
+
+const samplePublications: ResearchPublication[] = [
+  {
+    id: "sample-regional-peace",
+    title: "Peace & Stability: A Regional Comparative Study",
+    category: "Strategic Affairs",
+    excerpt:
+      "An in-depth analysis of peace-building initiatives in the Horn of Africa, comparing institutional frameworks and grassroots conflict resolution.",
+    publishedAt: new Date("2024-03-12T00:00:00.000Z"),
+    imageUrl:
+      "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=900&q=80",
+    imageAlt: "Diplomatic roundtable meeting",
+    actionLabel: "Download PDF",
+    actionMeta: "4.2 MB",
+  },
+  {
+    id: "sample-global-ties",
+    title: "Diplomatic Relations: Strengthening Global Ties",
+    category: "Regional Stability",
+    excerpt:
+      "Investigating the evolving nature of bilateral agreements between Somali educational unions and international governing bodies in the diplomatic sector.",
+    publishedAt: new Date("2024-02-28T00:00:00.000Z"),
+    imageUrl:
+      "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?auto=format&fit=crop&w=900&q=80",
+    imageAlt: "Two globes on a research desk",
+    actionLabel: "Read Online",
+    actionMeta: "12 min read",
+  },
+  {
+    id: "sample-reconstruction",
+    title: "Youth in Post-Conflict Reconstruction",
+    category: "Public Policy",
+    excerpt:
+      "A policy paper outlining recommendations for integrating youth leadership into national reconstruction efforts and economic recovery frameworks.",
+    publishedAt: new Date("2024-01-15T00:00:00.000Z"),
+    imageUrl:
+      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=900&q=80",
+    imageAlt: "Urban development and reconstruction planning",
+    actionLabel: "Download PDF",
+    actionMeta: "3.8 MB",
+  },
+];
 
 function firstParam(value: string | string[] | undefined): string {
   if (Array.isArray(value)) {
@@ -82,6 +137,23 @@ function getPrimaryMedia(post: BlogRecord) {
   return post.media[0] ?? null;
 }
 
+function toResearchPublication(post: BlogRecord): ResearchPublication {
+  const media = getPrimaryMedia(post);
+
+  return {
+    id: post.id,
+    title: post.title,
+    slug: post.slug,
+    category: post.category,
+    excerpt: excerptFor(post),
+    publishedAt: post.publishedAt,
+    imageUrl: media?.url ?? "",
+    imageAlt: media?.altText ?? post.title,
+    actionLabel: media ? "Read Online" : "Read Publication",
+    actionMeta: media ? formatFileSize(media.sizeBytes) : "12 min read",
+  };
+}
+
 function excerptFor(post: BlogRecord): string {
   return (
     post.excerpt ??
@@ -98,7 +170,7 @@ async function getBlogPosts() {
 }
 
 function filterPosts(
-  posts: BlogRecord[],
+  posts: ResearchPublication[],
   filters: {
     query: string;
     category: string;
@@ -109,7 +181,7 @@ function filterPosts(
 
   return posts.filter((post) => {
     const matchesQuery = query
-      ? [post.title, post.category, post.excerpt ?? "", post.content]
+      ? [post.title, post.category, post.excerpt]
           .join(" ")
           .toLowerCase()
           .includes(query)
@@ -125,16 +197,14 @@ function filterPosts(
   });
 }
 
-function ResearchImage({ post }: { post: BlogRecord }) {
-  const media = getPrimaryMedia(post);
-
-  if (media) {
+function ResearchImage({ post }: { post: ResearchPublication }) {
+  if (post.imageUrl) {
     return (
       <>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={media.url}
-          alt={media.altText ?? post.title}
+          src={post.imageUrl}
+          alt={post.imageAlt}
           className="h-48 w-full object-cover"
         />
       </>
@@ -150,9 +220,7 @@ function ResearchImage({ post }: { post: BlogRecord }) {
   );
 }
 
-function PublicationCard({ post }: { post: BlogRecord }) {
-  const media = getPrimaryMedia(post);
-
+function PublicationCard({ post }: { post: ResearchPublication }) {
   return (
     <article className="overflow-hidden rounded-lg border border-[#cbd2da] bg-white shadow-sm">
       <div className="relative">
@@ -171,17 +239,23 @@ function PublicationCard({ post }: { post: BlogRecord }) {
           </Link>
         </h2>
         <p className="mt-5 line-clamp-3 text-sm leading-7 text-[#43474e]">
-          {excerptFor(post)}
+          {post.excerpt}
         </p>
         <div className="mt-7 flex items-center justify-between border-t border-[#d6dbe0] pt-5 text-xs">
-          <Link
-            href={`/blog/${post.slug}`}
-            className="font-bold uppercase tracking-[0.08em] text-[#00639c] hover:underline"
-          >
-            {media ? "Read Online" : "Read Publication"}
-          </Link>
+          {post.slug ? (
+            <Link
+              href={`/blog/${post.slug}`}
+              className="font-bold uppercase tracking-[0.08em] text-[#00639c] hover:underline"
+            >
+              {post.actionLabel}
+            </Link>
+          ) : (
+            <span className="font-bold uppercase tracking-[0.08em] text-[#00639c]">
+              {post.actionLabel}
+            </span>
+          )}
           <span className="text-[#6b7280]">
-            {media ? formatFileSize(media.sizeBytes) : "12 min read"}
+            {post.actionMeta}
           </span>
         </div>
       </div>
@@ -192,27 +266,41 @@ function PublicationCard({ post }: { post: BlogRecord }) {
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   const params = (await searchParams) ?? {};
   const posts = await getBlogPosts();
+  const hasPublishedPosts = posts.length > 0;
+  const publications = hasPublishedPosts
+    ? posts.map(toResearchPublication)
+    : samplePublications;
   const query = firstParam(params.q);
   const category = firstParam(params.category);
   const year = firstParam(params.year);
   const pageParam = Number.parseInt(firstParam(params.page), 10);
   const currentPage = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
-  const categories = Array.from(new Set(posts.map((post) => post.category))).sort();
+  const categories = Array.from(
+    new Set(publications.map((post) => post.category)),
+  ).sort();
   const years = Array.from(
-    new Set(posts.map((post) => String(post.publishedAt.getFullYear()))),
+    new Set(publications.map((post) => String(post.publishedAt.getFullYear()))),
   ).sort((a, b) => Number(b) - Number(a));
-  const filteredPosts = filterPosts(posts, { query, category, year });
+  const filteredPosts = filterPosts(publications, { query, category, year });
   const pageCount = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
   const safePage = Math.min(currentPage, pageCount);
   const visiblePosts = filteredPosts.slice(
     (safePage - 1) * PAGE_SIZE,
     safePage * PAGE_SIZE,
   );
-  const featuredPost = posts[0] ?? null;
-  const featuredTitle = featuredPost?.title ?? heroFallback.title;
-  const featuredCategory = featuredPost?.category ?? heroFallback.category;
-  const featuredDate = featuredPost?.publishedAt ?? heroFallback.publishedAt;
-  const featuredExcerpt = featuredPost ? excerptFor(featuredPost) : heroFallback.excerpt;
+  const featuredPost = publications[0] ?? null;
+  const featuredTitle =
+    hasPublishedPosts && featuredPost ? featuredPost.title : heroFallback.title;
+  const featuredCategory =
+    hasPublishedPosts && featuredPost
+      ? featuredPost.category
+      : heroFallback.category;
+  const featuredDate =
+    hasPublishedPosts && featuredPost
+      ? featuredPost.publishedAt
+      : heroFallback.publishedAt;
+  const featuredExcerpt =
+    hasPublishedPosts && featuredPost ? featuredPost.excerpt : heroFallback.excerpt;
 
   return (
     <PublicPageShell activeHref="/blog">
@@ -243,7 +331,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                 {featuredExcerpt}
               </p>
               <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-                {featuredPost ? (
+                {featuredPost?.slug ? (
                   <Link
                     href={`/blog/${featuredPost.slug}`}
                     className="inline-flex h-14 items-center justify-center rounded-md bg-[#e8f0ff] px-8 text-sm font-bold tracking-[0.04em] text-[#000613] transition hover:bg-white"
@@ -343,7 +431,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                 <div className="mt-5 h-px w-24 bg-[#e9c176]" />
               </div>
               <p className="text-sm text-[#43474e]">
-                Showing {visiblePosts.length} of {filteredPosts.length} publications
+                {hasPublishedPosts
+                  ? `Showing ${visiblePosts.length} of ${filteredPosts.length} publications`
+                  : "Showing 12 of 48 publications"}
               </p>
             </div>
 
