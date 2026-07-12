@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { PublicPageShell } from "@/app/_components/public-shell";
 import { createPageMetadata } from "@/lib/site/metadata";
 
@@ -121,13 +122,14 @@ export default function AboutPage() {
         <section className="bg-white py-24">
           <div className="mx-auto grid max-w-[1280px] items-center gap-12 px-6 md:grid-cols-[0.72fr_1.28fr] md:px-16">
             <div>
-              {/* Decorative portrait matching the supplied visual direction. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80"
-                alt="Professional portrait of a Somali student leader"
-                className="aspect-[4/5] w-full max-w-sm rounded-md object-cover shadow-lg"
-              />
+              <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-md shadow-lg">
+                <OptimizedFillImage
+                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80"
+                  alt="Professional portrait of a Somali student leader"
+                  className="h-full w-full object-cover"
+                  sizes="(min-width: 768px) 30vw, 100vw"
+                />
+              </div>
               <p className="mt-4 font-serif text-base font-bold text-[#000613]">
                 Dr. Ahmed Ali
               </p>
@@ -187,23 +189,27 @@ export default function AboutPage() {
               </ul>
             </div>
             <div>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=80"
-                alt="Policy research documents and notebooks"
-                className="aspect-[16/9] w-full rounded-md border border-[#c4c6cf] object-cover shadow-md"
-              />
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-md border border-[#c4c6cf] shadow-md">
+                <OptimizedFillImage
+                  src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=80"
+                  alt="Policy research documents and notebooks"
+                  className="h-full w-full object-cover"
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                />
+              </div>
             </div>
           </div>
 
           <div className="mx-auto mt-24 grid max-w-[1280px] items-center gap-14 px-6 md:grid-cols-2 md:px-16">
             <div className="order-2 md:order-1">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=1000&q=80"
-                alt="International conference hall"
-                className="aspect-[16/10] w-full rounded-md object-cover shadow-lg"
-              />
+              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-md shadow-lg">
+                <OptimizedFillImage
+                  src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=1000&q=80"
+                  alt="International conference hall"
+                  className="h-full w-full object-cover"
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                />
+              </div>
             </div>
             <div className="order-1 md:order-2">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#00639c]">
@@ -247,12 +253,14 @@ export default function AboutPage() {
               </blockquote>
             </div>
             <div>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1515169067865-5387ec356754?auto=format&fit=crop&w=1000&q=80"
-                alt="Diplomatic round table"
-                className="aspect-[16/9] w-full rounded-md object-cover shadow-lg"
-              />
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-md shadow-lg">
+                <OptimizedFillImage
+                  src="https://images.unsplash.com/photo-1515169067865-5387ec356754?auto=format&fit=crop&w=1000&q=80"
+                  alt="Diplomatic round table"
+                  className="h-full w-full object-cover"
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                />
+              </div>
             </div>
           </div>
         </section>

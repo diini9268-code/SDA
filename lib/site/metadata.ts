@@ -34,6 +34,14 @@ export function createPageMetadata({
   return {
     title: pageTitle,
     description,
+    keywords: [
+      "Somali Student Diplomacy Union",
+      "SSDU",
+      "Somali diplomacy",
+      "student leadership",
+      "policy research",
+      "international relations",
+    ],
     alternates: {
       canonical: url,
     },
@@ -43,6 +51,7 @@ export function createPageMetadata({
       url,
       siteName,
       type: "website",
+      locale: "en_US",
     },
     twitter: {
       card: "summary",

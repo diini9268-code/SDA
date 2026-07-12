@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { PublicPageShell } from "@/app/_components/public-shell";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
 import type { LeadershipProfile } from "@/lib/leadership/leadership-service";
@@ -98,13 +99,14 @@ function LeadershipCard({
 }) {
   return (
     <article className="rounded-md border border-[#c4c6cf] bg-white p-6">
-      {/* Leadership photos are URL-backed; fallback images provide the supplied visual style. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={photo}
-        alt={fullName}
-        className="aspect-[4/3] w-full rounded-md object-cover"
-      />
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md">
+        <OptimizedFillImage
+          src={photo}
+          alt={fullName}
+          className="h-full w-full object-cover"
+          sizes="(min-width: 768px) 33vw, 100vw"
+        />
+      </div>
       <h3 className="mt-5 font-serif text-xl font-bold text-[#000613]">
         {fullName}
       </h3>

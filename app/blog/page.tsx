@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { PublicPageShell } from "@/app/_components/public-shell";
 import type { BlogRecord } from "@/lib/blog/blog-service";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
@@ -200,14 +201,14 @@ function filterPosts(
 function ResearchImage({ post }: { post: ResearchPublication }) {
   if (post.imageUrl) {
     return (
-      <>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+      <div className="relative h-48 w-full">
+        <OptimizedFillImage
           src={post.imageUrl}
           alt={post.imageAlt}
           className="h-48 w-full object-cover"
+          sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
         />
-      </>
+      </div>
     );
   }
 
@@ -305,17 +306,17 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   return (
     <PublicPageShell activeHref="/blog">
       <main className="pt-[129px] md:pt-20">
-        <section
-          className="relative flex min-h-[620px] items-center border-b border-[#e9c176] bg-[#000613] px-6 py-24 text-white md:px-16"
-          style={{
-            backgroundImage:
-              "linear-gradient(90deg, rgba(0, 6, 19, 0.9) 0%, rgba(0, 6, 19, 0.72) 46%, rgba(0, 6, 19, 0.52) 100%), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80')",
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-          }}
-        >
+        <section className="relative flex min-h-[620px] items-center overflow-hidden border-b border-[#e9c176] bg-[#000613] px-6 py-24 text-white md:px-16">
+          <OptimizedFillImage
+            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80"
+            alt="Ocean horizon at sunset"
+            className="h-full w-full object-cover"
+            sizes="100vw"
+            priority
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,6,19,0.9)_0%,rgba(0,6,19,0.72)_46%,rgba(0,6,19,0.52)_100%)]" />
           <div className="mx-auto w-full max-w-[1280px]">
-            <div className="max-w-2xl">
+            <div className="relative z-10 max-w-2xl">
               <div className="mb-7 flex flex-wrap items-center gap-4">
                 <span className="rounded-full bg-[#40acfe] px-4 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#002e5f]">
                   {featuredCategory}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { PublicPageShell } from "@/app/_components/public-shell";
 import type { ArchiveRecord } from "@/lib/archive/archive-service";
 import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
@@ -216,14 +217,14 @@ export default async function ArchivePage() {
           <div className="mx-auto max-w-[1280px]">
             <article className="grid overflow-hidden rounded-lg border border-[#cbd2da] bg-white shadow-sm lg:grid-cols-[1fr_1fr]">
               {featured.imageUrl ? (
-                <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                <div className="relative min-h-[320px] w-full">
+                  <OptimizedFillImage
                     src={featured.imageUrl}
                     alt={featured.imageAlt}
                     className="h-full min-h-[320px] w-full object-cover"
+                    sizes="(min-width: 1024px) 50vw, 100vw"
                   />
-                </>
+                </div>
               ) : (
                 <div className="flex min-h-[320px] items-center justify-center bg-[#002e5f] px-6 text-center">
                   <p className="font-serif text-3xl font-bold text-white">

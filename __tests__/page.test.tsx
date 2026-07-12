@@ -11,10 +11,12 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Shaping the Future of Somali Diplomacy",
+        name: "Fostering Excellence in Somali Diplomacy",
       }),
     ).toBeDefined();
-    expect(screen.getAllByRole("link", { name: "Join Us" }).length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("link", { name: "Explore Our Mission" }).length,
+    ).toBeGreaterThan(0);
   });
 
   it("renders the about page with public navigation", () => {

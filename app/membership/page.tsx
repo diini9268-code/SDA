@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { PublicHeader } from "@/app/_components/public-shell";
 import { createPageMetadata } from "@/lib/site/metadata";
 
@@ -149,12 +150,14 @@ export default function MembershipPage() {
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
                 <div className="rounded-full border-8 border-[#e8f1f8] p-1">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=240&q=80"
-                    alt="Ahmed Abdi profile portrait"
-                    className="size-24 rounded-full object-cover"
-                  />
+                  <div className="relative size-24 overflow-hidden rounded-full">
+                    <OptimizedFillImage
+                      src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=240&q=80"
+                      alt="Ahmed Abdi profile portrait"
+                      className="h-full w-full object-cover"
+                      sizes="96px"
+                    />
+                  </div>
                 </div>
                 <div>
                   <h1 className="font-serif text-4xl font-black leading-tight text-[#001440] sm:text-5xl">
@@ -356,17 +359,16 @@ export default function MembershipPage() {
                 </Link>
               </section>
 
-              <section
-                className="overflow-hidden rounded-xl bg-[#002e5f] text-white"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(180deg, rgba(0, 6, 19, 0.2), rgba(0, 31, 63, 0.96)), url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=900&q=80')",
-                  backgroundPosition: "center",
-                  backgroundSize: "cover",
-                }}
-              >
-                <div className="min-h-[190px] p-8" />
-                <div className="p-8 pt-0">
+              <section className="relative overflow-hidden rounded-xl bg-[#002e5f] text-white">
+                <OptimizedFillImage
+                  src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=900&q=80"
+                  alt="Union reference library book"
+                  className="h-full w-full object-cover"
+                  sizes="(min-width: 1024px) 400px, 100vw"
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,6,19,0.2),rgba(0,31,63,0.96))]" />
+                <div className="relative min-h-[190px] p-8" />
+                <div className="relative p-8 pt-0">
                   <h2 className="font-serif text-2xl font-bold">
                     Union Reference Library
                   </h2>

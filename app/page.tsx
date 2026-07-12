@@ -1,385 +1,441 @@
 import Link from "next/link";
-import { PublicPageShell } from "@/app/_components/public-shell";
-import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
+import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
-import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
-import { prismaProgramRepository } from "@/lib/programs/program-repository";
 import { createPageMetadata } from "@/lib/site/metadata";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = createPageMetadata({
   description:
-    "SSDU connects Somali students with diplomacy, leadership, programs, publications, and civic engagement opportunities.",
+    "SSDU advances Somali student diplomacy through policy insight, leadership development, and international engagement.",
   path: "/",
 });
 
+type InsightCard = {
+  id: string;
+  title: string;
+  category: string;
+  excerpt: string;
+  imageUrl: string;
+  imageAlt: string;
+  href: string;
+};
+
 const heroImage =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuDlQz_R9velZNgqh77dalZ2xp0KQExkTKjyWbKF_CC9byWapSG4Y6THQqfaqbQR3BSIE7rTr-IYB7k-VdoaKAsvxejF0uRJXDDzCju5D6O-zaqWmkpo1mVt3urviFIZEWDo1gGmJe92Z6Nv1FvSoBxlrrxN_m8c8iQoVd4pLJi4rSIQ5JgGG4gO60TFPEkjOJPn0vqqOYH9DmJItVfpkipvyXf3jvRX37FLFk8D016e85krfWDim7L5JrAerQnfltuksVsxE00M3G1G";
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuCAC130QuFwZkKk9c8l1X2idjNLXzebCC4ZvV7rz_NXoQP5QgnHDRzh3sh1HSw1tEdZc64HuJ_fUjfjzQJVGxbPjq4R740w7zt--DbR4NgZkMDYwoebGOoQDjoVYsUstgMyH1VCMG5EusRTNPLSM9-CRzCWdSxrLbN1ln1KgEd-Vk9W0d-LXh6y-C0rkVZMhtDsIRWXfv26Hgq2RertWviCXdT86iQsU2-6MM4KRm_cQKnN5M7bgVm-";
 
-const leaderFallbackImage =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuAgzko7ssLQUVHP6gWtu59aEwrQYRGImfW0SeZZTPkuhvsfTtoQlUGeSr3nOYyfuNFVqwyzjZ40_jRAxIVhUgUbW7dQfQc3IC5qwIjufdmZMUeIOtjnfopm_XgUAXJyIR1P3EMJhZxLg58DcfGmtqbTAXd0xEdbgs5YCkGeJBsv9KN13g4BPZ-oGTmkl_58JnOAqqk6yJ8dOCczz2SQRf4RwD-ftvQIB_7qmpCEa2t5AxgQhKrI2mpFu7cLX8BWaiEiWfIUaQW9fM2m";
+const embassyImage =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuAbzM95gXTre6vgshVZx4m9qicTf4XtogtO43kzN4RJy9LZfVTNNwkx2pAJpeyZ9FpkAc_igwYxy_sHLDasLNHelY0GrRaviYLJyEjG3Puc-moatNotdu7kNNNZz5ae1zoDN93zROitIg2JYwcYvj6sL7UQnmdB0JTZsHqGUCHfyekW_1CtLhTtta5kAizu8J7LxXWtErHAsYqEPBGSTRcmWPrG-_qeF365w4djk69oN2imXXI4rwRM";
 
-const researchFallbackImages = [
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuCguPxR6L1XpCJwm_0kyaz_xPDk4znUtQXTVa7TWL6NwQVIrkOaEcWNriROC6OCiH_Dx59hAHuDJtqKfdIvQXvqFnAdYrG5K154BGJLpJCqjl7cq8fT4664CMow_KbWySiAAo3tzQxlehGmKE2Y6FWBogEvsDzJwp9n1vLkx3mqnJxXvHe8nYppJv-pG0cxNP0d7i2eX3G8gu6MXkilKS2_5Sf1H1e9ilHpeJPmSY4Gq8oSNv4gz-u1-xSINBucN5jjb9-tfIBRLc1_",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuDpEer0loktsE5BPM5eYh8YxR_JshEOKSwvaqpC_F5VI4V7kh6rTlMH4auz2lR0W4PREU-ipkzZgBZJfE056m2iTxzsNw05CZO64Ca2gJ1_oLR76hC76t_RbA8nkQ7JEcjzdjQHDMexJ1suUdmNazfUPKE_Zo-TeO7ZIufk3fFbFcu86h7xR-qkCaWAlZ3fCLANyHZMkWf7IJVEL6Y5i3wbSQmWZld_qKZ6ePvNeUTybBDFMakp4fYMPQ1e1FimKRI_Y3E2OjpLgDvS",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuD3ruRFSTO4NRj6dabZz54UvveEzWIrqZ3y-Xh5KQJsjTstfVqE2QZci1CJzsq5K1LC9UYIFHBTzYGazH8nSHepbddQVUntCgIJ9Oob2kAkESWHUvPA57nlCu_KN4_9E9BE0U_VBUdB-HkRHINaqkV10l2IWqvzZnNSKCXudbWr0Cw7TJSwIzq8jtOGxxeEv69od2oclY2urB7xFZJm5Hy1DRieRlyoQCaU_RB2Fw_7l4Fui071ZmKlmksy72BKRRRGOIHiA0TdSPIJ",
+const fallbackInsights: InsightCard[] = [
+  {
+    id: "policy-report",
+    title: "Advancing Trade Agreements in the Horn of Africa",
+    category: "Policy Report",
+    excerpt:
+      "An in-depth look at the shifting economic landscapes and the diplomatic hurdles of the upcoming summit...",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDJBD7fdx7ZitLvWfmY-sZYgsdniO-BPFvUdXruzaTXj1uiMw0my2ahHr_ELhUWLa68wznMUFLrVUTtmXblMsJ0Js-tzaR0zQK-m_5h1EQUCknRp6wQ32tRpAhsFgGJsMwQSxMJo-N6MXTHnbNcy3tSKJg1DDAuq3FitTD93WH463Gti7ryvt02mpH6JIOyUDh-cpSU51beC9mMytkdCjipDeym8bbBAG0gfLcubIBl2CBVp2wUXbV6",
+    imageAlt: "Formal policy document with a fountain pen",
+    href: "/blog",
+  },
+  {
+    id: "event-summary",
+    title: "Highlights from the 2024 Diplomatic Gala",
+    category: "Event Summary",
+    excerpt:
+      "Celebrating a decade of diplomatic excellence and the inauguration of our new Mogadishu headquarters...",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBJd7F8sY7nXdiS6mMZcSQqkaLCVidz6W-epMLBQ8Bf8vzNSaGFuzo48-l8jQ06ZyFcKz3h5LSzOSMPvO4hyWKr6j3Uzw9wSW-lDL_EuaeEGLzv8XZGXFdhG3aLU20gN6ev1hKOnl2bUDeabkSBxdl8Oyb8zJqS80Z4fr1VzTjMy4jWLC41j8HUmX5WLxR2MQn1ZxWc7bQ5BKB258F4memqWaxdhjkmEkAGpZxvSc5TirENr7WvHFmQ",
+    imageAlt: "International conference hall with seated delegates",
+    href: "/programs",
+  },
+  {
+    id: "intelligence",
+    title: "The Future of Digital Diplomacy and Governance",
+    category: "Intelligence",
+    excerpt:
+      "How emerging technologies are redefining the traditional roles of embassies and state-to-state communications...",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCGFKQqQz7u_sRJa0mE6hO9l2jd2laRwAlQT9w7isRh_eDN5zgqTUXWP9Cm1lpMIYjSKfoJI2sYDARmb1PZdNVok7FMIUMBKK4-t4NE-WTP1qo9wKnJYxQapBJe1eig852A1ebh79dKuyFajzY8piW-evR0uS7rGaN9TaE9Ml5jZ7ECwzzHeyCfYgyvRtBb5UZwkJthRIkTUaMCMVBU5b6kmI2-LFAVtzrQ67xvGDYvW1E4h2kGyNTU",
+    imageAlt: "Digital global diplomacy network map",
+    href: "/blog",
+  },
 ];
 
-const focusAreas = [
-  {
-    icon: "□",
-    label: "Research",
-    description:
-      "In-depth analysis of geopolitical shifts affecting the Horn of Africa and Somali interests.",
-  },
-  {
-    icon: "✥",
-    label: "Programs",
-    description:
-      "Educational initiatives designed to bridge the gap between theory and diplomatic practice.",
-  },
-  {
-    icon: "♟",
-    label: "Engagement",
-    description:
-      "Connecting students with veteran diplomats and international policy experts worldwide.",
-  },
-  {
-    icon: "▱",
-    label: "Dialogue",
-    description:
-      "Facilitating constructive debates on peace-building and regional stability.",
-  },
+const navigationItems = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/blog", label: "Blog" },
+  { href: "/membership", label: "Membership" },
+  { href: "/leadership", label: "Leadership" },
+  { href: "/contact", label: "Contact" },
 ];
 
-const partners = [
-  { icon: "⌂", label: "UNU" },
-  { icon: "◉", label: "Diplomatic Corps" },
-  { icon: "♙", label: "Policy Hub" },
-  { icon: "⚖", label: "Justice Int'l" },
-  { icon: "◇", label: "Somali Link" },
-];
-
-async function getHomeData() {
+async function getInsights(): Promise<InsightCard[]> {
   try {
-    const [archive, blog, leadership, programs] = await Promise.all([
-      prismaArchiveRepository.listPublic(),
-      prismaBlogRepository.listPublic(),
-      prismaLeadershipRepository.listPublic(),
-      prismaProgramRepository.listPublic(),
-    ]);
+    const posts = await prismaBlogRepository.listPublic();
 
-    return {
-      archiveCount: archive.length,
-      blog: blog.slice(0, 3),
-      blogCount: blog.length,
-      featuredLeader: leadership[0] ?? null,
-      leadershipCount: leadership.length,
-      programs: programs.slice(0, 3),
-      programCount: programs.length,
-    };
+    if (posts.length === 0) {
+      return fallbackInsights;
+    }
+
+    return posts.slice(0, 3).map((post, index) => {
+      const media = post.media[0];
+
+      return {
+        id: post.id,
+        title: post.title,
+        category: post.category,
+        excerpt:
+          post.excerpt ??
+          `${post.content.replace(/\s+/g, " ").slice(0, 125).trimEnd()}...`,
+        imageUrl: media?.url ?? fallbackInsights[index]?.imageUrl ?? heroImage,
+        imageAlt: media?.altText ?? post.title,
+        href: `/blog/${post.slug}`,
+      };
+    });
   } catch {
-    return {
-      archiveCount: 0,
-      blog: [],
-      blogCount: 0,
-      featuredLeader: null,
-      leadershipCount: 0,
-      programs: [],
-      programCount: 0,
-    };
+    return fallbackInsights;
   }
 }
 
-function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
+function SiteHeader() {
+  return (
+    <header className="fixed top-0 z-50 w-full border-b border-[#c3c6d1] bg-[#fcf9f8]">
+      <div className="mx-auto flex h-20 max-w-[1280px] items-center justify-between gap-6 px-6 md:px-16">
+        <Link
+          href="/"
+          className="font-serif text-3xl font-bold text-[#001e40]"
+          aria-label="SSDU home"
+        >
+          SSDU
+        </Link>
+
+        <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
+          {navigationItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={
+                item.href === "/"
+                  ? "border-b-2 border-[#775a19] py-2 text-sm font-semibold uppercase tracking-[0.12em] text-[#001e40]"
+                  : "py-2 text-sm font-medium text-[#43474f] transition-colors hover:text-[#775a19]"
+              }
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-4">
+          <Link
+            href="/blog"
+            className="hidden p-2 text-sm font-semibold uppercase tracking-[0.12em] text-[#001e40] hover:text-[#775a19] sm:block"
+          >
+            Search
+          </Link>
+          <Link
+            href="/admin"
+            className="bg-[#001e40] px-6 py-4 text-xs font-semibold uppercase tracking-[0.16em] text-white transition-colors hover:bg-[#003366]"
+          >
+            Admin Login
+          </Link>
+        </div>
+      </div>
+
+      <nav
+        className="border-t border-[#c3c6d1] bg-[#fcf9f8] px-4 py-3 md:hidden"
+        aria-label="Mobile primary"
+      >
+        <ul className="flex gap-5 overflow-x-auto text-xs font-semibold uppercase tracking-[0.12em] text-[#43474f]">
+          {navigationItems.map((item) => (
+            <li key={item.href} className="shrink-0">
+              <Link href={item.href}>{item.label}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+  );
+}
+
+function SiteFooter() {
+  return (
+    <footer className="border-t border-[#303436] bg-[#1c1b1b] pt-20 text-[#fcf9f8]">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-8 px-6 md:grid-cols-4 md:px-16">
+        <div>
+          <span className="mb-4 block font-serif text-3xl font-bold text-[#ffdea5]">
+            SSDU
+          </span>
+          <p className="leading-7 text-[#e5e2e1]">
+            Elevating Somali student diplomacy through policy innovation,
+            leadership development, and professional excellence.
+          </p>
+          <div className="mt-8 flex gap-4">
+            {["Globe", "Mail", "News"].map((label) => (
+              <Link
+                key={label}
+                href="/contact"
+                className="flex size-10 items-center justify-center border border-[#737780] text-xs hover:border-[#e9c176]"
+              >
+                {label.slice(0, 2)}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h2 className="mb-8 font-serif text-2xl font-semibold">Navigation</h2>
+          <ul className="space-y-4 text-[#e5e2e1]">
+            <li>
+              <Link href="/about" className="hover:text-[#fed488]">
+                Strategic Mission
+              </Link>
+            </li>
+            <li>
+              <Link href="/leadership" className="hover:text-[#fed488]">
+                Leadership Board
+              </Link>
+            </li>
+            <li>
+              <Link href="/programs" className="hover:text-[#fed488]">
+                Annual Conference
+              </Link>
+            </li>
+            <li>
+              <Link href="/archive" className="hover:text-[#fed488]">
+                Resource Archive
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 className="mb-8 font-serif text-2xl font-semibold">Governance</h2>
+          <ul className="space-y-4 text-[#e5e2e1]">
+            <li>Privacy Policy</li>
+            <li>Terms of Service</li>
+            <li>Press Kit</li>
+            <li>Careers</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 className="mb-8 font-serif text-2xl font-semibold">Newsletter</h2>
+          <p className="mb-4 text-sm leading-6 text-[#e5e2e1]">
+            Newsletter subscription is not connected yet. Contact SSDU for
+            publication updates.
+          </p>
+          <div className="grid gap-2">
+            <input
+              className="border-0 bg-[#303436] px-4 py-3 text-[#fcf9f8]"
+              placeholder="Professional Email"
+              type="email"
+              disabled
+              aria-label="Professional email"
+            />
+            <Link
+              href="/contact"
+              className="bg-[#775a19] py-3 text-center text-xs font-semibold uppercase tracking-[0.16em] text-white hover:brightness-110"
+            >
+              Contact Us
+            </Link>
+          </div>
+        </div>
+      </div>
+      <div className="mx-auto mt-20 max-w-[1280px] border-t border-[#737780]/20 px-6 py-8 md:px-16">
+        <p className="text-sm text-[#e5e2e1]">
+          &copy; 2024 Somali Student Diplomacy Union. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  );
+}
+
+function InsightArticle({ insight }: { insight: InsightCard }) {
+  return (
+    <article className="flex flex-col border border-[#c3c6d1] bg-[#fcf9f8] transition-colors hover:border-[#001e40]">
+      <div className="relative h-64">
+        <OptimizedFillImage
+          src={insight.imageUrl}
+          alt={insight.imageAlt}
+          className="h-full w-full object-cover"
+          sizes="(min-width: 768px) 33vw, 100vw"
+        />
+      </div>
+      <div className="flex grow flex-col p-8">
+        <span className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#775a19]">
+          {insight.category}
+        </span>
+        <h3 className="mb-4 font-serif text-2xl font-semibold leading-snug text-[#001e40]">
+          {insight.title}
+        </h3>
+        <p className="mb-8 text-sm leading-6 text-[#43474f]">{insight.excerpt}</p>
+        <Link
+          href={insight.href}
+          className="mt-auto text-xs font-semibold uppercase tracking-[0.14em] text-[#001e40] hover:text-[#775a19]"
+        >
+          Read Full Brief
+        </Link>
+      </div>
+    </article>
+  );
 }
 
 export default async function Home() {
-  const data = await getHomeData();
-  const leaderName = data.featuredLeader?.fullName ?? "Ahmed Farah";
-  const leaderPosition = data.featuredLeader?.position ?? "Chairperson, SSDU";
+  const insights = await getInsights();
 
   return (
-    <PublicPageShell activeHref="/">
-      <main className="bg-[#f8f9fa] pt-20 text-[#191c1d]">
-        <section className="relative flex h-[870px] items-center overflow-hidden">
-          <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 z-10 bg-[linear-gradient(to_right,rgba(0,6,19,0.9)_30%,rgba(0,6,19,0.4)_100%)]" />
-            {/* Static design asset from the supplied visual reference. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="h-full w-full object-cover"
+    <div className="min-h-screen bg-[#fcf9f8] text-[#1c1b1b]">
+      <SiteHeader />
+      <main className="pt-[129px] md:pt-20">
+        <section className="relative flex min-h-[819px] items-center overflow-hidden">
+          <div className="absolute inset-0">
+            <OptimizedFillImage
               src={heroImage}
-              alt="Young Somali students in professional attire at a formal diplomatic roundtable."
+              alt="Grand diplomatic hall with formal seating"
+              className="h-full w-full object-cover brightness-[0.42]"
+              sizes="100vw"
+              priority
             />
           </div>
-
-          <div className="relative z-20 mx-auto w-full max-w-[1280px] px-6 md:px-16">
-            <div className="max-w-2xl">
-              <h1 className="mb-6 font-serif text-[32px] font-bold leading-[40px] text-white md:text-[48px] md:leading-[60px] md:tracking-[-0.02em]">
-                Shaping the Future of Somali Diplomacy
+          <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 text-[#fcf9f8] md:px-16">
+            <div className="max-w-2xl border-l-4 border-[#775a19] pl-8">
+              <span className="text-sm font-semibold uppercase tracking-[0.2em] text-[#ffdea5]">
+                Established 2024
+              </span>
+              <h1 className="mt-4 font-serif text-5xl font-bold leading-[1.08] tracking-tight md:text-[64px]">
+                Fostering Excellence in Somali Diplomacy
               </h1>
-              <p className="mb-10 max-w-xl text-lg leading-[30px] text-[#e1e3e4]">
-                Empowering the next generation of Somali scholars and leaders
-                to navigate the complexities of international relations and
-                global governance.
+              <p className="mt-8 text-lg leading-8 text-[#e5e2e1]">
+                The Somali Student Diplomacy Union is dedicated to advancing
+                student policy standards and representing the interests of
+                Somali diplomatic leadership on the global stage.
               </p>
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/membership"
-                  className="flex items-center gap-2 rounded-lg bg-[#001f3f] px-8 py-4 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-all hover:bg-[#40acfe] hover:text-[#001f3f] focus:outline-none focus:ring-2 focus:ring-[#40acfe] focus:ring-offset-2 focus:ring-offset-[#000613]"
-                >
-                  Join Us <span aria-hidden="true">→</span>
-                </Link>
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <Link
                   href="/about"
-                  className="rounded-lg border-2 border-[#e1e3e4] px-8 py-4 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-all hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#000613]"
+                  className="bg-[#775a19] px-8 py-4 text-center text-sm font-semibold uppercase tracking-[0.16em] text-white hover:brightness-110"
                 >
-                  Our Mission
+                  Explore Our Mission
+                </Link>
+                <Link
+                  href="/blog"
+                  className="border border-white px-8 py-4 text-center text-sm font-semibold uppercase tracking-[0.16em] text-white hover:bg-white hover:text-[#001e40]"
+                >
+                  Annual Report
                 </Link>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="mx-auto max-w-[1280px] px-6 py-24 md:px-16">
-          <div className="mb-16 text-center">
-            <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.18em] text-[#00639c]">
-              Core Pillars
-            </span>
-            <h2 className="font-serif text-[36px] font-bold leading-[48px] text-[#000613]">
-              What We Do
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {focusAreas.map((area) => (
-              <article
-                key={area.label}
-                className="group rounded-xl border border-[#c4c6cf] bg-white p-8 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="mb-6 flex size-12 items-center justify-center rounded-lg bg-[#edeeef] text-xl text-[#000613] transition-colors group-hover:bg-[#cee5ff]">
-                  <span aria-hidden="true">{area.icon}</span>
+        <section className="bg-[#fcf9f8] py-20">
+          <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-8 px-6 md:grid-cols-12 md:px-16">
+            <div className="md:col-span-6">
+              <h2 className="font-serif text-4xl font-semibold leading-tight text-[#001e40] md:text-5xl">
+                An Institution Built on Strategic Neutrality
+              </h2>
+              <p className="mt-8 leading-7 text-[#43474f]">
+                Founded to bridge tradition and modern geopolitical
+                requirements, SSDU provides a rigorous framework for policy
+                analysis and international engagement. We serve as an
+                intellectual hub for students, academics, and future diplomats.
+              </p>
+              <ul className="mt-8 space-y-4">
+                {[
+                  "Professional Accreditation & Training",
+                  "Strategic Policy Advocacy",
+                  "Global Inter-NGO Partnerships",
+                ].map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-center text-sm font-semibold uppercase tracking-[0.08em] text-[#001e40]"
+                  >
+                    <span className="mr-3 size-2 bg-[#775a19]" aria-hidden="true" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="relative md:col-span-6">
+              <div className="aspect-square border border-[#c3c6d1] p-8">
+                <div className="relative h-full w-full">
+                  <OptimizedFillImage
+                    src={embassyImage}
+                    alt="Modern institutional building facade"
+                    className="h-full w-full object-cover"
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                  />
                 </div>
-                <h3 className="mb-4 font-serif text-xl font-bold leading-7 text-[#191c1d]">
-                  {area.label}
-                </h3>
-                <p className="text-sm leading-[22px] text-[#43474e]">
-                  {area.description}
+              </div>
+              <div className="bg-[#fed488] p-8 lg:absolute lg:-bottom-8 lg:-right-8">
+                <p className="font-serif text-2xl font-semibold text-[#785a1a]">
+                  120+ partner institutions engage with SSDU annually
                 </p>
-              </article>
-            ))}
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="bg-[#f3f4f5] py-24">
+        <section className="bg-[#f6f3f2] py-20">
           <div className="mx-auto max-w-[1280px] px-6 md:px-16">
-            <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="mb-20 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div>
-                <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.18em] text-[#00639c]">
-                  Policy Insights
-                </span>
-                <h2 className="font-serif text-[36px] font-bold leading-[48px] text-[#000613]">
-                  Latest Research
+                <h2 className="font-serif text-4xl font-semibold text-[#001e40] md:text-5xl">
+                  Diplomatic Insights
                 </h2>
+                <p className="mt-2 text-[#43474f]">
+                  The latest analysis and updates from our student diplomacy
+                  work.
+                </p>
               </div>
               <Link
-                className="hidden text-xs font-semibold uppercase tracking-[0.08em] text-[#000613] underline-offset-4 hover:underline md:block"
                 href="/blog"
+                className="border-b-2 border-[#775a19] pb-1 text-sm font-semibold text-[#001e40] hover:opacity-70"
               >
-                View all publications
+                View All Intelligence
               </Link>
             </div>
-
-            {data.blog.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                {data.blog.map((post, index) => {
-                  const media = post.media[0];
-
-                  return (
-                    <article
-                      key={post.id}
-                      className="flex flex-col overflow-hidden rounded-xl border border-[#c4c6cf] bg-white"
-                    >
-                      <div className="h-48 overflow-hidden">
-                        {/* Blog media URLs are admin-entered and can point to multiple hosts. */}
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                          src={media?.url ?? researchFallbackImages[index]}
-                          alt={media?.altText ?? post.title}
-                        />
-                      </div>
-                      <div className="flex grow flex-col p-8">
-                        <time className="mb-4 text-xs font-semibold uppercase tracking-[0.08em] text-[#43474e]">
-                          {formatDate(post.publishedAt)}
-                        </time>
-                        <h3 className="mb-6 grow font-serif text-xl font-bold leading-7 text-[#191c1d]">
-                          {post.title}
-                        </h3>
-                        <Link
-                          className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#000613] hover:text-[#00639c]"
-                          href={`/blog/${post.slug}`}
-                        >
-                          Read more <span aria-hidden="true">→</span>
-                        </Link>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="rounded-xl border border-dashed border-[#c4c6cf] bg-white p-8 text-sm leading-6 text-[#43474e]">
-                Published blog records will appear here when available.
-              </div>
-            )}
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-[1280px] px-6 py-24 md:px-16">
-          <div className="flex flex-col gap-6 md:flex-row">
-            <div className="md:w-1/3">
-              <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.18em] text-[#00639c]">
-                Calendar
-              </span>
-              <h2 className="mb-6 font-serif text-[36px] font-bold leading-[48px] text-[#000613]">
-                Upcoming Programs
-              </h2>
-              <p className="text-base leading-[26px] text-[#43474e]">
-                Join our curated sessions designed to enhance your diplomatic
-                toolkit and global perspective.
-              </p>
-            </div>
-
-            {data.programs.length > 0 ? (
-              <div className="space-y-8 md:w-2/3">
-                {data.programs.map((program, index) => (
-                  <article
-                    key={program.id}
-                    className={`relative border-l-2 border-[#c4c6cf] pl-12 ${
-                      index === data.programs.length - 1 ? "" : "pb-8"
-                    }`}
-                  >
-                    <div className="absolute -left-[9px] top-0 size-4 rounded-full border-4 border-[#f8f9fa] bg-[#000613]" />
-                    <div className="rounded-lg border border-[#c4c6cf] bg-white p-6 shadow-sm transition-colors hover:border-[#00639c]">
-                      <span className="text-xs font-semibold uppercase tracking-[0.08em] text-[#00639c]">
-                        {formatDate(program.eventDate)}
-                      </span>
-                      <h3 className="my-2 font-serif text-xl font-bold leading-7 text-[#191c1d]">
-                        <Link href={`/programs/${program.slug}`}>
-                          {program.title}
-                        </Link>
-                      </h3>
-                      <p className="text-sm leading-[22px] text-[#43474e]">
-                        {program.description}
-                      </p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <div className="md:w-2/3">
-                <div className="rounded-lg border border-dashed border-[#c4c6cf] bg-white p-8 text-sm leading-6 text-[#43474e]">
-                  Scheduled and published programs will appear here when
-                  available.
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-
-        <section className="bg-[#e7e8e9] py-24">
-          <div className="mx-auto max-w-[1280px] px-6 md:px-16">
-            <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
-              <div className="relative">
-                <div className="absolute -left-8 -top-8 select-none font-serif text-[180px] leading-none text-[#40acfe]/10">
-                  “
-                </div>
-                <blockquote className="relative z-10 border-l-4 border-[#40acfe] pl-8">
-                  <p className="mb-8 font-serif text-2xl italic leading-9 text-[#000613]">
-                    &ldquo;The union is not just an organization; it is a movement.
-                    We are building the intellectual foundation upon which the
-                    next century of Somali diplomacy will stand. Our students
-                    are the architects of a peaceful and prosperous future.&rdquo;
-                  </p>
-                  <footer>
-                    <h3 className="font-serif text-xl font-bold leading-7 text-[#000613]">
-                      {leaderName}
-                    </h3>
-                    <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#43474e]">
-                      {leaderPosition}
-                    </p>
-                  </footer>
-                </blockquote>
-              </div>
-
-              <div className="relative aspect-square">
-                <div className="absolute inset-0 -rotate-3 rounded-2xl bg-[#001f3f]" />
-                {/* Leadership photo URL is admin-entered when present. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  className="absolute inset-0 h-full w-full rounded-2xl object-cover transition-transform duration-300 hover:rotate-2"
-                  src={data.featuredLeader?.photo ?? leaderFallbackImage}
-                  alt={data.featuredLeader?.fullName ?? "SSDU chairperson portrait"}
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-y border-[#c4c6cf] bg-white py-20">
-          <div className="mx-auto max-w-[1280px] px-6 md:px-16">
-            <p className="mb-12 text-center text-xs font-semibold uppercase tracking-[0.08em] text-[#43474e]">
-              Our trusted partners & sponsors
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-12 opacity-60 grayscale transition-all hover:grayscale-0 md:gap-24">
-              {partners.map((partner) => (
-                <div key={partner.label} className="flex items-center gap-2">
-                  <span className="text-4xl" aria-hidden="true">
-                    {partner.icon}
-                  </span>
-                  <span className="font-serif text-xl font-bold text-[#191c1d]">
-                    {partner.label}
-                  </span>
-                </div>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              {insights.map((insight) => (
+                <InsightArticle key={insight.id} insight={insight} />
               ))}
             </div>
           </div>
         </section>
 
-        <section className="bg-[#001f3f] py-24 text-white">
-          <div className="mx-auto max-w-[1280px] px-6 text-center md:px-16">
-            <h2 className="mb-6 font-serif text-[32px] font-bold leading-[40px] md:text-[48px] md:leading-[60px]">
-              Join the Union Today
-            </h2>
-            <p className="mx-auto mb-12 max-w-2xl text-lg leading-[30px] text-[#6f88ad]">
-              Become part of an elite community dedicated to academic rigor and
-              diplomatic excellence. Your journey into global leadership starts
-              here.
-            </p>
-            <div className="flex flex-wrap justify-center gap-6">
-              <Link
-                href="/membership"
-                className="rounded-lg bg-[#40acfe] px-10 py-4 text-xs font-bold uppercase tracking-[0.08em] text-[#001f3f] transition-all hover:bg-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#001f3f]"
-              >
-                Membership
-              </Link>
-              <Link
-                href="/contact"
-                className="rounded-lg border border-white/30 px-10 py-4 text-xs font-bold uppercase tracking-[0.08em] text-white transition-all hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#001f3f]"
-              >
-                Contact Us
-              </Link>
+        <section className="relative overflow-hidden bg-[#1c1b1b] py-20 text-[#fcf9f8]">
+          <div className="relative z-10 mx-auto max-w-[1280px] px-6 md:px-16">
+            <div className="border border-[#737780] bg-[#303436] p-10 text-center md:p-20">
+              <h2 className="font-serif text-5xl font-bold leading-tight md:text-[64px]">
+                Join the Vanguard of Diplomacy
+              </h2>
+              <p className="mx-auto mt-4 max-w-3xl text-lg leading-8 text-[#999c9e]">
+                Become part of SSDU. Gain access to research publications,
+                professional networks, and programs designed for future
+                international careers.
+              </p>
+              <div className="mt-8 flex flex-col justify-center gap-4 md:flex-row">
+                <Link
+                  href="/membership"
+                  className="bg-[#775a19] px-10 py-5 text-sm font-semibold uppercase tracking-[0.2em] text-white hover:brightness-110"
+                >
+                  Apply for Membership
+                </Link>
+                <Link
+                  href="/contact"
+                  className="border border-[#737780] px-10 py-5 text-sm font-semibold uppercase tracking-[0.2em] text-[#fcf9f8] hover:bg-[#fcf9f8] hover:text-[#001e40]"
+                >
+                  Download Brochure
+                </Link>
+              </div>
             </div>
           </div>
         </section>
       </main>
-    </PublicPageShell>
+      <SiteFooter />
+    </div>
   );
 }
