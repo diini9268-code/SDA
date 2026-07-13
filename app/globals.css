@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Libre+Franklin:wght@400;700&family=Merriweather:wght@400;700;900&family=Source+Code+Pro:wght@600;700&family=Source+Serif+4:wght@400;600;700;900&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -9,13 +8,57 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: Inter, "Libre Franklin", Arial, Helvetica, sans-serif;
-  --font-serif: "Source Serif 4", Merriweather, Georgia, serif;
+  --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
+  --font-serif: var(--font-source-serif), Georgia, serif;
   --font-mono: "Source Code Pro", "Courier New", Courier, monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+.home-shell :is(a, summary):focus-visible {
+  outline: 3px solid #29b6f6;
+  outline-offset: 3px;
+}
+
+.home-shell main:focus {
+  outline: none;
+}
+
+@keyframes home-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-fade-up {
+  animation: home-fade-up 650ms ease-out both;
+}
+
+.home-fade-up-delay {
+  animation-delay: 140ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-fade-up,
+  .home-fade-up-delay {
+    animation: none;
+  }
+
+  .home-shell *,
+  .home-shell *::before,
+  .home-shell *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

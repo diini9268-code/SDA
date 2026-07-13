@@ -11,12 +11,24 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Fostering Excellence in Somali Diplomacy",
+        name: "Shaping Somalia's Diplomatic Future",
       }),
     ).toBeDefined();
     expect(
-      screen.getAllByRole("link", { name: "Explore Our Mission" }).length,
+      screen.getAllByRole("link", { name: /Join SSDU/ }).length,
     ).toBeGreaterThan(0);
+    expect(
+      screen.getByRole("link", { name: "Skip to main content" }),
+    ).toBeDefined();
+    expect(
+      screen
+        .getAllByRole("link", { name: "Home" })[0]
+        ?.getAttribute("aria-current"),
+    ).toBe("page");
+    expect(screen.queryByRole("link", { name: "Login" })).toBeNull();
+    for (const link of screen.getAllByRole("link", { name: /Join SSDU/ })) {
+      expect(link.getAttribute("href")).toBe("/contact");
+    }
   });
 
   it("renders the about page with public navigation", () => {
@@ -29,8 +41,12 @@ describe("Public pages", () => {
         name: "About SSDU",
       }),
     ).toBeDefined();
-    expect(screen.getAllByRole("link", { name: "Programs" }).length).toBeGreaterThan(0);
-    expect(screen.getAllByRole("link", { name: "Contact" }).length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("link", { name: "Programs" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("link", { name: "Contact" }).length,
+    ).toBeGreaterThan(0);
   });
 
   it("renders the leadership page hierarchy", async () => {
