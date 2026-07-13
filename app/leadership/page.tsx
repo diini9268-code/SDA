@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { Mail, UserRound } from "lucide-react";
+import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
-import { PublicPageShell } from "@/app/_components/public-shell";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
 import type { LeadershipProfile } from "@/lib/leadership/leadership-service";
 import { createPageMetadata } from "@/lib/site/metadata";
@@ -10,62 +11,20 @@ export const dynamic = "force-dynamic";
 export const metadata = createPageMetadata({
   title: "Leadership",
   description:
-    "Meet SSDU leadership and organizational members guiding programs, publications, and student diplomacy initiatives.",
+    "Meet the active SSDU leaders published through the organization’s leadership directory.",
   path: "/leadership",
 });
 
-const fallbackProfiles = [
-  {
-    fullName: "Abdi Warsame",
-    position: "Union Chairperson",
-    biography:
-      "A graduate student specializing in International Relations. Abdi oversees the strategic direction of the Union and represents SSDU at global policy forums.",
-    photo:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=80",
-  },
-  {
-    fullName: "Leyla Hassan",
-    position: "Deputy Chairperson",
-    biography:
-      "Focusing on Law and Public Policy, Leyla manages internal operations and ensures academic standards are maintained across all regional student chapters.",
-    photo:
-      "https://images.unsplash.com/photo-1619895862022-09114b41f16f?auto=format&fit=crop&w=700&q=80",
-  },
-  {
-    fullName: "Omar Sheikh",
-    position: "Director of Research",
-    biography:
-      "Omar leads the Union's diplomatic archive project and coordinates with international think tanks on Horn of Africa stability and student advocacy.",
-    photo:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=700&q=80",
-  },
-  {
-    fullName: "Fatima Yusuf",
-    position: "Treasurer & Finance",
-    biography:
-      "Managing the Union's endowments and project budgets, Fatima ensures financial transparency and sustainable growth for student scholarships.",
-    photo:
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=700&q=80",
-  },
-  {
-    fullName: "Mohamed Ali",
-    position: "Communications Director",
-    biography:
-      "Mohamed handles all external press relations and digital diplomacy initiatives, ensuring the Union's voice resonates across international platforms.",
-    photo:
-      "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?auto=format&fit=crop&w=700&q=80",
-  },
-  {
-    fullName: "Sahra Ahmed",
-    position: "Membership & Outreach",
-    biography:
-      "Sahra is responsible for diversifying the Union's membership base and coordinating with Somali student associations in the diaspora.",
-    photo:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80",
-  },
+const navigationItems = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/blog", label: "Blog" },
+  { href: "/membership", label: "Membership" },
+  { href: "/leadership", label: "Leadership" },
+  { href: "/contact", label: "Contact" },
 ];
 
-async function getLeadershipProfiles() {
+async function getLeadershipProfiles(): Promise<LeadershipProfile[]> {
   try {
     return await prismaLeadershipRepository.listPublic();
   } catch {
@@ -73,191 +32,171 @@ async function getLeadershipProfiles() {
   }
 }
 
-function displayProfiles(profiles: LeadershipProfile[]) {
-  if (profiles.length === 0) {
-    return fallbackProfiles;
-  }
-
-  return profiles.map((profile, index) => ({
-    fullName: profile.fullName,
-    position: profile.position,
-    biography: profile.biography,
-    photo: profile.photo ?? fallbackProfiles[index % fallbackProfiles.length].photo,
-  }));
-}
-
-function LeadershipCard({
-  biography,
-  fullName,
-  photo,
-  position,
-}: {
-  biography: string;
-  fullName: string;
-  photo: string;
-  position: string;
-}) {
+function LeadershipCard({ profile }: { profile: LeadershipProfile }) {
   return (
-    <article className="rounded-md border border-[#c4c6cf] bg-white p-6">
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md">
-        <OptimizedFillImage
-          src={photo}
-          alt={fullName}
-          className="h-full w-full object-cover"
-          sizes="(min-width: 768px) 33vw, 100vw"
-        />
+    <article className="group overflow-hidden rounded-[20px] border border-[#dce3e9] bg-white shadow-[0_10px_35px_rgba(10,41,77,0.06)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-[#b9d4e5] hover:shadow-[0_20px_45px_rgba(10,41,77,0.13)] motion-reduce:transform-none">
+      <div className="relative aspect-[1.44/1] overflow-hidden bg-[#e8f1f7]">
+        {profile.photo ? (
+          <OptimizedFillImage
+            src={profile.photo}
+            alt={`Portrait of ${profile.fullName}`}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transform-none"
+            sizes="(min-width: 1280px) 31vw, (min-width: 768px) 48vw, 100vw"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center" role="img" aria-label={`No portrait published for ${profile.fullName}`}>
+            <UserRound className="size-16 text-[#79a7c3]" strokeWidth={1.25} aria-hidden="true" />
+          </div>
+        )}
       </div>
-      <h3 className="mt-5 font-serif text-xl font-bold text-[#000613]">
-        {fullName}
-      </h3>
-      <p className="mt-1 text-xs font-semibold text-[#00639c]">{position}</p>
-      <p className="mt-4 text-sm leading-6 text-[#44474e]">{biography}</p>
+      <div className="p-6 sm:p-8">
+        <p className="inline-flex rounded-full border border-[#cbd9e3] px-4 py-1 text-sm font-medium text-[#52657c]">
+          Leadership
+        </p>
+        <h2 className="mt-5 font-serif text-[26px] font-bold leading-tight text-[#071f3c] sm:text-[29px]">
+          {profile.fullName}
+        </h2>
+        <p className="mt-1 text-[17px] font-medium text-[#0874b9]">
+          {profile.position}
+        </p>
+        <p className="mt-5 line-clamp-4 text-[16px] leading-7 text-[#52657c]">
+          {profile.biography}
+        </p>
+      </div>
     </article>
   );
 }
 
 export default async function LeadershipPage() {
-  const profiles = displayProfiles(await getLeadershipProfiles());
-  const coreProfiles = profiles.slice(0, 3);
-  const councilProfiles = profiles.slice(3, 6);
+  const profiles = await getLeadershipProfiles();
 
   return (
-    <PublicPageShell activeHref="/leadership">
-      <main className="bg-[#f7fafc] pt-20 text-[#181c1e]">
-        <section className="border-b border-[#c4c6cf] bg-[#f7fafc]">
-          <div className="mx-auto max-w-[1280px] px-6 py-16 md:px-16">
-            <nav
-              aria-label="Breadcrumb"
-              className="mb-8 text-sm text-[#44474e]"
-            >
-              <Link href="/" className="hover:text-[#000613]">
-                Home
-              </Link>
-              <span className="mx-2">›</span>
-              <Link href="/about" className="hover:text-[#000613]">
-                About Us
-              </Link>
-              <span className="mx-2">›</span>
-              <span className="font-semibold text-[#000613]">Leadership</span>
-            </nav>
-            <h1 className="font-serif text-[32px] font-bold leading-[40px] text-[#000613] md:text-[48px] md:leading-[60px]">
+    <div className="min-h-screen bg-[#f4f7fa] text-[#071f3c]">
+      <a
+        href="#main-content"
+        className="sr-only z-[100] rounded-md bg-white px-4 py-3 text-[#071f3c] focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+      >
+        Skip to main content
+      </a>
+      <HomeHeader
+        items={navigationItems}
+        activeHref="/leadership"
+        overlay={false}
+        secondaryItem={{ href: "/admin", label: "Login" }}
+        joinHref="/membership"
+      />
+
+      <main id="main-content" className="pt-20 sm:pt-[90px]">
+        <section className="flex min-h-[500px] items-center justify-center bg-[#0a294d] px-5 py-24 text-center text-white sm:min-h-[590px] md:px-10">
+          <div className="mx-auto max-w-4xl">
+            <p className="text-sm font-bold uppercase tracking-[0.32em] text-[#2ab3f3] sm:text-base">
+              Leadership
+            </p>
+            <h1 className="mt-7 font-serif text-[46px] font-bold leading-[1.05] sm:text-[64px] lg:text-[74px]">
               Our Leadership
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[#44474e]">
-              The Somali Student Diplomacy Union is guided by a dedicated team
-              of student leaders, policy researchers, and cultural ambassadors
-              committed to fostering international cooperation and academic
-              excellence.
+            <p className="mx-auto mt-7 max-w-3xl text-[18px] leading-8 text-[#becbd7] sm:text-[23px] sm:leading-10">
+              Meet the active leaders currently published by SSDU and guiding
+              its work with experience, integrity, and vision.
             </p>
           </div>
         </section>
 
-        <section className="mx-auto max-w-[1280px] px-6 py-20 text-center md:px-16">
-          <span className="inline-flex rounded-full bg-[#d6e3ff] px-4 py-1 text-xs font-semibold text-[#00639c]">
-            Governance Structure
-          </span>
-          <h2 className="mt-5 font-serif text-[32px] font-bold leading-10 text-[#000613]">
-            The Executive Hierarchy
-          </h2>
-
-          <div className="mx-auto mt-12 flex max-w-5xl flex-col items-center">
-            <div className="w-64 rounded-md border-2 border-[#000613] bg-white p-6">
-              <div className="text-xl" aria-hidden="true">
-                ♜
-              </div>
-              <h3 className="mt-2 font-serif text-lg font-bold text-[#000613]">
-                Chairperson
-              </h3>
-              <p className="mt-2 text-sm leading-5 text-[#44474e]">
-                Strategic Oversight &amp; Union Spokesperson
+        <section aria-labelledby="directory-heading" className="px-5 py-20 sm:py-24 md:px-10 xl:px-12">
+          <div className="mx-auto max-w-[1780px]">
+            <div className="flex flex-col gap-5 text-center sm:items-center">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
+                Published Profiles
+              </p>
+              <h2 id="directory-heading" className="font-serif text-[38px] font-bold leading-tight sm:text-[52px]">
+                The People Guiding SSDU
+              </h2>
+              <p className="max-w-2xl text-[17px] leading-8 text-[#52657c]">
+                Profiles appear in the order maintained by authorized SSDU
+                administrators.
               </p>
             </div>
-            <div className="h-12 w-px bg-[#00639c]" />
-            <div className="w-64 rounded-md border-2 border-[#40acfe] bg-white p-6">
-              <div className="text-xl text-[#00639c]" aria-hidden="true">
-                ♟
+
+            {profiles.length > 0 ? (
+              <div className="mt-14 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
+                {profiles.map((profile) => (
+                  <LeadershipCard key={profile.id} profile={profile} />
+                ))}
               </div>
-              <h3 className="mt-2 font-serif text-lg font-bold text-[#000613]">
-                Deputy Chairperson
-              </h3>
-              <p className="mt-2 text-sm leading-5 text-[#44474e]">
-                Internal Operations &amp; Chapter Relations
-              </p>
-            </div>
-            <div className="h-10 w-px bg-[#00639c]" />
-            <div className="h-px w-full max-w-4xl bg-[#00639c]" />
-            <div className="grid w-full max-w-5xl gap-8 pt-10 md:grid-cols-3">
-              {[
-                "Policy & Research Division",
-                "Finance & Membership",
-                "External Affairs & Media",
-              ].map((label) => (
-                <div
-                  key={label}
-                  className="rounded-md border border-[#c4c6cf] bg-white px-6 py-4"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#44474e]">
-                    Executive Council
-                  </p>
-                  <p className="mt-1 text-sm text-[#44474e]">{label}</p>
-                </div>
-              ))}
-            </div>
+            ) : (
+              <div className="mx-auto mt-14 max-w-3xl rounded-[20px] border border-dashed border-[#b8cbd8] bg-white px-6 py-16 text-center sm:px-12">
+                <UserRound className="mx-auto size-12 text-[#2486c0]" strokeWidth={1.4} aria-hidden="true" />
+                <h3 className="mt-6 font-serif text-[28px] font-bold">
+                  No leadership profiles are published yet.
+                </h3>
+                <p className="mx-auto mt-4 max-w-xl text-[16px] leading-7 text-[#52657c]">
+                  Active profiles will appear here after an authorized
+                  administrator publishes them.
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
-        <section className="bg-[#f1f4f6] py-20">
-          <div className="mx-auto max-w-[1280px] px-6 md:px-16">
-            <h2 className="border-l-4 border-[#e9c176] pl-6 font-serif text-[32px] font-bold leading-10 text-[#000613]">
-              Core Leadership
+        <section className="bg-white px-5 py-20 text-center md:px-10">
+          <div className="mx-auto max-w-3xl">
+            <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
+              Connect
+            </p>
+            <h2 className="mt-6 font-serif text-[38px] font-bold leading-tight sm:text-[50px]">
+              Contact the Organization
             </h2>
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              {coreProfiles.map((profile) => (
-                <LeadershipCard key={profile.fullName} {...profile} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-[#f7fafc] py-20">
-          <div className="mx-auto max-w-[1280px] px-6 md:px-16">
-            <h2 className="border-l-4 border-[#e9c176] pl-6 font-serif text-[32px] font-bold leading-10 text-[#000613]">
-              Executive Council
-            </h2>
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              {(councilProfiles.length > 0 ? councilProfiles : fallbackProfiles.slice(3)).map(
-                (profile) => (
-                  <LeadershipCard key={profile.fullName} {...profile} />
-                ),
-              )}
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-[#000613] px-6 py-20 text-center text-white md:px-16">
-          <h2 className="font-serif text-[32px] font-bold leading-10">
-            Join the Next Generation of Diplomats
-          </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 text-[#eef1f3]">
-            Are you ready to represent, research, and reform? Applications for
-            the Executive Council Associate program are now open.
-          </p>
-          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+            <p className="mx-auto mt-5 max-w-2xl text-[17px] leading-8 text-[#52657c]">
+              Leadership and partnership questions are handled through the
+              existing public contact workflow.
+            </p>
             <Link
-              href="/membership"
-              className="bg-[#ffdea5] px-8 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#000613]"
+              href="/contact"
+              className="mt-9 inline-flex min-h-12 items-center gap-3 rounded-[24px] bg-[#1778b8] px-7 font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0874b9] motion-reduce:transform-none"
             >
-              Apply Now
-            </Link>
-            <Link
-              href="/programs"
-              className="border border-white px-8 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-white"
-            >
-              View Open Roles
+              <Mail className="size-5" aria-hidden="true" /> Contact SSDU
             </Link>
           </div>
         </section>
       </main>
-    </PublicPageShell>
+
+      <footer className="bg-[#0a294d] text-[#c3cfda]">
+        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
+          <div>
+            <BrandLogo inverse />
+            <p className="mt-7 max-w-sm text-[16px] leading-7">
+              Empowering Somali youth through training, dialogue, research,
+              and international engagement.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">Quick Links</h2>
+            <ul className="mt-7 grid grid-cols-2 gap-4">
+              {navigationItems.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="transition-colors hover:text-white focus-visible:text-white">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">Contact</h2>
+            <p className="mt-7 max-w-md leading-7">
+              Use the supported public contact form for leadership,
+              membership, and partnership inquiries.
+            </p>
+            <Link href="/contact" className="mt-7 inline-flex min-h-11 items-center gap-3 text-white transition-colors hover:text-[#28b1f2]">
+              <Mail className="size-5" aria-hidden="true" /> Contact SSDU
+            </Link>
+          </div>
+        </div>
+        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
+          <p>&copy; 2026 Somali Student Diplomacy Union. All rights reserved.</p>
+          <Link href="/contact" className="transition-colors hover:text-white">Privacy and terms inquiries</Link>
+        </div>
+      </footer>
+    </div>
   );
 }

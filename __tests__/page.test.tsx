@@ -66,7 +66,7 @@ describe("Public pages", () => {
     expect(screen.queryByRole("button", { name: /newsletter/i })).toBeNull();
   });
 
-  it("renders the leadership page hierarchy", async () => {
+  it("renders the backend-aware leadership directory", async () => {
     cleanup();
     render(await LeadershipPage());
 
@@ -76,12 +76,20 @@ describe("Public pages", () => {
         name: "Our Leadership",
       }),
     ).toBeDefined();
+    expect(screen.getByText("Published Profiles")).toBeDefined();
     expect(
       screen.getByRole("heading", {
-        level: 2,
-        name: "The Executive Hierarchy",
+        level: 3,
+        name: "No leadership profiles are published yet.",
       }),
     ).toBeDefined();
+    expect(screen.queryByRole("button", { name: "Supreme Council" })).toBeNull();
+    expect(screen.queryByRole("link", { name: /linkedin/i })).toBeNull();
+    expect(
+      screen
+        .getAllByRole("link", { name: "Leadership" })[0]
+        ?.getAttribute("aria-current"),
+    ).toBe("page");
   });
 
   it("renders the backend-aware blog directory", async () => {
