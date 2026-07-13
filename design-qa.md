@@ -63,6 +63,44 @@
 
 final result: passed
 
+# Leadership Page Design QA
+
+## Source And Constraints
+
+- Source: the desktop Leadership-page screenshots supplied in the July 13, 2026 request.
+- Public profiles come only from active `Leadership` records, ordered by `displayOrder` through `prismaLeadershipRepository.listPublic()`.
+- The backend supports full name, position, biography, optional photo, order, and active state. It has no council category, department, social link, newsletter, recruitment, or direct-message fields.
+- Existing hard-coded fallback people and organizational claims were removed rather than retained as mock data.
+
+## Rendered Evidence
+
+- Desktop empty-data state: `C:\Users\Owner\AppData\Local\Temp\sda-leadership-desktop.png`, 1440 x 1200.
+- Compact empty-data state: `C:\Users\Owner\AppData\Local\Temp\sda-leadership-compact.png`, 500 x 1000.
+- Production build rendered at `http://localhost:3011/leadership` after a clean build.
+
+## Comparison
+
+- White fixed header, centered navigation, active Leadership state, Login link, and blue membership CTA follow the reference geometry.
+- Navy hero preserves the centered cyan eyebrow, large serif heading, supporting copy, and generous vertical rhythm.
+- Published profiles use the reference's three-column portrait-card composition while rendering only backend data.
+- The empty-data state preserves the intended section spacing without injecting sample leaders or false counts.
+- Compact layout collapses navigation, wraps display headings, and keeps all visible content inside the viewport.
+- Footer keeps the reference's navy visual hierarchy while using only the supported contact route.
+
+## Findings
+
+- P0: none.
+- P1: none.
+- P2: none in the latest captures.
+- P3: populated portrait-card states could not be captured because the connected public leadership repository currently returns no active profiles.
+- P3: council filter pills were omitted because profiles have no category or council field.
+- P3: LinkedIn, X, and email profile actions were omitted because profiles have no social or contact fields.
+- P3: newsletter and open-role controls were omitted because there are no subscription or recruitment workflows.
+
+## Result
+
+final result: passed
+
 # Membership Page Design QA
 
 ## Source And Constraints
