@@ -141,7 +141,7 @@ export default async function AboutPage() {
         items={navigationItems}
         activeHref="/about"
         overlay={false}
-        secondaryItem={{ href: "/admin", label: "Login" }}
+        secondaryItem={{ href: "/login", label: "Login" }}
         joinHref="/membership"
       />
 

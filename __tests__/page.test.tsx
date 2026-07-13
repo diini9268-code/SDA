@@ -1,11 +1,21 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import AboutPage from "@/app/about/page";
 import BlogPage from "@/app/blog/page";
 import ContactPage from "@/app/contact/page";
 import LeadershipPage from "@/app/leadership/page";
+import LoginPage from "@/app/login/page";
 import MembershipPage from "@/app/membership/page";
 import Home from "@/app/page";
+
+vi.mock("next/headers", () => ({
+  cookies: vi.fn(async () => ({ toString: (): string => "" })),
+}));
+
+vi.mock("next/navigation", () => ({
+  redirect: vi.fn(),
+  useRouter: () => ({ replace: vi.fn(), refresh: vi.fn() }),
+}));
 
 describe("Public pages", () => {
   it("renders the public home page", async () => {
@@ -28,9 +38,9 @@ describe("Public pages", () => {
         .getAllByRole("link", { name: "Home" })[0]
         ?.getAttribute("aria-current"),
     ).toBe("page");
-    expect(screen.queryByRole("link", { name: "Login" })).toBeNull();
+    expect(screen.getByRole("link", { name: "Login" }).getAttribute("href")).toBe("/login");
     for (const link of screen.getAllByRole("link", { name: /Join SSDU/ })) {
-      expect(link.getAttribute("href")).toBe("/contact");
+      expect(link.getAttribute("href")).toBe("/membership");
     }
   });
 
@@ -60,7 +70,7 @@ describe("Public pages", () => {
     ).toBeDefined();
     expect(
       screen.getByRole("link", { name: "Login" }).getAttribute("href"),
-    ).toBe("/admin");
+    ).toBe("/login");
     for (const link of screen.getAllByRole("link", { name: /Join SSDU/ })) {
       expect(link.getAttribute("href")).toBe("/membership");
     }
@@ -156,5 +166,17 @@ describe("Public pages", () => {
     expect(screen.getByRole("button", { name: /Send Message/ })).toBeDefined();
     expect(screen.queryByText("+252 61 234 5678")).toBeNull();
     expect(screen.queryByText("Maka Al-Mukarama Road")).toBeNull();
+  });
+
+  it("renders the supported administrator login without member-only controls", async () => {
+    cleanup();
+    render(await LoginPage({ searchParams: Promise.resolve({}) }));
+
+    expect(screen.getByRole("heading", { level: 1, name: "Admin Login" })).toBeDefined();
+    expect(document.querySelector('[name="email"]')).not.toBeNull();
+    expect(document.querySelector('[name="password"]')).not.toBeNull();
+    expect(screen.queryByLabelText(/Remember me/i)).toBeNull();
+    expect(screen.queryByRole("link", { name: /Forgot password/i })).toBeNull();
+    expect(screen.getByRole("button", { name: /Sign In/ })).toBeDefined();
   });
 });

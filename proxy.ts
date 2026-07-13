@@ -21,8 +21,9 @@ export function proxy(request: NextRequest) {
   }
 
   const redirectUrl = request.nextUrl.clone();
-  redirectUrl.pathname = "/";
-  redirectUrl.searchParams.set("auth", "required");
+  redirectUrl.pathname = "/login";
+  redirectUrl.search = "";
+  redirectUrl.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
 
   return NextResponse.redirect(redirectUrl);
 }

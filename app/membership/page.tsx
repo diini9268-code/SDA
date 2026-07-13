@@ -128,7 +128,7 @@ export default async function MembershipPage({
         items={navigationItems}
         activeHref="/membership"
         overlay={false}
-        secondaryItem={{ href: "/admin", label: "Login" }}
+        secondaryItem={{ href: "/login", label: "Login" }}
         joinHref="#application"
       />
 

@@ -36,7 +36,7 @@ const navigationItems = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Membership" },
+  { href: "/membership", label: "Membership" },
   { href: "/leadership", label: "Leadership" },
   { href: "/contact", label: "Contact" },
 ];
@@ -146,7 +146,11 @@ export default async function Home() {
       >
         Skip to main content
       </a>
-      <HomeHeader items={navigationItems} />
+      <HomeHeader
+        items={navigationItems}
+        secondaryItem={{ href: "/login", label: "Login" }}
+        joinHref="/membership"
+      />
       <main id="main-content" tabIndex={-1}>
         <section className="relative min-h-[805px] overflow-hidden bg-[#0a294d] text-white">
           <OptimizedFillImage
@@ -178,7 +182,7 @@ export default async function Home() {
               </p>
               <div className="mt-10 flex flex-wrap items-start gap-4 sm:gap-5 xl:mt-14">
                 <Link
-                  href="/contact"
+                  href="/membership"
                   className="group inline-flex h-14 items-center gap-3 rounded-md bg-[#1778b8] px-7 text-[17px] font-semibold text-white shadow-lg transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-xl motion-reduce:transform-none sm:px-8 sm:text-lg"
                 >
                   Join SSDU

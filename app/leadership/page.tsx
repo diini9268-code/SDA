@@ -82,7 +82,7 @@ export default async function LeadershipPage() {
         items={navigationItems}
         activeHref="/leadership"
         overlay={false}
-        secondaryItem={{ href: "/admin", label: "Login" }}
+        secondaryItem={{ href: "/login", label: "Login" }}
         joinHref="/membership"
       />
 

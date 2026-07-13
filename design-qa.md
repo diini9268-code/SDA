@@ -63,6 +63,46 @@
 
 final result: passed
 
+# Login Entry And Admin Login Design QA
+
+## Source And Constraints
+
+- Source: the supplied homepage header and Member Login screenshots from July 13, 2026.
+- The existing authentication backend supports administrator email/password sessions only. It does not contain member accounts, a member role, a member portal, password recovery, account registration, or configurable persistent sessions.
+- The implementation therefore labels the screen `Admin Login` and uses the existing `/api/auth/login` endpoint without adding simulated member behavior.
+
+## Rendered Evidence
+
+- Login page: `C:\Users\Owner\AppData\Local\Temp\sda-login-desktop.png`.
+- Public homepage header: `C:\Users\Owner\AppData\Local\Temp\sda-home-login-header.png`.
+- Production build rendered at `http://localhost:3013/login`.
+- A request to `/admin/reports?range=30` redirects to `/login?next=%2Fadmin%2Freports%3Frange%3D30`, preserving the protected destination.
+
+## Comparison
+
+- The homepage now exposes a visible Login link beside the membership CTA, matching the source hierarchy.
+- The login screen follows the reference's centered brand, serif heading, bordered form surface, pale inputs, password visibility control, and full-width primary action.
+- Authentication errors are announced to assistive technology, fields use explicit labels and autocomplete metadata, and the password control has an accessible name.
+- Successful authentication returns administrators only to a validated local `/admin` destination.
+
+## Skipped Features And Required Backend Work
+
+- Member login and portal: skipped. This requires a `MEMBER` role or separate member identity/profile model, member-scoped authorization rules, session claims, and protected member routes.
+- Remember me: skipped. This requires an explicit persistence policy, selectable cookie/session lifetime, revocation behavior, and appropriate security and consent handling.
+- Forgot password: skipped. This requires expiring one-time reset tokens, secure token storage, email delivery, rate limits, audit logging, and reset endpoints/pages.
+- Account signup: skipped. Existing membership applications do not create credentials. Signup requires registration, email verification, application-to-account approval, password lifecycle handling, and duplicate-account rules.
+
+## Findings
+
+- P0: none.
+- P1: none.
+- P2: none in the latest captures.
+- P3: the reference says `Member Login`; the implementation intentionally says `Admin Login` because member authentication is unsupported.
+
+## Result
+
+final result: passed
+
 # Contact Page Design QA
 
 ## Source And Constraints

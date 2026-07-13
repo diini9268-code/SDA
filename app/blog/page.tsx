@@ -226,7 +226,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         items={navigationItems}
         activeHref="/blog"
         overlay={false}
-        secondaryItem={{ href: "/admin", label: "Login" }}
+        secondaryItem={{ href: "/login", label: "Login" }}
         joinHref="/membership"
       />
 
