@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import AboutPage from "@/app/about/page";
+import BlogPage from "@/app/blog/page";
 import LeadershipPage from "@/app/leadership/page";
 import Home from "@/app/page";
 
@@ -80,5 +81,27 @@ describe("Public pages", () => {
         name: "The Executive Hierarchy",
       }),
     ).toBeDefined();
+  });
+
+  it("renders the backend-aware blog directory", async () => {
+    cleanup();
+    render(await BlogPage({}));
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "The SSDU Blog" }),
+    ).toBeDefined();
+    expect(
+      screen
+        .getAllByRole("link", { name: "Blog" })[0]
+        ?.getAttribute("aria-current"),
+    ).toBe("page");
+    expect(screen.getByRole("searchbox").getAttribute("name")).toBe("q");
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: "No articles have been published yet.",
+      }),
+    ).toBeDefined();
+    expect(screen.queryByText("Showing 12 of 48 publications")).toBeNull();
   });
 });

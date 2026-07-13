@@ -1,16 +1,19 @@
 import Link from "next/link";
+import { ArrowRight, FileText, Mail, Search } from "lucide-react";
+import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
-import { PublicPageShell } from "@/app/_components/public-shell";
-import type { BlogRecord } from "@/lib/blog/blog-service";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
+import type { BlogRecord } from "@/lib/blog/blog-service";
+import { prismaProgramRepository } from "@/lib/programs/program-repository";
+import type { ProgramRecord } from "@/lib/programs/program-service";
 import { createPageMetadata } from "@/lib/site/metadata";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = createPageMetadata({
-  title: "Research",
+  title: "Blog",
   description:
-    "Explore SSDU research publications, policy papers, and student diplomacy analysis.",
+    "Read published SSDU analysis, news, program updates, and perspectives on diplomacy and leadership.",
   path: "/blog",
 });
 
@@ -18,76 +21,19 @@ type BlogPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-type ResearchPublication = {
-  id: string;
-  title: string;
-  slug?: string;
-  category: string;
-  excerpt: string;
-  publishedAt: Date;
-  imageUrl: string;
-  imageAlt: string;
-  actionLabel: string;
-  actionMeta: string;
-};
-
-const PAGE_SIZE = 12;
-const heroFallback = {
-  title: "Youth in Governance: Barriers and Opportunities (2024)",
-  category: "Diplomacy",
-  excerpt:
-    "This flagship publication explores the structural challenges and untapped potential of Somali diaspora youth in international policy-making and regional governance frameworks.",
-  publishedAt: new Date("2024-01-24T00:00:00.000Z"),
-};
-
-const samplePublications: ResearchPublication[] = [
-  {
-    id: "sample-regional-peace",
-    title: "Peace & Stability: A Regional Comparative Study",
-    category: "Strategic Affairs",
-    excerpt:
-      "An in-depth analysis of peace-building initiatives in the Horn of Africa, comparing institutional frameworks and grassroots conflict resolution.",
-    publishedAt: new Date("2024-03-12T00:00:00.000Z"),
-    imageUrl:
-      "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=900&q=80",
-    imageAlt: "Diplomatic roundtable meeting",
-    actionLabel: "Download PDF",
-    actionMeta: "4.2 MB",
-  },
-  {
-    id: "sample-global-ties",
-    title: "Diplomatic Relations: Strengthening Global Ties",
-    category: "Regional Stability",
-    excerpt:
-      "Investigating the evolving nature of bilateral agreements between Somali educational unions and international governing bodies in the diplomatic sector.",
-    publishedAt: new Date("2024-02-28T00:00:00.000Z"),
-    imageUrl:
-      "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?auto=format&fit=crop&w=900&q=80",
-    imageAlt: "Two globes on a research desk",
-    actionLabel: "Read Online",
-    actionMeta: "12 min read",
-  },
-  {
-    id: "sample-reconstruction",
-    title: "Youth in Post-Conflict Reconstruction",
-    category: "Public Policy",
-    excerpt:
-      "A policy paper outlining recommendations for integrating youth leadership into national reconstruction efforts and economic recovery frameworks.",
-    publishedAt: new Date("2024-01-15T00:00:00.000Z"),
-    imageUrl:
-      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=900&q=80",
-    imageAlt: "Urban development and reconstruction planning",
-    actionLabel: "Download PDF",
-    actionMeta: "3.8 MB",
-  },
+const navigationItems = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/blog", label: "Blog" },
+  { href: "/membership", label: "Membership" },
+  { href: "/leadership", label: "Leadership" },
+  { href: "/contact", label: "Contact" },
 ];
 
-function firstParam(value: string | string[] | undefined): string {
-  if (Array.isArray(value)) {
-    return value[0] ?? "";
-  }
+const PAGE_SIZE = 12;
 
-  return value ?? "";
+function firstParam(value: string | string[] | undefined): string {
+  return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
 }
 
 function formatDate(date: Date): string {
@@ -98,166 +44,147 @@ function formatDate(date: Date): string {
   }).format(date);
 }
 
-function formatFileSize(sizeBytes: number | null | undefined): string {
-  if (!sizeBytes) {
-    return "Read online";
-  }
-
-  return `${(sizeBytes / 1024 / 1024).toFixed(1)} MB`;
-}
-
-function createPageHref(
-  params: {
-    query: string;
-    category: string;
-    year: string;
-  },
-  page: number,
-): string {
-  const search = new URLSearchParams();
-
-  if (params.query) {
-    search.set("q", params.query);
-  }
-  if (params.category) {
-    search.set("category", params.category);
-  }
-  if (params.year) {
-    search.set("year", params.year);
-  }
-  if (page > 1) {
-    search.set("page", String(page));
-  }
-
-  const queryString = search.toString();
-
-  return queryString ? `/blog?${queryString}` : "/blog";
-}
-
-function getPrimaryMedia(post: BlogRecord) {
-  return post.media[0] ?? null;
-}
-
-function toResearchPublication(post: BlogRecord): ResearchPublication {
-  const media = getPrimaryMedia(post);
-
-  return {
-    id: post.id,
-    title: post.title,
-    slug: post.slug,
-    category: post.category,
-    excerpt: excerptFor(post),
-    publishedAt: post.publishedAt,
-    imageUrl: media?.url ?? "",
-    imageAlt: media?.altText ?? post.title,
-    actionLabel: media ? "Read Online" : "Read Publication",
-    actionMeta: media ? formatFileSize(media.sizeBytes) : "12 min read",
-  };
-}
-
 function excerptFor(post: BlogRecord): string {
   return (
     post.excerpt ??
-    post.content.replace(/\s+/g, " ").slice(0, 150).trimEnd()
+    `${post.content.replace(/\s+/g, " ").slice(0, 180).trimEnd()}${post.content.length > 180 ? "..." : ""}`
   );
 }
 
-async function getBlogPosts() {
-  try {
-    return await prismaBlogRepository.listPublic();
-  } catch {
-    return [];
-  }
+function readingTime(post: BlogRecord): number {
+  const words = post.content.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 220));
+}
+
+function primaryImage(post: BlogRecord) {
+  return (
+    post.media.find((media) => media.mimeType.startsWith("image/")) ?? null
+  );
 }
 
 function filterPosts(
-  posts: ResearchPublication[],
-  filters: {
-    query: string;
-    category: string;
-    year: string;
-  },
-) {
-  const query = filters.query.toLowerCase().trim();
+  posts: BlogRecord[],
+  query: string,
+  category: string,
+): BlogRecord[] {
+  const normalizedQuery = query.trim().toLowerCase();
 
   return posts.filter((post) => {
-    const matchesQuery = query
-      ? [post.title, post.category, post.excerpt]
+    const matchesQuery = normalizedQuery
+      ? [post.title, post.category, post.excerpt ?? "", post.content]
           .join(" ")
           .toLowerCase()
-          .includes(query)
+          .includes(normalizedQuery)
       : true;
-    const matchesCategory = filters.category
-      ? post.category === filters.category
-      : true;
-    const matchesYear = filters.year
-      ? String(post.publishedAt.getFullYear()) === filters.year
-      : true;
-
-    return matchesQuery && matchesCategory && matchesYear;
+    const matchesCategory = category ? post.category === category : true;
+    return matchesQuery && matchesCategory;
   });
 }
 
-function ResearchImage({ post }: { post: ResearchPublication }) {
-  if (post.imageUrl) {
+function createBlogHref({
+  query,
+  category,
+  page,
+}: {
+  query?: string;
+  category?: string;
+  page?: number;
+}): string {
+  const params = new URLSearchParams();
+  if (query) params.set("q", query);
+  if (category) params.set("category", category);
+  if (page && page > 1) params.set("page", String(page));
+  const search = params.toString();
+  return search ? `/blog?${search}` : "/blog";
+}
+
+async function getBlogData(): Promise<{
+  posts: BlogRecord[];
+  programs: ProgramRecord[];
+  available: boolean;
+}> {
+  const [postsResult, programsResult] = await Promise.allSettled([
+    prismaBlogRepository.listPublic(),
+    prismaProgramRepository.listPublic(),
+  ]);
+
+  return {
+    posts: postsResult.status === "fulfilled" ? postsResult.value : [],
+    programs: programsResult.status === "fulfilled" ? programsResult.value : [],
+    available: postsResult.status === "fulfilled",
+  };
+}
+
+function PostImage({
+  post,
+  featured = false,
+}: {
+  post: BlogRecord;
+  featured?: boolean;
+}) {
+  const media = primaryImage(post);
+
+  if (!media) {
     return (
-      <div className="relative h-48 w-full">
-        <OptimizedFillImage
-          src={post.imageUrl}
-          alt={post.imageAlt}
-          className="h-48 w-full object-cover"
-          sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
-        />
+      <div className="flex h-full min-h-[260px] items-center justify-center bg-[#e7f1f8] px-8 text-center text-[#0874b9]">
+        <FileText className="size-14" strokeWidth={1.4} aria-hidden="true" />
+        <span className="sr-only">No image published for {post.title}</span>
       </div>
     );
   }
 
   return (
-    <div className="flex h-48 w-full items-center justify-center bg-[#002e5f] px-6 text-center">
-      <p className="font-serif text-2xl font-bold leading-snug text-white">
-        SSDU Research Publication
-      </p>
-    </div>
+    <OptimizedFillImage
+      src={media.url}
+      alt={media.altText ?? post.title}
+      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transform-none"
+      sizes={
+        featured
+          ? "(min-width: 1024px) 50vw, 100vw"
+          : "(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+      }
+    />
   );
 }
 
-function PublicationCard({ post }: { post: ResearchPublication }) {
+function BlogCard({ post }: { post: BlogRecord }) {
   return (
-    <article className="overflow-hidden rounded-lg border border-[#cbd2da] bg-white shadow-sm">
-      <div className="relative">
-        <ResearchImage post={post} />
-        <span className="absolute left-5 top-5 rounded-md bg-[#40acfe] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#002e5f]">
-          {post.category}
-        </span>
-      </div>
-      <div className="p-6">
-        <p className="text-xs font-medium text-[#5c636b]">
-          {formatDate(post.publishedAt)}
-        </p>
-        <h2 className="mt-3 font-serif text-2xl font-bold leading-tight text-[#000613]">
-          <Link href={`/blog/${post.slug}`} className="hover:underline">
+    <article className="group flex min-h-[520px] flex-col overflow-hidden rounded-[18px] border border-[#dbe3ea] bg-white transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-[#abc7d8] hover:shadow-xl motion-reduce:transform-none">
+      <Link
+        href={`/blog/${post.slug}`}
+        className="relative block h-[260px] overflow-hidden bg-[#e7f1f8]"
+        aria-label={`Read ${post.title}`}
+      >
+        <PostImage post={post} />
+      </Link>
+      <div className="flex flex-1 flex-col p-7">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-[#52657c]">
+          <span className="rounded-full bg-[#e7f1f8] px-3 py-1 text-[#0874b9]">
+            {post.category}
+          </span>
+          <span>{readingTime(post)} min read</span>
+        </div>
+        <h2 className="mt-5 font-serif text-[25px] font-bold leading-[1.35] text-[#071f3c]">
+          <Link
+            href={`/blog/${post.slug}`}
+            className="rounded-sm hover:text-[#0874b9]"
+          >
             {post.title}
           </Link>
         </h2>
-        <p className="mt-5 line-clamp-3 text-sm leading-7 text-[#43474e]">
-          {post.excerpt}
+        <p className="mt-4 line-clamp-3 text-[16px] leading-7 text-[#52657c]">
+          {excerptFor(post)}
         </p>
-        <div className="mt-7 flex items-center justify-between border-t border-[#d6dbe0] pt-5 text-xs">
-          {post.slug ? (
-            <Link
-              href={`/blog/${post.slug}`}
-              className="font-bold uppercase tracking-[0.08em] text-[#00639c] hover:underline"
-            >
-              {post.actionLabel}
-            </Link>
-          ) : (
-            <span className="font-bold uppercase tracking-[0.08em] text-[#00639c]">
-              {post.actionLabel}
-            </span>
-          )}
-          <span className="text-[#6b7280]">
-            {post.actionMeta}
-          </span>
+        <div className="mt-auto flex items-center justify-between gap-4 pt-7 text-sm text-[#52657c]">
+          <time dateTime={post.publishedAt.toISOString()}>
+            {formatDate(post.publishedAt)}
+          </time>
+          <Link
+            href={`/blog/${post.slug}`}
+            className="inline-flex min-h-11 items-center gap-2 font-semibold text-[#0874b9] hover:text-[#0a6098]"
+          >
+            Read <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
         </div>
       </div>
     </article>
@@ -266,284 +193,275 @@ function PublicationCard({ post }: { post: ResearchPublication }) {
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   const params = (await searchParams) ?? {};
-  const posts = await getBlogPosts();
-  const hasPublishedPosts = posts.length > 0;
-  const publications = hasPublishedPosts
-    ? posts.map(toResearchPublication)
-    : samplePublications;
   const query = firstParam(params.q);
   const category = firstParam(params.category);
-  const year = firstParam(params.year);
-  const pageParam = Number.parseInt(firstParam(params.page), 10);
-  const currentPage = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
+  const requestedPage = Number.parseInt(firstParam(params.page), 10);
+  const data = await getBlogData();
   const categories = Array.from(
-    new Set(publications.map((post) => post.category)),
+    new Set(data.posts.map((post) => post.category)),
   ).sort();
-  const years = Array.from(
-    new Set(publications.map((post) => String(post.publishedAt.getFullYear()))),
-  ).sort((a, b) => Number(b) - Number(a));
-  const filteredPosts = filterPosts(publications, { query, category, year });
+  const featured = data.posts[0] ?? null;
+  const hasFilters = Boolean(query || category);
+  const directorySource = hasFilters ? data.posts : data.posts.slice(1);
+  const filteredPosts = filterPosts(directorySource, query, category);
   const pageCount = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
-  const safePage = Math.min(currentPage, pageCount);
-  const visiblePosts = filteredPosts.slice(
-    (safePage - 1) * PAGE_SIZE,
-    safePage * PAGE_SIZE,
+  const currentPage = Math.min(
+    Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1,
+    pageCount,
   );
-  const featuredPost = publications[0] ?? null;
-  const featuredTitle =
-    hasPublishedPosts && featuredPost ? featuredPost.title : heroFallback.title;
-  const featuredCategory =
-    hasPublishedPosts && featuredPost
-      ? featuredPost.category
-      : heroFallback.category;
-  const featuredDate =
-    hasPublishedPosts && featuredPost
-      ? featuredPost.publishedAt
-      : heroFallback.publishedAt;
-  const featuredExcerpt =
-    hasPublishedPosts && featuredPost ? featuredPost.excerpt : heroFallback.excerpt;
+  const visiblePosts = filteredPosts.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
 
   return (
-    <PublicPageShell activeHref="/blog">
-      <main className="pt-[129px] md:pt-20">
-        <section className="relative flex min-h-[620px] items-center overflow-hidden border-b border-[#e9c176] bg-[#000613] px-6 py-24 text-white md:px-16">
-          <OptimizedFillImage
-            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80"
-            alt="Ocean horizon at sunset"
-            className="h-full w-full object-cover"
-            sizes="100vw"
-            priority
-          />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,6,19,0.9)_0%,rgba(0,6,19,0.72)_46%,rgba(0,6,19,0.52)_100%)]" />
-          <div className="mx-auto w-full max-w-[1280px]">
-            <div className="relative z-10 max-w-2xl">
-              <div className="mb-7 flex flex-wrap items-center gap-4">
-                <span className="rounded-full bg-[#40acfe] px-4 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#002e5f]">
-                  {featuredCategory}
-                </span>
-                <time className="text-sm font-medium text-white">
-                  {formatDate(featuredDate)}
-                </time>
-              </div>
-              <h1 className="max-w-xl font-serif text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
-                {featuredTitle}
-              </h1>
-              <p className="mt-8 max-w-xl text-lg font-medium leading-8 text-white">
-                {featuredExcerpt}
-              </p>
-              <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-                {featuredPost?.slug ? (
-                  <Link
-                    href={`/blog/${featuredPost.slug}`}
-                    className="inline-flex h-14 items-center justify-center rounded-md bg-[#e8f0ff] px-8 text-sm font-bold tracking-[0.04em] text-[#000613] transition hover:bg-white"
-                  >
-                    Read Publication
-                  </Link>
-                ) : (
-                  <Link
-                    href="#directory"
-                    className="inline-flex h-14 items-center justify-center rounded-md bg-[#e8f0ff] px-8 text-sm font-bold tracking-[0.04em] text-[#000613] transition hover:bg-white"
-                  >
-                    Read Publication
-                  </Link>
-                )}
-                <Link
-                  href="#directory"
-                  className="inline-flex h-14 items-center justify-center rounded-md border border-white/70 px-8 text-sm font-bold tracking-[0.04em] text-white transition hover:bg-white hover:text-[#000613]"
-                >
-                  View Abstract
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
+    <div className="min-w-0 bg-white text-[#0a294d]">
+      <a
+        href="#main-content"
+        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-md bg-white px-4 py-3 font-semibold text-[#0a294d] shadow-xl transition-transform focus:translate-y-0"
+      >
+        Skip to main content
+      </a>
+      <HomeHeader
+        items={navigationItems}
+        activeHref="/blog"
+        overlay={false}
+        secondaryItem={{ href: "/admin", label: "Login" }}
+        joinHref="/membership"
+      />
 
-        <section className="border-b border-[#d6dbe0] bg-[#f8f9fa] px-6 py-8 md:px-16">
-          <form
-            action="/blog"
-            className="mx-auto flex max-w-[1280px] flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"
-          >
-            <label className="sr-only" htmlFor="research-search">
-              Search research
+      <main id="main-content" className="pt-20 sm:pt-[90px]">
+        <section className="bg-[#0a294d] px-5 py-20 text-center text-white sm:py-24 md:px-10 lg:py-28">
+          <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#29b6f6]">
+            Insights &amp; News
+          </p>
+          <h1 className="mt-7 font-serif text-[48px] font-bold leading-none sm:text-[62px] lg:text-[70px]">
+            The SSDU Blog
+          </h1>
+          <p className="mx-auto mt-7 max-w-[850px] text-lg leading-8 text-[#c3cfda] sm:text-xl">
+            Published analysis, news, and perspectives from the SSDU community.
+          </p>
+          <form action="/blog" className="relative mx-auto mt-11 max-w-[680px]">
+            <label htmlFor="blog-search" className="sr-only">
+              Search published articles
             </label>
+            <Search
+              className="pointer-events-none absolute left-6 top-1/2 size-5 -translate-y-1/2 text-[#91a4b8]"
+              aria-hidden="true"
+            />
             <input
-              id="research-search"
+              id="blog-search"
+              type="search"
               name="q"
               defaultValue={query}
-              placeholder="Search research papers, authors, or keywords..."
-              className="h-14 w-full rounded-md border border-[#cbd2da] bg-white px-5 text-sm text-[#000613] outline-none transition placeholder:text-[#6b7280] focus:border-[#00639c] focus:ring-2 focus:ring-[#40acfe]/30 lg:max-w-[450px]"
+              placeholder="Search articles..."
+              className="h-[68px] w-full rounded-full border border-[#5b7089] bg-white/10 pl-14 pr-6 text-lg text-white outline-none transition placeholder:text-[#91a4b8] focus:border-[#29b6f6] focus:ring-4 focus:ring-[#29b6f6]/20"
             />
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <label
-                className="text-xs font-bold uppercase tracking-[0.1em] text-[#000613]"
-                htmlFor="research-category"
-              >
-                Category:
-              </label>
-              <select
-                id="research-category"
-                name="category"
-                defaultValue={category}
-                className="h-12 rounded-md border border-[#cbd2da] bg-white px-4 text-sm text-[#000613] outline-none focus:border-[#00639c]"
-              >
-                <option value="">All Research</option>
-                {categories.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-              <label
-                className="text-xs font-bold uppercase tracking-[0.1em] text-[#000613]"
-                htmlFor="research-year"
-              >
-                Year:
-              </label>
-              <select
-                id="research-year"
-                name="year"
-                defaultValue={year}
-                className="h-12 rounded-md border border-[#cbd2da] bg-white px-4 text-sm text-[#000613] outline-none focus:border-[#00639c]"
-              >
-                <option value="">All Years</option>
-                {years.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="submit"
-                className="h-12 rounded-md bg-[#000613] px-5 text-sm font-bold text-white transition hover:bg-[#002e5f]"
-              >
-                Apply
-              </button>
-            </div>
           </form>
         </section>
 
-        <section id="directory" className="bg-[#f8f9fa] px-6 py-20 md:px-16">
-          <div className="mx-auto max-w-[1280px]">
-            <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        {featured && !hasFilters ? (
+          <section className="py-20 lg:py-24">
+            <article className="group mx-auto grid max-w-[1780px] items-center gap-10 px-5 md:px-10 lg:grid-cols-2 xl:gap-16 xl:px-12">
+              <Link
+                href={`/blog/${featured.slug}`}
+                className="relative block min-h-[360px] overflow-hidden rounded-[20px] bg-[#e7f1f8] sm:min-h-[480px]"
+                aria-label={`Read ${featured.title}`}
+              >
+                <PostImage post={featured} featured />
+              </Link>
               <div>
-                <h2 className="font-serif text-4xl font-bold text-[#000613]">
-                  Academic Directory
+                <div className="flex flex-wrap items-center gap-3 text-sm text-[#52657c]">
+                  <span className="rounded-full bg-[#e7f1f8] px-3 py-1 text-[#0874b9]">
+                    {featured.category}
+                  </span>
+                  <span className="rounded-full bg-[#f3f6fa] px-3 py-1">
+                    Latest
+                  </span>
+                </div>
+                <h2 className="mt-6 max-w-[760px] font-serif text-[38px] font-bold leading-[1.25] text-[#071f3c] sm:text-[46px]">
+                  {featured.title}
                 </h2>
-                <div className="mt-5 h-px w-24 bg-[#e9c176]" />
+                <p className="mt-7 max-w-[760px] text-lg leading-8 text-[#52657c]">
+                  {excerptFor(featured)}
+                </p>
+                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[16px] text-[#52657c]">
+                  <time dateTime={featured.publishedAt.toISOString()}>
+                    {formatDate(featured.publishedAt)}
+                  </time>
+                  <span aria-hidden="true">·</span>
+                  <span>{readingTime(featured)} min read</span>
+                </div>
+                <Link
+                  href={`/blog/${featured.slug}`}
+                  className="group/button mt-9 inline-flex h-14 items-center gap-3 rounded-[8px] bg-[#1778b8] px-7 text-lg font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg motion-reduce:transform-none"
+                >
+                  Read Article
+                  <ArrowRight
+                    className="size-5 transition-transform group-hover/button:translate-x-1 motion-reduce:transform-none"
+                    aria-hidden="true"
+                  />
+                </Link>
               </div>
-              <p className="text-sm text-[#43474e]">
-                {hasPublishedPosts
-                  ? `Showing ${visiblePosts.length} of ${filteredPosts.length} publications`
-                  : "Showing 12 of 48 publications"}
-              </p>
-            </div>
+            </article>
+          </section>
+        ) : null}
+
+        <section className="bg-[#f4f7fb] py-16 lg:py-20">
+          <div className="mx-auto max-w-[1780px] px-5 md:px-10 xl:px-12">
+            <nav
+              className="flex gap-3 overflow-x-auto pb-2"
+              aria-label="Blog categories"
+            >
+              <Link
+                href={createBlogHref({ query })}
+                aria-current={!category ? "page" : undefined}
+                className={`inline-flex min-h-12 shrink-0 items-center rounded-full border px-6 text-[16px] transition-colors ${!category ? "border-[#0a294d] bg-[#0a294d] text-white" : "border-[#dbe3ea] bg-white text-[#52657c] hover:border-[#87b5d0] hover:text-[#0874b9]"}`}
+              >
+                All
+              </Link>
+              {categories.map((item) => (
+                <Link
+                  key={item}
+                  href={createBlogHref({ query, category: item })}
+                  aria-current={category === item ? "page" : undefined}
+                  className={`inline-flex min-h-12 shrink-0 items-center rounded-full border px-6 text-[16px] transition-colors ${category === item ? "border-[#0a294d] bg-[#0a294d] text-white" : "border-[#dbe3ea] bg-white text-[#52657c] hover:border-[#87b5d0] hover:text-[#0874b9]"}`}
+                >
+                  {item}
+                </Link>
+              ))}
+            </nav>
 
             {visiblePosts.length > 0 ? (
               <>
-                <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
+                <div className="mt-12 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
                   {visiblePosts.map((post) => (
-                    <PublicationCard key={post.id} post={post} />
+                    <BlogCard key={post.id} post={post} />
                   ))}
                 </div>
-
                 {pageCount > 1 ? (
                   <nav
-                    className="mt-16 flex items-center justify-center gap-2"
-                    aria-label="Research pagination"
+                    className="mt-14 flex flex-wrap justify-center gap-2"
+                    aria-label="Blog pagination"
                   >
-                    <Link
-                      href={createPageHref(
-                        { query, category, year },
-                        Math.max(1, safePage - 1),
-                      )}
-                      className="flex size-10 items-center justify-center rounded-md border border-[#cbd2da] bg-white text-sm font-bold text-[#000613] hover:bg-[#000613] hover:text-white"
-                      aria-label="Previous page"
-                    >
-                      &lt;
-                    </Link>
-                    {Array.from({ length: pageCount }).map((_, index) => {
-                      const page = index + 1;
-                      return (
-                        <Link
-                          key={page}
-                          href={createPageHref({ query, category, year }, page)}
-                          className={`flex size-10 items-center justify-center rounded-md border text-sm font-bold ${
-                            page === safePage
-                              ? "border-[#000613] bg-[#000613] text-white"
-                              : "border-[#cbd2da] bg-white text-[#000613] hover:bg-[#000613] hover:text-white"
-                          }`}
-                        >
-                          {page}
-                        </Link>
-                      );
-                    })}
-                    <Link
-                      href={createPageHref(
-                        { query, category, year },
-                        Math.min(pageCount, safePage + 1),
-                      )}
-                      className="flex size-10 items-center justify-center rounded-md border border-[#cbd2da] bg-white text-sm font-bold text-[#000613] hover:bg-[#000613] hover:text-white"
-                      aria-label="Next page"
-                    >
-                      &gt;
-                    </Link>
+                    {Array.from(
+                      { length: pageCount },
+                      (_, index) => index + 1,
+                    ).map((page) => (
+                      <Link
+                        key={page}
+                        href={createBlogHref({ query, category, page })}
+                        aria-current={page === currentPage ? "page" : undefined}
+                        className={`flex size-11 items-center justify-center rounded-md border font-semibold ${page === currentPage ? "border-[#0a294d] bg-[#0a294d] text-white" : "border-[#cbd6df] bg-white text-[#52657c] hover:border-[#0874b9] hover:text-[#0874b9]"}`}
+                      >
+                        {page}
+                      </Link>
+                    ))}
                   </nav>
                 ) : null}
               </>
             ) : (
-              <div className="rounded-lg border border-[#cbd2da] bg-white p-8 text-center shadow-sm">
-                <h2 className="font-serif text-2xl font-bold text-[#000613]">
-                  Research publications will appear here.
+              <div className="mt-12 rounded-[18px] border border-dashed border-[#b9c7d4] bg-white px-6 py-14 text-center">
+                <h2 className="font-serif text-3xl font-bold text-[#071f3c]">
+                  {hasFilters
+                    ? "No articles match these filters."
+                    : "No articles have been published yet."}
                 </h2>
-                <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#43474e]">
-                  Published research posts from the admin dashboard will display
-                  in this directory after approval.
+                <p className="mx-auto mt-4 max-w-2xl text-[17px] leading-8 text-[#52657c]">
+                  {data.available
+                    ? hasFilters
+                      ? "Try another search or choose a different category."
+                      : "Published posts will appear here after an administrator makes them public."
+                    : "Published articles are temporarily unavailable. Please try again later."}
                 </p>
+                {hasFilters ? (
+                  <Link
+                    href="/blog"
+                    className="mt-7 inline-flex min-h-11 items-center font-semibold text-[#0874b9] hover:text-[#0a6098]"
+                  >
+                    Clear filters
+                  </Link>
+                ) : null}
               </div>
             )}
           </div>
         </section>
-
-        <section className="relative overflow-hidden bg-[#000613] px-6 py-24 text-white md:px-16">
-          <div className="absolute right-0 top-0 hidden h-full w-[31%] opacity-10 lg:block">
-            <div className="mt-0 h-14 bg-white" />
-            <div className="mx-auto mt-10 flex max-w-xs justify-between">
-              <div className="h-28 w-9 bg-white" />
-              <div className="h-28 w-9 bg-white" />
-              <div className="h-28 w-9 bg-white" />
-            </div>
-            <div className="absolute bottom-28 right-0 h-14 w-full bg-white" />
-          </div>
-          <div className="relative mx-auto max-w-[1280px] text-center">
-            <h2 className="font-serif text-4xl font-bold">
-              Contribute to the Union Archive
-            </h2>
-            <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-white/86">
-              Are you a scholar, policy analyst, or student researcher? SSDU
-              invites high-quality submissions for our quarterly journal and
-              digital archive. Share your insights with a global network of
-              diplomats and academics.
-            </p>
-            <div className="mt-12 flex flex-col justify-center gap-5 sm:flex-row">
-              <Link
-                href="/contact"
-                className="inline-flex h-14 items-center justify-center rounded-md bg-[#f9d28b] px-10 text-sm font-bold tracking-[0.08em] text-[#000613] transition hover:bg-[#e9c176]"
-              >
-                Submit Research
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex h-14 items-center justify-center rounded-md border border-white/50 px-10 text-sm font-bold tracking-[0.08em] text-white transition hover:bg-white hover:text-[#000613]"
-              >
-                Author Guidelines
-              </Link>
-            </div>
-            <p className="mt-14 text-xs uppercase tracking-[0.18em] text-white/50">
-              Next submission deadline: June 30, 2024
-            </p>
-          </div>
-        </section>
       </main>
-    </PublicPageShell>
+
+      <footer className="bg-[#0a294d] text-[#c3cfda]">
+        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12">
+          <div>
+            <BrandLogo inverse />
+            <p className="mt-7 max-w-sm text-[16px] leading-7">
+              Empowering Somali youth through training, dialogue, research, and
+              international engagement.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Quick Links
+            </h2>
+            <ul className="mt-7 space-y-4">
+              {navigationItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="transition-colors hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Public Programs
+            </h2>
+            {data.programs.length > 0 ? (
+              <ul className="mt-7 space-y-4">
+                {data.programs.slice(0, 5).map((program) => (
+                  <li key={program.id}>
+                    <Link
+                      href={`/programs/${program.slug}`}
+                      className="transition-colors hover:text-white"
+                    >
+                      {program.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-7 leading-7">
+                No public programs are listed yet.
+              </p>
+            )}
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Contact
+            </h2>
+            <p className="mt-7 leading-7">
+              Questions about articles, programs, or partnerships are handled
+              through the existing contact form.
+            </p>
+            <Link
+              href="/contact"
+              className="mt-7 inline-flex min-h-11 items-center gap-3 text-white transition-colors hover:text-[#28b1f2]"
+            >
+              <Mail className="size-5" aria-hidden="true" /> Contact SSDU
+            </Link>
+          </div>
+        </div>
+        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
+          <p>
+            &copy; 2026 Somali Student Diplomacy Union. All rights reserved.
+          </p>
+          <Link href="/contact" className="transition-colors hover:text-white">
+            Privacy and terms inquiries
+          </Link>
+        </div>
+      </footer>
+    </div>
   );
 }
