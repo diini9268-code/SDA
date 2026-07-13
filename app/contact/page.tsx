@@ -1,12 +1,21 @@
+import Link from "next/link";
+import {
+  ArrowRight,
+  CheckCircle2,
+  ClipboardCheck,
+  LockKeyhole,
+  Mail,
+  Send,
+} from "lucide-react";
 import { SubmitButton } from "@/app/admin/_components/form-controls";
-import { PublicPageShell } from "@/app/_components/public-shell";
+import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { submitContactMessageAction } from "@/app/contact/actions";
 import { createPageMetadata } from "@/lib/site/metadata";
 
 export const metadata = createPageMetadata({
   title: "Contact",
   description:
-    "Contact SSDU with inquiries about programs, partnerships, membership, and organizational activities.",
+    "Send SSDU a message through the supported public contact workflow.",
   path: "/contact",
 });
 
@@ -14,12 +23,38 @@ type ContactPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-function firstParam(value: string | string[] | undefined): string | null {
-  if (Array.isArray(value)) {
-    return value[0] ?? null;
-  }
+const navigationItems = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/blog", label: "Blog" },
+  { href: "/membership", label: "Membership" },
+  { href: "/leadership", label: "Leadership" },
+  { href: "/contact", label: "Contact" },
+];
 
-  return value ?? null;
+const workflowFacts = [
+  {
+    icon: LockKeyhole,
+    title: "Private submission",
+    description:
+      "Your message is stored in the private contact inbox for authorized administrators.",
+  },
+  {
+    icon: ClipboardCheck,
+    title: "Admin review",
+    description:
+      "The SSDU administration team can review and manage the status of each inquiry.",
+  },
+  {
+    icon: Mail,
+    title: "Your reply address",
+    description:
+      "Your submitted email address is retained with the message so the team can follow up outside the site.",
+  },
+];
+
+function firstParam(value: string | string[] | undefined): string | null {
+  return Array.isArray(value) ? (value[0] ?? null) : (value ?? null);
 }
 
 function StatusMessage({
@@ -29,25 +64,24 @@ function StatusMessage({
   error: string | null;
   success: string | null;
 }) {
-  if (!error && !success) {
-    return null;
-  }
+  if (!error && !success) return null;
 
   return (
     <div
-      className={`rounded-lg border px-4 py-3 text-sm leading-6 ${
+      className={`flex items-start gap-3 rounded-[12px] border px-4 py-3 text-sm leading-6 ${
         error
-          ? "border-[#ffdad6] bg-[#fff3f1] text-[#93000a]"
-          : "border-[#cee5ff] bg-[#f0f7ff] text-[#003e65]"
+          ? "border-[#f1b8b8] bg-[#fff3f1] text-[#8b1a1a]"
+          : "border-[#b8ddc5] bg-[#f0fbf4] text-[#176235]"
       }`}
-      role="status"
+      role={error ? "alert" : "status"}
     >
+      <CheckCircle2 className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
       {error ?? success}
     </div>
   );
 }
 
-function TextInputField({
+function Field({
   id,
   label,
   maxLength,
@@ -60,15 +94,12 @@ function TextInputField({
   maxLength: number;
   name: string;
   placeholder: string;
-  type?: string;
+  type?: "text" | "email";
 }) {
   return (
-    <div className="grid gap-2">
-      <label
-        className="text-xs font-semibold uppercase tracking-[0.08em] text-[#191c1d]"
-        htmlFor={id}
-      >
-        {label}
+    <div className="grid gap-2.5">
+      <label htmlFor={id} className="text-[16px] font-semibold text-[#071f3c]">
+        {label} <span aria-hidden="true">*</span>
       </label>
       <input
         id={id}
@@ -77,7 +108,8 @@ function TextInputField({
         required
         maxLength={maxLength}
         placeholder={placeholder}
-        className="rounded-lg border border-[#c4c6cf] px-4 py-3 text-sm text-[#191c1d] outline-none transition-all placeholder:text-slate-500 focus:border-[#00639c] focus:ring-2 focus:ring-[#40acfe]/30"
+        autoComplete={name === "fullName" ? "name" : name === "email" ? "email" : undefined}
+        className="min-h-[58px] rounded-[16px] border border-[#cbd8e2] bg-[#edf3f8] px-5 text-[16px] text-[#071f3c] outline-none transition-[border-color,background-color,box-shadow] placeholder:text-[#718196] hover:border-[#9db9cc] focus:border-[#1684c2] focus:bg-white focus:ring-4 focus:ring-[#1684c2]/15"
       />
     </div>
   );
@@ -89,182 +121,123 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
   const success = firstParam(params.success);
 
   return (
-    <PublicPageShell>
-      <main className="bg-[#f8f9fa] pb-16 pt-24 text-[#191c1d] md:pt-20">
-        <section className="border-b border-[#c4c6cf] bg-[#f3f4f5] pb-14 pt-16">
-          <div className="mx-auto max-w-4xl px-4 text-center md:px-0">
-            <span className="mb-4 inline-block rounded-full bg-[#ffdea5] px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#261900]">
-              Official Contact
-            </span>
-            <h1 className="mb-4 font-serif text-[32px] font-bold leading-[40px] text-[#000613] md:text-[48px] md:leading-[60px] md:tracking-[-0.02em]">
-              Contact SSDU
+    <div className="min-h-screen bg-[#f3f7fa] text-[#071f3c]">
+      <a href="#main-content" className="sr-only z-[100] rounded-md bg-white px-4 py-3 focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
+        Skip to main content
+      </a>
+      <HomeHeader
+        items={navigationItems}
+        activeHref="/contact"
+        overlay={false}
+        secondaryItem={{ href: "/admin", label: "Login" }}
+        joinHref="/membership"
+      />
+
+      <main id="main-content" className="pt-20 sm:pt-[90px]">
+        <section className="flex min-h-[500px] items-center justify-center bg-[#0a294d] px-5 py-24 text-center text-white sm:min-h-[590px] md:px-10">
+          <div className="mx-auto max-w-4xl">
+            <p className="text-sm font-bold uppercase tracking-[0.32em] text-[#2ab3f3] sm:text-base">
+              Get in touch
+            </p>
+            <h1 className="mt-7 font-serif text-[48px] font-bold leading-[1.05] sm:text-[66px] lg:text-[76px]">
+              Contact Us
             </h1>
-            <p className="mx-auto max-w-2xl text-lg leading-[30px] text-[#43474e]">
-              Reach the Somali Student Diplomacy Union Secretariat with
-              inquiries about programs, partnerships, membership, and
-              organizational activity.
+            <p className="mx-auto mt-7 max-w-3xl text-[18px] leading-8 text-[#becbd7] sm:text-[23px] sm:leading-10">
+              Send a question about membership, programs, partnerships, or
+              SSDU activities through the official contact workflow.
             </p>
           </div>
         </section>
 
-        <section className="mx-auto mt-10 max-w-4xl px-4">
-          <div className="relative mb-10 flex items-center justify-between">
-            <div className="absolute left-0 top-1/2 -z-10 h-0.5 w-full -translate-y-1/2 bg-[#c4c6cf]" />
-            <div className="flex flex-col items-center bg-[#f8f9fa] px-4">
-              <div className="flex size-10 items-center justify-center rounded-full border-2 border-[#000613] bg-[#000613] font-bold text-white">
-                1
+        <section className="px-5 py-20 md:px-10 xl:px-12 xl:py-24">
+          <div className="mx-auto grid max-w-[1780px] gap-8 lg:grid-cols-[minmax(270px,0.7fr)_minmax(0,1.5fr)] xl:gap-14">
+            <aside aria-labelledby="contact-process-heading" className="space-y-5">
+              <div className="mb-8">
+                <p className="text-sm font-bold uppercase tracking-[0.28em] text-[#0874b9]">What happens next</p>
+                <h2 id="contact-process-heading" className="mt-4 font-serif text-[34px] font-bold leading-tight sm:text-[42px]">
+                  A supported path to the team
+                </h2>
               </div>
-              <span className="mt-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#000613]">
-                Details
-              </span>
-            </div>
-            <div className="flex flex-col items-center bg-[#f8f9fa] px-4">
-              <div className="flex size-10 items-center justify-center rounded-full border-2 border-[#c4c6cf] bg-white font-bold text-[#43474e]">
-                2
-              </div>
-              <span className="mt-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#43474e]">
-                Message
-              </span>
-            </div>
-            <div className="flex flex-col items-center bg-[#f8f9fa] px-4">
-              <div className="flex size-10 items-center justify-center rounded-full border-2 border-[#c4c6cf] bg-white font-bold text-[#43474e]">
-                3
-              </div>
-              <span className="mt-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#43474e]">
-                Review
-              </span>
-            </div>
-          </div>
+              {workflowFacts.map(({ icon: Icon, title, description }) => (
+                <article key={title} className="flex gap-5 rounded-[18px] border border-[#dce3e9] bg-white p-6 transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-lg motion-reduce:transform-none">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-[14px] bg-[#e7f1f7] text-[#0874b9]">
+                    <Icon className="size-6" strokeWidth={1.8} aria-hidden="true" />
+                  </span>
+                  <div>
+                    <h3 className="text-[18px] font-semibold">{title}</h3>
+                    <p className="mt-2 text-[15px] leading-7 text-[#52657c]">{description}</p>
+                  </div>
+                </article>
+              ))}
+              <Link href="/membership" className="inline-flex min-h-11 items-center gap-2 px-1 pt-4 font-semibold text-[#0874b9] transition-colors hover:text-[#075d92]">
+                Looking to join SSDU? <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
+            </aside>
 
-          <div className="relative overflow-hidden rounded-xl border border-[#c4c6cf] bg-white p-8 shadow-sm md:p-12">
-            <form action={submitContactMessageAction} className="space-y-8">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="col-span-full mb-4">
-                  <h2 className="mb-2 font-serif text-[28px] font-bold leading-9 text-[#000613]">
-                    Secretariat Message
-                  </h2>
-                  <p className="text-sm leading-[22px] text-[#43474e]">
-                    Please provide accurate contact details so the SSDU team can
-                    review your inquiry and respond through the appropriate
-                    administrative channel.
-                  </p>
+            <div className="rounded-[22px] border border-[#dce3e9] bg-white p-6 shadow-[0_16px_50px_rgba(10,41,77,0.08)] sm:p-9 xl:p-12">
+              <h2 className="font-serif text-[34px] font-bold sm:text-[42px]">Send a Message</h2>
+              <p className="mt-3 max-w-2xl text-[16px] leading-7 text-[#52657c]">
+                All fields are required. Messages enter the private admin inbox
+                with an unread status.
+              </p>
+              <form action={submitContactMessageAction} className="mt-9 grid gap-7">
+                <div className="grid gap-7 md:grid-cols-2">
+                  <Field id="fullName" label="Full Name" name="fullName" maxLength={160} placeholder="Your name" />
+                  <Field id="email" label="Email" name="email" type="email" maxLength={255} placeholder="you@email.com" />
                 </div>
-
-                <TextInputField
-                  id="fullName"
-                  label="Full Name"
-                  name="fullName"
-                  maxLength={160}
-                  placeholder="Enter your full name"
-                />
-
-                <TextInputField
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  type="email"
-                  maxLength={255}
-                  placeholder="email@university.edu"
-                />
-
-                <div className="col-span-full grid gap-2">
-                  <label
-                    className="text-xs font-semibold uppercase tracking-[0.08em] text-[#191c1d]"
-                    htmlFor="subject"
-                  >
-                    Subject
-                  </label>
-                  <input
-                    id="subject"
-                    name="subject"
-                    required
-                    maxLength={220}
-                    placeholder="Partnership, program, membership, or general inquiry"
-                    className="rounded-lg border border-[#c4c6cf] px-4 py-3 text-sm text-[#191c1d] outline-none transition-all placeholder:text-slate-500 focus:border-[#00639c] focus:ring-2 focus:ring-[#40acfe]/30"
-                  />
-                </div>
-
-                <div className="col-span-full grid gap-2">
-                  <label
-                    className="text-xs font-semibold uppercase tracking-[0.08em] text-[#191c1d]"
-                    htmlFor="message"
-                  >
-                    Message
-                  </label>
+                <Field id="subject" label="Subject" name="subject" maxLength={220} placeholder="How can we help?" />
+                <div className="grid gap-2.5">
+                  <label htmlFor="message" className="text-[16px] font-semibold">Message <span aria-hidden="true">*</span></label>
                   <textarea
                     id="message"
                     name="message"
                     required
                     rows={7}
                     maxLength={5000}
-                    placeholder="Write your message to the SSDU Secretariat..."
-                    className="rounded-lg border border-[#c4c6cf] px-4 py-3 text-sm text-[#191c1d] outline-none transition-all placeholder:text-slate-500 focus:border-[#00639c] focus:ring-2 focus:ring-[#40acfe]/30"
+                    placeholder="Write your message here..."
+                    className="min-h-[190px] resize-y rounded-[16px] border border-[#cbd8e2] bg-[#edf3f8] px-5 py-4 text-[16px] leading-7 outline-none transition-[border-color,background-color,box-shadow] placeholder:text-[#718196] hover:border-[#9db9cc] focus:border-[#1684c2] focus:bg-white focus:ring-4 focus:ring-[#1684c2]/15"
                   />
                 </div>
-              </div>
-
-              <StatusMessage error={error} success={success} />
-
-              <div className="mt-12 flex items-center justify-end border-t border-[#c4c6cf] pt-8">
+                <StatusMessage error={error} success={success} />
                 <SubmitButton
                   pendingLabel="Sending..."
-                  className="rounded-lg bg-[#000613] px-8 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-white shadow-md transition-all hover:bg-[#00639c] disabled:bg-[#74777f]"
+                  className="inline-flex min-h-[58px] w-full items-center justify-center gap-3 rounded-[18px] bg-[#1778b8] px-7 text-[18px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg disabled:cursor-not-allowed disabled:bg-[#7698ad] motion-reduce:transform-none"
                 >
-                  Send Message
+                  Send Message <Send className="size-5" aria-hidden="true" />
                 </SubmitButton>
-              </div>
-            </form>
-          </div>
-
-          <div className="mt-8 grid grid-cols-1 gap-8 px-4 md:grid-cols-2">
-            <div className="flex items-start gap-4">
-              <div className="rounded-full bg-[#e7e8e9] p-3 text-[#000613]">
-                <span className="text-xs font-bold" aria-hidden="true">
-                  S
-                </span>
-              </div>
-              <div>
-                <h3 className="font-serif text-base font-bold text-[#000613]">
-                  Secure Data Transmission
-                </h3>
-                <p className="text-sm leading-[22px] text-[#43474e]">
-                  Your message is transmitted through the site and stored
-                  privately for administrator review.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="rounded-full bg-[#e7e8e9] p-3 text-[#000613]">
-                <span className="text-xs font-bold" aria-hidden="true">
-                  O
-                </span>
-              </div>
-              <div>
-                <h3 className="font-serif text-base font-bold text-[#000613]">
-                  Official Diplomatic Channel
-                </h3>
-                <p className="text-sm leading-[22px] text-[#43474e]">
-                  All inquiries are processed by the SSDU administrative team
-                  through the current contact message workflow.
-                </p>
-              </div>
+              </form>
             </div>
           </div>
-        </section>
-
-        <section className="mx-auto mt-24 max-w-2xl px-4">
-          <blockquote className="border-l-4 border-[#e9c176] py-4 pl-8 italic">
-            <p className="font-serif text-2xl leading-9 text-[#000613]">
-              &ldquo;Diplomacy begins with listening carefully, responding
-              thoughtfully, and building trust through disciplined
-              communication.&rdquo;
-            </p>
-            <footer className="mt-4 text-xs font-semibold uppercase tracking-[0.08em] text-[#43474e]">
-              &mdash; SSDU Secretariat Vision Statement
-            </footer>
-          </blockquote>
         </section>
       </main>
-    </PublicPageShell>
+
+      <footer className="bg-[#0a294d] text-[#c3cfda]">
+        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
+          <div>
+            <BrandLogo inverse />
+            <p className="mt-7 max-w-sm text-[16px] leading-7">Empowering Somali youth through training, dialogue, research, and international engagement.</p>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">Quick Links</h2>
+            <ul className="mt-7 grid grid-cols-2 gap-4">
+              {navigationItems.map((item) => (
+                <li key={item.href}><Link href={item.href} className="transition-colors hover:text-white">{item.label}</Link></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">Contact workflow</h2>
+            <p className="mt-7 max-w-md leading-7">Messages submitted above are stored for private administrator review.</p>
+            <a href="#main-content" className="mt-7 inline-flex min-h-11 items-center gap-3 text-white transition-colors hover:text-[#28b1f2]">
+              <Mail className="size-5" aria-hidden="true" /> Return to contact form
+            </a>
+          </div>
+        </div>
+        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
+          <p>&copy; 2026 Somali Student Diplomacy Union. All rights reserved.</p>
+          <span>Contact details are provided by the sender.</span>
+        </div>
+      </footer>
+    </div>
   );
 }

@@ -63,6 +63,44 @@
 
 final result: passed
 
+# Contact Page Design QA
+
+## Source And Constraints
+
+- Source: the desktop Contact-page screenshots supplied in the July 13, 2026 request.
+- The public form submits only `fullName`, `email`, `subject`, and `message` through `submitContactMessageAction`.
+- Contact messages are rate-limited, validated, stored as `UNREAD`, and available to authorized administrators for status review.
+- The backend has no organization contact-settings model, newsletter subscribers, social profiles, map location, attachments, callback requests, or response-time tracking.
+
+## Rendered Evidence
+
+- Desktop: `C:\Users\Owner\AppData\Local\Temp\sda-contact-desktop.png`, 1440 x 1200.
+- Compact: `C:\Users\Owner\AppData\Local\Temp\sda-contact-compact.png`, 500 x 1000.
+- Production build rendered at `http://localhost:3012/contact` after a clean build.
+
+## Comparison
+
+- White fixed header, active Contact navigation, Login link, and blue membership CTA follow the reference geometry.
+- Navy hero preserves the centered cyan eyebrow, serif title, supporting copy, and vertical spacing.
+- The content area keeps the reference's narrow information rail and wide form card while replacing unverified contact details with backend-supported workflow facts.
+- Inputs match the reference's soft blue surfaces, generous padding, rounded corners, and full-width primary action.
+- Compact layout collapses into one column, wraps headings cleanly, and keeps header controls inside the viewport.
+- Footer follows the established navy hierarchy without rendering a nonfunctional newsletter form or invented contact details.
+
+## Findings
+
+- P0: none.
+- P1: none.
+- P2: none in the latest captures.
+- P3: email, phone, street address, office hours, social links, and map location were omitted because no verified organization contact configuration exists.
+- P3: newsletter signup was omitted because no subscriber model, consent record, delivery integration, or admin workflow exists.
+- P3: attachments and callback requests were omitted because the contact message contract has no fields or storage workflow for them.
+- P3: response-time promises were omitted because the backend does not track replies or service-level timing.
+
+## Result
+
+final result: passed
+
 # Leadership Page Design QA
 
 ## Source And Constraints
