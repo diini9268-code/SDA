@@ -11,17 +11,29 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Fostering Excellence in Somali Diplomacy",
+        name: "Shaping Somalia's Diplomatic Future",
       }),
     ).toBeDefined();
     expect(
-      screen.getAllByRole("link", { name: "Explore Our Mission" }).length,
+      screen.getAllByRole("link", { name: /Join SSDU/ }).length,
     ).toBeGreaterThan(0);
+    expect(
+      screen.getByRole("link", { name: "Skip to main content" }),
+    ).toBeDefined();
+    expect(
+      screen
+        .getAllByRole("link", { name: "Home" })[0]
+        ?.getAttribute("aria-current"),
+    ).toBe("page");
+    expect(screen.queryByRole("link", { name: "Login" })).toBeNull();
+    for (const link of screen.getAllByRole("link", { name: /Join SSDU/ })) {
+      expect(link.getAttribute("href")).toBe("/contact");
+    }
   });
 
-  it("renders the about page with public navigation", () => {
+  it("renders the about page with public navigation", async () => {
     cleanup();
-    render(<AboutPage />);
+    render(await AboutPage());
 
     expect(
       screen.getByRole("heading", {
@@ -29,8 +41,27 @@ describe("Public pages", () => {
         name: "About SSDU",
       }),
     ).toBeDefined();
-    expect(screen.getAllByRole("link", { name: "Programs" }).length).toBeGreaterThan(0);
-    expect(screen.getAllByRole("link", { name: "Contact" }).length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("link", { name: "Membership" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("link", { name: "Contact" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen
+        .getAllByRole("link", { name: "About" })[0]
+        ?.getAttribute("aria-current"),
+    ).toBe("page");
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Published Milestones" }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("link", { name: "Login" }).getAttribute("href"),
+    ).toBe("/admin");
+    for (const link of screen.getAllByRole("link", { name: /Join SSDU/ })) {
+      expect(link.getAttribute("href")).toBe("/membership");
+    }
+    expect(screen.queryByRole("button", { name: /newsletter/i })).toBeNull();
   });
 
   it("renders the leadership page hierarchy", async () => {
