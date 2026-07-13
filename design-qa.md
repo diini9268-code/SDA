@@ -62,3 +62,39 @@
 ## Result
 
 final result: passed
+
+# About Page Design QA
+
+## Source And Constraints
+
+- Source: the desktop About-page screenshots supplied in the July 13, 2026 request.
+- The implementation preserves the repository's real SSDU identity instead of copying unsupported SDA founding dates, membership counts, partner claims, or contact details from the mockup.
+- Journey and gallery content comes only from public `Archive` records; footer program links come only from published `Program` records.
+
+## Rendered Evidence
+
+- Desktop: `C:\Users\Owner\AppData\Local\Temp\sda-about-desktop.png`, 1440 x 1000.
+- Compact navigation and hero: `C:\Users\Owner\AppData\Local\Temp\sda-about-compact.png`, 500 x 844.
+- Long desktop composition: `C:\Users\Owner\AppData\Local\Temp\sda-about-long.png`, 1440 x 4000.
+- Production build rendered at `http://localhost:3010/about` with empty public archive/program data.
+
+## Comparison
+
+- Header geometry, white surface, centered navigation, active About state, Login link, and blue membership CTA match the reference structure.
+- Hero uses a full-bleed diplomatic chamber image, navy overlay, cyan eyebrow, centered serif title, and responsive supporting copy.
+- Story, six-value grid, dark journey band, gallery, FAQ accordions, and four-column footer follow the reference section order and visual proportions.
+- Compact layout keeps the logo, CTA, menu, headings, and copy within the viewport; grids collapse without horizontal overflow.
+- Empty archive/gallery states preserve section rhythm without injecting sample milestones or photographs.
+- Native `details` elements provide keyboard-operable FAQ disclosure, with visible focus inherited from global focus styling and reduced-motion-safe transitions.
+
+## Findings
+
+- P0: none.
+- P1: none.
+- P2: none in the latest captures.
+- P3: the source uses SDA wording and dated institutional claims that are not represented in the current backend; the implementation uses SSDU naming and neutral editorial copy.
+- P3: populated journey and gallery states could not be captured because the connected public archive currently returns no records.
+
+## Result
+
+final result: passed

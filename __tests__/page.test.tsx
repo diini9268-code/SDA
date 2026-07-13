@@ -31,9 +31,9 @@ describe("Public pages", () => {
     }
   });
 
-  it("renders the about page with public navigation", () => {
+  it("renders the about page with public navigation", async () => {
     cleanup();
-    render(<AboutPage />);
+    render(await AboutPage());
 
     expect(
       screen.getByRole("heading", {
@@ -42,11 +42,26 @@ describe("Public pages", () => {
       }),
     ).toBeDefined();
     expect(
-      screen.getAllByRole("link", { name: "Programs" }).length,
+      screen.getAllByRole("link", { name: "Membership" }).length,
     ).toBeGreaterThan(0);
     expect(
       screen.getAllByRole("link", { name: "Contact" }).length,
     ).toBeGreaterThan(0);
+    expect(
+      screen
+        .getAllByRole("link", { name: "About" })[0]
+        ?.getAttribute("aria-current"),
+    ).toBe("page");
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Published Milestones" }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("link", { name: "Login" }).getAttribute("href"),
+    ).toBe("/admin");
+    for (const link of screen.getAllByRole("link", { name: /Join SSDU/ })) {
+      expect(link.getAttribute("href")).toBe("/membership");
+    }
+    expect(screen.queryByRole("button", { name: /newsletter/i })).toBeNull();
   });
 
   it("renders the leadership page hierarchy", async () => {
