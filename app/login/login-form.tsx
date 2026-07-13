@@ -43,9 +43,9 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-6">
+    <form onSubmit={handleSubmit} className="grid min-w-0 gap-6">
       <div className="grid gap-2.5">
-        <label htmlFor="email" className="text-[16px] font-semibold text-[#071f3c]">
+        <label htmlFor="email" className="text-[16px] font-semibold text-white/85">
           Email Address
         </label>
         <input
@@ -56,11 +56,11 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
           autoComplete="username"
           maxLength={255}
           placeholder="admin@example.com"
-          className="min-h-[58px] rounded-[16px] border border-[#cbd8e2] bg-[#edf3f8] px-5 text-[16px] outline-none transition-[border-color,background-color,box-shadow] placeholder:text-[#718196] hover:border-[#9db9cc] focus:border-[#1684c2] focus:bg-white focus:ring-4 focus:ring-[#1684c2]/15"
+          className="min-h-[62px] min-w-0 w-full rounded-[16px] border border-white/25 bg-white/10 px-5 text-[16px] text-white outline-none transition-[border-color,background-color,box-shadow] placeholder:text-white/35 hover:border-white/40 hover:bg-white/[0.13] focus:border-[#27b3f4] focus:bg-white/[0.14] focus:ring-4 focus:ring-[#27b3f4]/15"
         />
       </div>
       <div className="grid gap-2.5">
-        <label htmlFor="password" className="text-[16px] font-semibold text-[#071f3c]">
+        <label htmlFor="password" className="text-[16px] font-semibold text-white/85">
           Password
         </label>
         <div className="relative">
@@ -71,12 +71,12 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
             required
             minLength={8}
             autoComplete="current-password"
-            className="min-h-[58px] w-full rounded-[16px] border border-[#cbd8e2] bg-[#edf3f8] px-5 pr-14 text-[16px] outline-none transition-[border-color,background-color,box-shadow] hover:border-[#9db9cc] focus:border-[#1684c2] focus:bg-white focus:ring-4 focus:ring-[#1684c2]/15"
+            className="min-h-[62px] min-w-0 w-full rounded-[16px] border border-white/25 bg-white/10 px-5 pr-14 text-[16px] text-white outline-none transition-[border-color,background-color,box-shadow] hover:border-white/40 hover:bg-white/[0.13] focus:border-[#27b3f4] focus:bg-white/[0.14] focus:ring-4 focus:ring-[#27b3f4]/15"
           />
           <button
             type="button"
             onClick={() => setShowPassword((visible) => !visible)}
-            className="absolute inset-y-0 right-1 flex w-12 items-center justify-center rounded-xl text-[#52657c] transition-colors hover:text-[#0874b9] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0874b9]"
+            className="absolute inset-y-0 right-1 flex w-12 items-center justify-center rounded-xl text-white/45 transition-colors hover:text-[#27b3f4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#27b3f4]"
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
@@ -91,9 +91,9 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex min-h-[58px] items-center justify-center gap-3 rounded-[18px] bg-[#1778b8] px-7 text-[18px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg disabled:cursor-wait disabled:bg-[#7698ad] motion-reduce:transform-none"
+        className="inline-flex min-h-[60px] items-center justify-center gap-3 rounded-[16px] bg-[#1f82c1] px-7 text-[18px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#27a3e7] hover:shadow-lg disabled:cursor-wait disabled:bg-[#557c98] motion-reduce:transform-none"
       >
-        {pending ? "Signing in..." : "Sign In"}
+        {pending ? "Signing in..." : "Sign In to Dashboard"}
         <LogIn className="size-5" aria-hidden="true" />
       </button>
     </form>

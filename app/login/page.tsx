@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
+import { ShieldCheck } from "lucide-react";
 import { BrandLogo } from "@/app/_components/home-header";
 import { AdminLoginForm } from "@/app/login/login-form";
 import { requireAdminSession } from "@/lib/auth/require-admin";
@@ -29,26 +31,52 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const nextPath = safeNextPath(params.next);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f3f7fa] px-5 py-12 text-[#071f3c] sm:px-8">
-      <div className="w-full max-w-[610px]">
-        <div className="text-center">
-          <Link href="/" aria-label="SSDU home" className="inline-flex rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0874b9]">
-            <BrandLogo compactOnMobile />
+    <main className="grid min-h-svh grid-cols-[minmax(0,1fr)] bg-[#0a294d] text-white lg:grid-cols-2">
+      <section className="relative hidden min-h-svh overflow-hidden lg:block" aria-label="SSDU administrator portal">
+        <Image
+          src="/home/diplomatic-chamber.png"
+          alt="International diplomatic chamber"
+          fill
+          priority
+          sizes="50vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-[#061d38]/70" />
+        <div className="absolute inset-x-0 bottom-0 z-10 p-10 xl:p-16">
+          <Link href="/" aria-label="SSDU home" className="inline-flex rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#27b3f4]">
+            <BrandLogo compactOnMobile inverse />
           </Link>
-          <p className="mt-9 text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">Protected administration</p>
-          <h1 className="mt-5 font-serif text-[42px] font-bold leading-tight sm:text-[50px]">Admin Login</h1>
-          <p className="mx-auto mt-3 max-w-md text-[17px] leading-7 text-[#52657c]">
-            Sign in with an authorized SSDU administrator account.
+          <h2 className="mt-10 font-serif text-[42px] font-bold leading-tight xl:text-[48px]">Administrator Portal</h2>
+          <p className="mt-4 max-w-md text-[18px] leading-8 text-white/70">
+            Secure access to the SSDU content management and administration system.
           </p>
         </div>
-        <section aria-label="Administrator sign in" className="mt-10 rounded-[22px] border border-[#dce3e9] bg-white p-6 shadow-[0_18px_55px_rgba(10,41,77,0.10)] sm:p-10">
-          <AdminLoginForm nextPath={nextPath} />
-          <div className="mt-8 border-t border-[#e1e7ec] pt-7 text-center text-[15px] leading-7 text-[#52657c]">
-            This login is restricted to administrators. Membership applications use the public{" "}
-            <Link href="/membership" className="font-semibold text-[#0874b9] hover:text-[#075d92]">membership form</Link>.
+      </section>
+
+      <section aria-label="Administrator sign in" className="flex min-h-svh min-w-0 items-center justify-center px-5 py-10 sm:px-10 lg:px-14 xl:px-20">
+        <div className="min-w-0 w-full max-w-[520px]">
+          <Link href="/" aria-label="SSDU home" className="mb-10 inline-flex rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#27b3f4] lg:hidden">
+            <BrandLogo inverse />
+          </Link>
+          <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-[#27b3f4]">
+            <ShieldCheck className="size-5" aria-hidden="true" />
+            Secure admin access
           </div>
-        </section>
-      </div>
+          <h1 className="mt-4 font-serif text-[42px] font-bold leading-tight sm:text-[48px]">Admin Login</h1>
+          <p className="mt-3 text-[16px] leading-7 text-white/65">
+            Sign in with an authorized SSDU administrator account.
+          </p>
+          <div className="mt-10">
+          <AdminLoginForm nextPath={nextPath} />
+          </div>
+          <div className="mt-9 border-t border-white/10 pt-7 text-center text-[14px] leading-6 text-white/45">
+            Restricted access. Authorized personnel only.
+            <br />
+            For access issues, use the public{" "}
+            <Link href="/contact" className="font-semibold text-[#27b3f4] transition-colors hover:text-white">contact form</Link>.
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
