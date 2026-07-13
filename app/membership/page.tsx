@@ -1,387 +1,405 @@
 import Link from "next/link";
-import { OptimizedFillImage } from "@/app/_components/optimized-image";
-import { PublicHeader } from "@/app/_components/public-shell";
+import {
+  ArrowRight,
+  BookOpen,
+  ChevronDown,
+  ClipboardCheck,
+  FileText,
+  Handshake,
+  Landmark,
+  Mail,
+  Send,
+  UsersRound,
+} from "lucide-react";
+import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
+import { submitMembershipApplicationAction } from "@/app/membership/actions";
 import { createPageMetadata } from "@/lib/site/metadata";
 
 export const metadata = createPageMetadata({
   title: "Membership",
   description:
-    "View the SSDU membership dashboard, diplomatic calendar, archive access, and union updates.",
+    "Apply for SSDU membership through the public application workflow.",
   path: "/membership",
 });
 
-const metrics = [
+type MembershipPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+const navigationItems = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/blog", label: "Blog" },
+  { href: "/membership", label: "Membership" },
+  { href: "/leadership", label: "Leadership" },
+  { href: "/contact", label: "Contact" },
+];
+
+const opportunities = [
   {
-    icon: "DOC",
-    value: "12",
-    label: "Papers Contributed",
+    icon: Landmark,
+    title: "Public Programs",
+    description:
+      "Discover published training sessions, events, and diplomacy programs through the public program directory.",
+    href: "/programs",
   },
   {
-    icon: "CAL",
-    value: "08",
-    label: "Events Attended",
+    icon: UsersRound,
+    title: "Leadership Profiles",
+    description:
+      "Learn about the active leaders currently published by the SSDU administration team.",
+    href: "/leadership",
   },
   {
-    icon: "NET",
-    value: "45",
-    label: "Mentorship Hours",
+    icon: BookOpen,
+    title: "Insights & Publications",
+    description:
+      "Read public articles, analysis, and organizational updates published through the SSDU blog.",
+    href: "/blog",
   },
   {
-    icon: "SEC",
-    value: "Lvl 3",
-    label: "Archive Access",
+    icon: FileText,
+    title: "Public Archive",
+    description:
+      "Browse published records and images documenting SSDU activities and organizational work.",
+    href: "/archive",
+  },
+  {
+    icon: ClipboardCheck,
+    title: "Application Review",
+    description:
+      "Applications are stored with a pending status for review by authorized SSDU administrators.",
+  },
+  {
+    icon: Handshake,
+    title: "Direct Contact",
+    description:
+      "Use the supported contact workflow for membership, program, and partnership questions.",
+    href: "/contact",
   },
 ];
 
-const calendarEvents = [
+const faqs = [
   {
-    month: "NOV",
-    day: "14",
-    title: "2024 Youth Diplomacy Summit",
-    location: "Mogadishu Peace Center (Hybrid)",
-    status: "RSVP Now",
-    active: true,
+    question: "What information is required to apply?",
+    answer:
+      "The application requires your full name, email address, phone number, university, and area of interest.",
   },
   {
-    month: "DEC",
-    day: "02",
-    title: "Regional Chapter Meeting: London",
-    location: "Digital Plenary Hall",
-    status: "Registration Closed",
-    active: false,
-  },
-];
-
-const archiveItems = [
-  {
-    label: "Policy Paper",
-    time: "2 days ago",
-    title: "Maritime Security in the Horn of Africa",
-    summary:
-      "An analytical review of contemporary maritime jurisdiction frameworks and their implications for regional stability i...",
-    accent: "#f9d28b",
+    question: "What happens after I submit?",
+    answer:
+      "Your application is stored with a pending status so an authorized administrator can review it.",
   },
   {
-    label: "Case Study",
-    time: "1 week ago",
-    title: "Diplomatic Education: A Modern Blueprint",
-    summary:
-      "Evaluating the integration of digital tools and diaspora engagement in the curriculum of the Somali School of...",
-    accent: "#bfd9ff",
+    question: "Can I ask a question before applying?",
+    answer:
+      "Yes. Use the Contact page to send a membership question to the SSDU administration team.",
+  },
+  {
+    question: "Can I track my application online?",
+    answer:
+      "Not currently. The existing backend supports administrator status management but does not provide a public applicant account or tracking portal.",
   },
 ];
 
-const actions = [
-  "Update Profile",
-  "Access Archive",
-  "Contact Mentor",
-  "Membership Renewal",
-];
-
-function DashboardFooter() {
-  return (
-    <footer className="bg-[#000613] text-white">
-      <div className="mx-auto grid max-w-[1280px] gap-10 px-6 py-14 md:grid-cols-4 md:px-16">
-        <div>
-          <h2 className="font-serif text-2xl font-bold">SSDU</h2>
-          <p className="mt-7 text-base leading-7 text-white/72">
-            Empowering the next generation of Somali diplomatic leaders through
-            academic rigor and union fellowship.
-          </p>
-        </div>
-        <div>
-          <h2 className="font-serif text-2xl font-bold">Quick Links</h2>
-          <ul className="mt-7 space-y-4 text-base text-white/72">
-            <li>
-              <Link href="/about" className="hover:text-white hover:underline">
-                About the Union
-              </Link>
-            </li>
-            <li>
-              <Link href="/leadership" className="hover:text-white hover:underline">
-                Member Directory
-              </Link>
-            </li>
-            <li>
-              <Link href="/programs" className="hover:text-white hover:underline">
-                Annual Summit
-              </Link>
-            </li>
-            <li>
-              <Link href="/blog" className="hover:text-white hover:underline">
-                Research Policy
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h2 className="font-serif text-2xl font-bold">Contact Info</h2>
-          <address className="mt-7 space-y-4 text-base not-italic text-white/72">
-            <p>secretariat@ssdu.org</p>
-            <p>+252 (0) 61 XXXXXXX</p>
-          </address>
-        </div>
-        <div>
-          <h2 className="font-serif text-2xl font-bold">Social Media</h2>
-          <div className="mt-7 flex gap-4">
-            <span className="flex size-11 items-center justify-center rounded-full border border-white/40 text-sm">
-              GH
-            </span>
-            <span className="flex size-11 items-center justify-center rounded-full border border-white/40 text-sm">
-              SH
-            </span>
-          </div>
-          <p className="mt-7 text-sm leading-6 text-white/62">
-            &copy; 2024 Somali Student Diplomacy Union. All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
+function firstParam(value: string | string[] | undefined): string {
+  return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
 }
 
-export default function MembershipPage() {
+const inputClassName =
+  "mt-2 h-14 w-full rounded-[14px] border border-[#ccd8e3] bg-[#f0f5fa] px-5 text-[16px] text-[#071f3c] outline-none transition placeholder:text-[#718197] focus:border-[#29a9e8] focus:bg-white focus:ring-4 focus:ring-[#29a9e8]/15";
+
+export default async function MembershipPage({
+  searchParams,
+}: MembershipPageProps) {
+  const params = (await searchParams) ?? {};
+  const success = firstParam(params.success);
+  const error = firstParam(params.error);
+
   return (
-    <div className="min-h-screen bg-[#f8f9fa] text-[#000613]">
-      <PublicHeader activeHref="/membership" />
-      <main className="px-6 pb-20 pt-[169px] md:px-16 md:pt-32">
-        <div className="mx-auto max-w-[1280px]">
-          <section className="rounded-xl border border-[#c4cbd3] bg-white p-6 shadow-sm md:p-8">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-              <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-                <div className="rounded-full border-8 border-[#e8f1f8] p-1">
-                  <div className="relative size-24 overflow-hidden rounded-full">
-                    <OptimizedFillImage
-                      src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=240&q=80"
-                      alt="Ahmed Abdi profile portrait"
-                      className="h-full w-full object-cover"
-                      sizes="96px"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <h1 className="font-serif text-4xl font-black leading-tight text-[#001440] sm:text-5xl">
-                    Ahmed Abdi
-                  </h1>
-                  <p className="mt-3 text-lg text-[#20242a]">
-                    Associate Fellow <span aria-hidden="true">•</span> Faculty
-                    of International Relations
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-4 text-left md:text-right">
-                <div className="inline-flex items-center gap-3 rounded-full border border-[#9ee8b8] bg-[#d8ffe5] px-5 py-2 text-sm font-semibold tracking-[0.12em] text-[#0b6131]">
-                  <span className="size-2 rounded-full bg-[#21c45d]" />
-                  Diplomatic Status: Active
-                </div>
-                <Link
-                  href="/contact"
-                  className="block text-sm font-semibold tracking-[0.12em] text-[#000613] hover:underline"
-                >
-                  Manage Credentials
-                </Link>
-              </div>
+    <div className="min-w-0 bg-white text-[#0a294d]">
+      <a
+        href="#main-content"
+        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-md bg-white px-4 py-3 font-semibold text-[#0a294d] shadow-xl transition-transform focus:translate-y-0"
+      >
+        Skip to main content
+      </a>
+      <HomeHeader
+        items={navigationItems}
+        activeHref="/membership"
+        overlay={false}
+        secondaryItem={{ href: "/admin", label: "Login" }}
+        joinHref="#application"
+      />
+
+      <main id="main-content" className="pt-20 sm:pt-[90px]">
+        <section className="bg-[#0a294d] px-5 py-24 text-center text-white md:px-10 lg:py-32">
+          <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#29b6f6]">
+            Membership
+          </p>
+          <h1 className="mt-7 font-serif text-[48px] font-bold leading-none sm:text-[62px] lg:text-[70px]">
+            Join the SSDU Community
+          </h1>
+          <p className="mx-auto mt-8 max-w-[860px] text-lg leading-8 text-[#c3cfda] sm:text-xl">
+            Submit your information for administrative review and explore
+            SSDU&apos;s published programs, leadership, articles, and archive.
+          </p>
+          <a
+            href="#application"
+            className="group mt-10 inline-flex h-14 items-center gap-3 rounded-[8px] bg-[#1778b8] px-8 text-lg font-semibold text-white shadow-lg transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-xl motion-reduce:transform-none"
+          >
+            Apply Now
+            <ArrowRight
+              className="size-5 transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
+              aria-hidden="true"
+            />
+          </a>
+        </section>
+
+        <section className="py-20 lg:py-28">
+          <div className="mx-auto max-w-[1780px] px-5 md:px-10 xl:px-12">
+            <div className="text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
+                Explore SSDU
+              </p>
+              <h2 className="mt-6 font-serif text-[40px] font-bold leading-tight sm:text-[50px]">
+                What Membership Connects You To
+              </h2>
             </div>
-          </section>
-
-          <div className="mt-7 grid gap-7 lg:grid-cols-[1fr_400px]">
-            <div>
-              <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                {metrics.map((metric) => (
-                  <article
-                    key={metric.label}
-                    className="rounded-lg border border-[#c4cbd3] bg-[#f8f9fa] p-7"
-                  >
-                    <p className="text-xs font-bold text-[#00639c]">{metric.icon}</p>
-                    <p className="mt-4 font-serif text-3xl font-bold leading-none">
-                      {metric.value}
-                    </p>
-                    <p className="mt-2 text-sm font-semibold uppercase tracking-[0.16em]">
-                      {metric.label}
-                    </p>
-                  </article>
-                ))}
-              </section>
-
-              <section className="mt-8">
-                <div className="flex items-end justify-between gap-4">
-                  <h2 className="font-serif text-4xl font-black">
-                    Diplomatic Calendar
-                  </h2>
-                  <Link
-                    href="/programs"
-                    className="text-sm font-semibold tracking-[0.12em] text-[#00639c] hover:underline"
-                  >
-                    View All Events
-                  </Link>
-                </div>
-                <div className="mt-7 space-y-4">
-                  {calendarEvents.map((event) => (
-                    <article
-                      key={event.title}
-                      className="flex flex-col gap-5 rounded-lg border border-[#c4cbd3] bg-white p-6 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <div className="flex gap-6">
-                        <div
-                          className={`flex size-16 shrink-0 flex-col items-center justify-center rounded-lg ${
-                            event.active
-                              ? "bg-[#002e5f] text-white"
-                              : "bg-[#e1e3e4] text-[#6b7280]"
-                          }`}
-                        >
-                          <span className="text-xs">{event.month}</span>
-                          <span className="font-serif text-2xl font-bold leading-none">
-                            {event.day}
-                          </span>
-                        </div>
-                        <div>
-                          <h3 className="font-serif text-2xl text-[#000613]">
-                            {event.title}
-                          </h3>
-                          <p className="mt-2 text-base text-[#191c1d]">
-                            {event.location}
-                          </p>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        disabled={!event.active}
-                        className="h-11 rounded-md border border-[#000613] px-7 text-sm font-semibold tracking-[0.16em] text-[#000613] transition enabled:hover:bg-[#000613] enabled:hover:text-white disabled:cursor-not-allowed disabled:border-[#c4cbd3] disabled:text-[#9aa0a6]"
-                      >
-                        {event.status}
-                      </button>
-                    </article>
-                  ))}
-                </div>
-              </section>
-
-              <section className="mt-8">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <h2 className="font-serif text-4xl font-black">
-                    Latest from Archive
-                  </h2>
-                  <Link
-                    href="/contact"
-                    className="inline-flex h-12 items-center justify-center rounded-full bg-[#40acfe] px-8 text-sm font-semibold tracking-[0.12em] text-[#002e5f] transition hover:bg-[#7fc8ff]"
-                  >
-                    Submit Research
-                  </Link>
-                </div>
-                <div className="mt-7 grid gap-6 md:grid-cols-2">
-                  {archiveItems.map((item) => (
-                    <article
-                      key={item.title}
-                      className="rounded-lg border border-[#c4cbd3] bg-white p-7"
-                      style={{ borderLeft: `4px solid ${item.accent}` }}
-                    >
-                      <div className="flex items-center gap-3 text-xs uppercase tracking-[0.1em] text-[#5c636b]">
-                        <span className="rounded bg-[#d7ecff] px-3 py-1 text-[#00639c]">
-                          {item.label}
-                        </span>
-                        <span>{item.time}</span>
-                      </div>
-                      <h3 className="mt-5 font-serif text-2xl leading-tight">
+            <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {opportunities.map((item) => {
+                const Icon = item.icon;
+                const content = (
+                  <>
+                    <div className="flex size-14 shrink-0 items-center justify-center rounded-[16px] bg-[#e7f1f8] text-[#0874b9]">
+                      <Icon
+                        className="size-7"
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-[#071f3c]">
                         {item.title}
                       </h3>
-                      <p className="mt-5 text-lg leading-7 text-[#30353b]">
-                        {item.summary}
+                      <p className="mt-3 text-[17px] leading-8 text-[#52657c]">
+                        {item.description}
                       </p>
-                      <Link
-                        href="/blog"
-                        className="mt-7 inline-flex text-sm font-bold tracking-[0.12em] hover:underline"
-                      >
-                        Read Full Paper
-                      </Link>
-                    </article>
-                  ))}
-                </div>
-              </section>
+                    </div>
+                  </>
+                );
+
+                return item.href ? (
+                  <Link
+                    key={item.title}
+                    href={item.href}
+                    className="flex min-h-[220px] gap-6 rounded-[18px] border border-[#dbe3ea] bg-white p-8 transition-[transform,box-shadow,border-color] hover:-translate-y-1 hover:border-[#abc7d8] hover:shadow-xl motion-reduce:transform-none"
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  <article
+                    key={item.title}
+                    className="flex min-h-[220px] gap-6 rounded-[18px] border border-[#dbe3ea] bg-white p-8"
+                  >
+                    {content}
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="application"
+          className="scroll-mt-24 bg-[#f4f7fb] py-20 lg:py-28"
+        >
+          <div className="mx-auto max-w-[980px] px-5 md:px-10">
+            <div className="text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
+                Application
+              </p>
+              <h2 className="mt-6 font-serif text-[40px] font-bold leading-tight sm:text-[50px]">
+                Apply for Membership
+              </h2>
+              <p className="mx-auto mt-5 max-w-2xl text-[17px] leading-8 text-[#52657c]">
+                Complete every field below. Your application will be submitted
+                to the existing administrative review workflow.
+              </p>
             </div>
 
-            <aside className="space-y-7">
-              <section className="rounded-xl bg-[#002e5f] p-8 text-white">
-                <h2 className="font-serif text-3xl font-bold text-[#f9d28b]">
-                  Quick Actions
-                </h2>
-                <div className="mt-7 grid gap-4">
-                  {actions.map((action, index) => (
-                    <Link
-                      key={action}
-                      href={index === 1 ? "/archive" : "/contact"}
-                      className={`flex min-h-14 items-center justify-between rounded-md px-5 text-lg font-semibold ${
-                        index === actions.length - 1
-                          ? "border border-[#f9d28b]/50 bg-transparent"
-                          : "bg-white/8 hover:bg-white/14"
-                      }`}
-                    >
-                      <span>{action}</span>
-                      <span className="text-[#f9d28b]">{index + 1}</span>
-                    </Link>
-                  ))}
-                </div>
-              </section>
+            {success ? (
+              <div
+                role="status"
+                className="mt-10 rounded-[14px] border border-[#9ed9b1] bg-[#ecfff2] px-5 py-4 text-[#176c36]"
+              >
+                {success}
+              </div>
+            ) : null}
+            {error ? (
+              <div
+                role="alert"
+                className="mt-10 rounded-[14px] border border-[#efb4b4] bg-[#fff1f1] px-5 py-4 text-[#9b2525]"
+              >
+                {error}
+              </div>
+            ) : null}
 
-              <section className="rounded-xl border border-[#c4cbd3] bg-[#e1e3e4] p-8">
-                <div className="flex items-center justify-between">
-                  <h2 className="font-serif text-3xl text-[#000613]">
-                    Notifications
-                  </h2>
-                  <span className="flex size-6 items-center justify-center rounded-full bg-[#c9222a] text-xs font-bold text-white">
-                    2
-                  </span>
-                </div>
-                <div className="mt-7 space-y-4">
-                  <article className="rounded-lg border-l-4 border-[#00639c] bg-white p-5">
-                    <h3 className="text-lg font-bold">
-                      New Archive Access Granted
-                    </h3>
-                    <p className="mt-1 text-sm leading-5 text-[#30353b]">
-                      Lvl 3 Security Clearance approved by Research Board.
-                    </p>
-                    <p className="mt-2 text-xs text-[#6b7280]">2 hours ago</p>
-                  </article>
-                  <article className="rounded-lg bg-white/55 p-5">
-                    <h3 className="text-lg font-bold text-[#5c636b]">
-                      Submission Under Review
-                    </h3>
-                    <p className="mt-1 text-sm leading-5 text-[#5c636b]">
-                      Your paper &quot;Regional Water Rights&quot; is currently
-                      in peer review.
-                    </p>
-                    <p className="mt-2 text-xs text-[#7c838a]">Yesterday</p>
-                  </article>
-                </div>
-                <Link
-                  href="/contact"
-                  className="mt-7 block text-center text-sm font-semibold tracking-[0.12em] text-[#00639c] hover:underline"
-                >
-                  Clear All Alerts
-                </Link>
-              </section>
-
-              <section className="relative overflow-hidden rounded-xl bg-[#002e5f] text-white">
-                <OptimizedFillImage
-                  src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=900&q=80"
-                  alt="Union reference library book"
-                  className="h-full w-full object-cover"
-                  sizes="(min-width: 1024px) 400px, 100vw"
+            <form
+              action={submitMembershipApplicationAction}
+              className="mt-10 rounded-[20px] border border-[#dbe3ea] bg-white p-6 shadow-[0_18px_50px_rgba(10,41,77,0.10)] sm:p-10"
+            >
+              <div className="grid gap-6 md:grid-cols-2">
+                <label className="text-[16px] font-semibold text-[#071f3c]">
+                  Full name <span aria-hidden="true">*</span>
+                  <input
+                    className={inputClassName}
+                    name="fullName"
+                    autoComplete="name"
+                    maxLength={160}
+                    required
+                  />
+                </label>
+                <label className="text-[16px] font-semibold text-[#071f3c]">
+                  Email address <span aria-hidden="true">*</span>
+                  <input
+                    className={inputClassName}
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    maxLength={255}
+                    required
+                  />
+                </label>
+                <label className="text-[16px] font-semibold text-[#071f3c]">
+                  Phone number <span aria-hidden="true">*</span>
+                  <input
+                    className={inputClassName}
+                    type="tel"
+                    name="phone"
+                    autoComplete="tel"
+                    maxLength={40}
+                    placeholder="+252 61 123 4567"
+                    pattern="[+()0-9 .-]{7,40}"
+                    required
+                  />
+                </label>
+                <label className="text-[16px] font-semibold text-[#071f3c]">
+                  University <span aria-hidden="true">*</span>
+                  <input
+                    className={inputClassName}
+                    name="university"
+                    autoComplete="organization"
+                    maxLength={180}
+                    required
+                  />
+                </label>
+              </div>
+              <label className="mt-6 block text-[16px] font-semibold text-[#071f3c]">
+                Area of interest <span aria-hidden="true">*</span>
+                <input
+                  className={inputClassName}
+                  name="areaOfInterest"
+                  maxLength={180}
+                  placeholder="e.g. public diplomacy, policy research, peacebuilding"
+                  required
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,6,19,0.2),rgba(0,31,63,0.96))]" />
-                <div className="relative min-h-[190px] p-8" />
-                <div className="relative p-8 pt-0">
-                  <h2 className="font-serif text-2xl font-bold">
-                    Union Reference Library
-                  </h2>
-                  <p className="mt-2 text-sm font-semibold">
-                    Exclusive member access to 5,000+ digital volumes
+              </label>
+              <button
+                type="submit"
+                className="group mt-8 inline-flex h-14 w-full items-center justify-center gap-3 rounded-[8px] bg-[#1778b8] px-8 text-lg font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg motion-reduce:transform-none"
+              >
+                Submit Application
+                <Send className="size-5" aria-hidden="true" />
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section className="bg-[#f4f7fb] pb-24 lg:pb-28">
+          <div className="mx-auto max-w-[1080px] px-5 md:px-10">
+            <div className="text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
+                FAQ
+              </p>
+              <h2 className="mt-6 font-serif text-[40px] font-bold sm:text-[50px]">
+                Membership Questions
+              </h2>
+            </div>
+            <div className="mt-14 space-y-4">
+              {faqs.map((faq) => (
+                <details
+                  key={faq.question}
+                  className="group rounded-[18px] border border-[#dbe3ea] bg-white px-6 open:shadow-md sm:px-9"
+                >
+                  <summary className="flex min-h-20 cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold text-[#071f3c] [&::-webkit-details-marker]:hidden">
+                    {faq.question}
+                    <ChevronDown
+                      className="size-5 shrink-0 text-[#0874b9] transition-transform group-open:rotate-180 motion-reduce:transform-none"
+                      aria-hidden="true"
+                    />
+                  </summary>
+                  <p className="border-t border-[#e4e8ec] pb-7 pt-5 text-[17px] leading-8 text-[#52657c]">
+                    {faq.answer}
                   </p>
-                </div>
-              </section>
-            </aside>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="bg-[#0a294d] text-[#c3cfda]">
+        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
+          <div>
+            <BrandLogo inverse />
+            <p className="mt-7 max-w-sm text-[16px] leading-7">
+              Empowering Somali youth through training, dialogue, research, and
+              international engagement.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Quick Links
+            </h2>
+            <ul className="mt-7 grid grid-cols-2 gap-4">
+              {navigationItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="transition-colors hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Contact
+            </h2>
+            <p className="mt-7 max-w-md leading-7">
+              Questions about membership are handled through the existing
+              contact form.
+            </p>
+            <Link
+              href="/contact"
+              className="mt-7 inline-flex min-h-11 items-center gap-3 text-white transition-colors hover:text-[#28b1f2]"
+            >
+              <Mail className="size-5" aria-hidden="true" /> Contact SSDU
+            </Link>
           </div>
         </div>
-      </main>
-      <DashboardFooter />
+        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
+          <p>
+            &copy; 2026 Somali Student Diplomacy Union. All rights reserved.
+          </p>
+          <Link href="/contact" className="transition-colors hover:text-white">
+            Privacy and terms inquiries
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }

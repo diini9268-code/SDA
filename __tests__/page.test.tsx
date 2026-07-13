@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import AboutPage from "@/app/about/page";
 import BlogPage from "@/app/blog/page";
 import LeadershipPage from "@/app/leadership/page";
+import MembershipPage from "@/app/membership/page";
 import Home from "@/app/page";
 
 describe("Public pages", () => {
@@ -103,5 +104,32 @@ describe("Public pages", () => {
       }),
     ).toBeDefined();
     expect(screen.queryByText("Showing 12 of 48 publications")).toBeNull();
+  });
+
+  it("renders only backend-supported membership application fields", async () => {
+    cleanup();
+    render(await MembershipPage({}));
+
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Join the SSDU Community",
+      }),
+    ).toBeDefined();
+    for (const fieldName of [
+      "fullName",
+      "email",
+      "phone",
+      "university",
+      "areaOfInterest",
+    ]) {
+      expect(document.querySelector(`[name="${fieldName}"]`)).not.toBeNull();
+    }
+    for (const unsupportedField of ["city", "category", "motivation"]) {
+      expect(document.querySelector(`[name="${unsupportedField}"]`)).toBeNull();
+    }
+    expect(
+      screen.getByRole("button", { name: "Submit Application" }),
+    ).toBeDefined();
   });
 });
