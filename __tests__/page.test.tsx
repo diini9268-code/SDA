@@ -2,6 +2,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import AboutPage from "@/app/about/page";
 import BlogPage from "@/app/blog/page";
+import ContactPage from "@/app/contact/page";
 import LeadershipPage from "@/app/leadership/page";
 import MembershipPage from "@/app/membership/page";
 import Home from "@/app/page";
@@ -139,5 +140,21 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("button", { name: "Submit Application" }),
     ).toBeDefined();
+  });
+
+  it("renders only backend-supported contact message fields", async () => {
+    cleanup();
+    render(await ContactPage({}));
+
+    expect(screen.getByRole("heading", { level: 1, name: "Contact Us" })).toBeDefined();
+    for (const fieldName of ["fullName", "email", "subject", "message"]) {
+      expect(document.querySelector(`[name="${fieldName}"]`)).not.toBeNull();
+    }
+    for (const unsupportedField of ["phone", "attachment", "newsletter"]) {
+      expect(document.querySelector(`[name="${unsupportedField}"]`)).toBeNull();
+    }
+    expect(screen.getByRole("button", { name: /Send Message/ })).toBeDefined();
+    expect(screen.queryByText("+252 61 234 5678")).toBeNull();
+    expect(screen.queryByText("Maka Al-Mukarama Road")).toBeNull();
   });
 });
