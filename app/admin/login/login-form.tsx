@@ -45,11 +45,11 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
   return (
     <form onSubmit={handleSubmit} className="grid min-w-0 gap-6">
       <div className="grid gap-2.5">
-        <label htmlFor="email" className="text-[16px] font-semibold text-white/85">
+        <label htmlFor="admin-email" className="text-[16px] font-semibold text-white/85">
           Email Address
         </label>
         <input
-          id="email"
+          id="admin-email"
           name="email"
           type="email"
           required
@@ -60,12 +60,12 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
         />
       </div>
       <div className="grid gap-2.5">
-        <label htmlFor="password" className="text-[16px] font-semibold text-white/85">
+        <label htmlFor="admin-password" className="text-[16px] font-semibold text-white/85">
           Password
         </label>
         <div className="relative">
           <input
-            id="password"
+            id="admin-password"
             name="password"
             type={showPassword ? "text" : "password"}
             required

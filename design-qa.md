@@ -69,21 +69,21 @@ final result: passed
 
 - Source: the supplied homepage header and Member Login screenshots from July 13, 2026.
 - The existing authentication backend supports administrator email/password sessions only. It does not contain member accounts, a member role, a member portal, password recovery, account registration, or configurable persistent sessions.
-- The implementation therefore labels the screen `Admin Login` and uses the existing `/api/auth/login` endpoint without adding simulated member behavior.
+- The public `/login` screen therefore presents the requested member interface without submitting credentials. The existing admin form and `/api/auth/login` integration are preserved at `/admin/login`.
 
 ## Rendered Evidence
 
 - Login page: `C:\Users\Owner\AppData\Local\Temp\sda-login-desktop.png`.
 - Public homepage header: `C:\Users\Owner\AppData\Local\Temp\sda-home-login-header.png`.
-- Production build rendered at `http://localhost:3013/login`.
-- A request to `/admin/reports?range=30` redirects to `/login?next=%2Fadmin%2Freports%3Frange%3D30`, preserving the protected destination.
+- The public member entry is available at `/login`; the protected administrator entry is available at `/admin/login`.
+- A request to `/admin/reports?range=30` redirects to `/admin/login?next=%2Fadmin%2Freports%3Frange%3D30`, preserving the protected destination.
 
 ## Comparison
 
 - The homepage now exposes a visible Login link beside the membership CTA, matching the source hierarchy.
-- The login screen follows the reference's centered brand, serif heading, bordered form surface, pale inputs, password visibility control, and full-width primary action.
-- Authentication errors are announced to assistive technology, fields use explicit labels and autocomplete metadata, and the password control has an accessible name.
-- Successful authentication returns administrators only to a validated local `/admin` destination.
+- The member login screen follows the reference's centered brand, serif heading, bordered form surface, pale inputs, password visibility control, auxiliary controls, and full-width primary action.
+- Member submit attempts produce an explicit status message and do not call the administrator API or retain credentials.
+- The separate administrator screen continues to announce authentication errors and returns successful administrators only to a validated local `/admin` destination.
 
 ## Skipped Features And Required Backend Work
 
@@ -97,7 +97,7 @@ final result: passed
 - P0: none.
 - P1: none.
 - P2: none in the latest captures.
-- P3: the reference says `Member Login`; the implementation intentionally says `Admin Login` because member authentication is unsupported.
+- P3: member sign-in, remember-me persistence, and password recovery remain informational UI only because member authentication is unsupported.
 
 ## Result
 

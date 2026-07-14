@@ -7,6 +7,11 @@ function isAdminApi(pathname: string): boolean {
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  if (pathname === "/admin/login") {
+    return NextResponse.next();
+  }
+
   const authorization = authorizeAdminRequest(request.headers.get("cookie"));
 
   if (authorization.authorized) {
@@ -21,7 +26,7 @@ export function proxy(request: NextRequest) {
   }
 
   const redirectUrl = request.nextUrl.clone();
-  redirectUrl.pathname = "/login";
+  redirectUrl.pathname = "/admin/login";
   redirectUrl.search = "";
   redirectUrl.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
 

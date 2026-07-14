@@ -1,9 +1,10 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import AboutPage from "@/app/about/page";
 import BlogPage from "@/app/blog/page";
 import ContactPage from "@/app/contact/page";
 import LeadershipPage from "@/app/leadership/page";
+import AdminLoginPage from "@/app/admin/login/page";
 import LoginPage from "@/app/login/page";
 import MembershipPage from "@/app/membership/page";
 import Home from "@/app/page";
@@ -168,9 +169,25 @@ describe("Public pages", () => {
     expect(screen.queryByText("Maka Al-Mukarama Road")).toBeNull();
   });
 
-  it("renders the supported administrator login without member-only controls", async () => {
+  it("renders the public member login without submitting to admin authentication", () => {
     cleanup();
-    render(await LoginPage({ searchParams: Promise.resolve({}) }));
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    render(<LoginPage />);
+
+    expect(screen.getByRole("heading", { level: 1, name: "Member Login" })).toBeDefined();
+    expect(screen.getByLabelText("Remember me")).toBeDefined();
+    expect(screen.getByRole("link", { name: "Forgot password?" }).getAttribute("href")).toBe("/contact");
+    expect(screen.getByRole("link", { name: /Apply for membership/ }).getAttribute("href")).toBe("/membership");
+    expect(screen.getByRole("link", { name: /Admin login/ }).getAttribute("href")).toBe("/admin/login");
+    fireEvent.submit(screen.getByRole("button", { name: "Sign In" }).closest("form")!);
+    expect(screen.getByRole("status").textContent).toContain("Member authentication is not available yet");
+    expect(fetchSpy).not.toHaveBeenCalled();
+    fetchSpy.mockRestore();
+  });
+
+  it("preserves the supported administrator login without member-only controls", async () => {
+    cleanup();
+    render(await AdminLoginPage({ searchParams: Promise.resolve({}) }));
 
     expect(screen.getByRole("heading", { level: 1, name: "Admin Login" })).toBeDefined();
     expect(document.querySelector('[name="email"]')).not.toBeNull();
