@@ -99,7 +99,7 @@ function RowActions({ profile }: { profile: LeadershipProfile }) {
   return (
     <div className="flex items-center gap-1">
       <Link href={`/admin/leadership?edit=${encodeURIComponent(profile.id)}#profile-form`} className="flex size-10 items-center justify-center rounded-md text-[#62758d] transition-colors hover:bg-[#e7f1f8] hover:text-[#1f78b4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f78b4]" aria-label={`Edit ${profile.fullName}`} title="Edit profile"><Pencil className="size-[18px]" aria-hidden="true" /></Link>
-      <form action={deleteLeadershipAction.bind(null, profile.id)}><IconDeleteButton confirmation={`Delete ${profile.fullName}?`} /></form>
+      <form action={deleteLeadershipAction.bind(null, profile.id)}><IconDeleteButton confirmation={`Delete ${profile.fullName}?`} subject="leadership profile" /></form>
     </div>
   );
 }

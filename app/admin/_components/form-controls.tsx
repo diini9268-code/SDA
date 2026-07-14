@@ -56,7 +56,13 @@ export function DeleteButton({
   );
 }
 
-export function IconDeleteButton({ confirmation }: { confirmation: string }) {
+export function IconDeleteButton({
+  confirmation,
+  subject = "item",
+}: {
+  confirmation: string;
+  subject?: string;
+}) {
   const { pending } = useFormStatus();
 
   return (
@@ -69,8 +75,8 @@ export function IconDeleteButton({ confirmation }: { confirmation: string }) {
         }
       }}
       className="flex size-10 items-center justify-center rounded-md text-[#62758d] transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f78b4] disabled:cursor-wait disabled:opacity-40"
-      aria-label={pending ? "Deleting leadership profile" : "Delete leadership profile"}
-      title="Delete profile"
+      aria-label={pending ? `Deleting ${subject}` : `Delete ${subject}`}
+      title={`Delete ${subject}`}
     >
       <Trash2 className="size-[18px]" aria-hidden="true" />
     </button>
