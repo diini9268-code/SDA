@@ -32,6 +32,10 @@ vi.mock("@/lib/auth/require-admin", () => ({
   })),
 }));
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: vi.fn(), refresh: vi.fn() }),
+}));
+
 vi.mock("@/lib/archive/archive-repository", () => ({
   prismaArchiveRepository: repositories.archive,
 }));
@@ -71,12 +75,14 @@ describe("Admin dashboard", () => {
       {
         id: "blog-1",
         title: "Published update",
+        category: "News",
         status: "PUBLISHED",
         updatedAt: now,
       },
       {
         id: "blog-2",
         title: "Draft update",
+        category: "News",
         status: "DRAFT",
         updatedAt: now,
       },
@@ -84,6 +90,7 @@ describe("Admin dashboard", () => {
     repositories.contact.listAll.mockResolvedValue([
       {
         id: "contact-1",
+        fullName: "Website Visitor",
         subject: "Partnership inquiry",
         status: "UNREAD",
         createdAt: now,
@@ -93,18 +100,21 @@ describe("Admin dashboard", () => {
       {
         id: "leader-1",
         fullName: "Amina Hassan",
+        isActive: true,
       },
     ]);
     repositories.membership.listAll.mockResolvedValue([
       {
         id: "membership-1",
         fullName: "Student Applicant",
+        areaOfInterest: "Diplomacy",
         status: "PENDING",
         submittedAt: now,
       },
       {
         id: "membership-2",
         fullName: "Approved Applicant",
+        areaOfInterest: "Research",
         status: "APPROVED",
         submittedAt: now,
       },
@@ -123,14 +133,17 @@ describe("Admin dashboard", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "SSDU Admin Dashboard",
+        name: "Dashboard Home",
       }),
     ).toBeDefined();
-    expect(screen.getByText("1 drafts waiting for review")).toBeDefined();
-    expect(screen.getByText("1 scheduled programs")).toBeDefined();
+    expect(screen.getByText("1 drafts")).toBeDefined();
+    expect(screen.getByText("1 total programs")).toBeDefined();
     expect(screen.getByText("2 total applications")).toBeDefined();
     expect(screen.getByText("1 total messages")).toBeDefined();
-    expect(screen.getByRole("link", { name: /Manage blog/i })).toBeDefined();
-    expect(screen.getByRole("link", { name: /Review contact/i })).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Blog by Category" })).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Application Status" })).toBeDefined();
+    expect(screen.getAllByRole("link", { name: /Applications/ }).length).toBeGreaterThan(0);
+    expect(screen.queryByRole("link", { name: "Users" })).toBeNull();
+    expect(screen.queryByRole("searchbox")).toBeNull();
   });
 });

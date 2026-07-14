@@ -1,112 +1,95 @@
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
+import {
+  Archive,
+  BookOpenText,
+  ChartNoAxesColumnIncreasing,
+  CircleGauge,
+  FileText,
+  Globe2,
+  Inbox,
+  LayoutDashboard,
+  MessageSquare,
+  Target,
+  UserRoundCheck,
+  UsersRound,
+} from "lucide-react";
+import { LogoutButton } from "@/app/admin/_components/logout-button";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
-import type { BlogRecord } from "@/lib/blog/blog-service";
 import { prismaContactRepository } from "@/lib/contact/contact-repository";
-import type { ContactMessageRecord } from "@/lib/contact/contact-service";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
 import { prismaMembershipRepository } from "@/lib/membership/membership-repository";
-import type { MembershipApplicationRecord } from "@/lib/membership/membership-service";
 import { prismaProgramRepository } from "@/lib/programs/program-repository";
-import type { ProgramRecord } from "@/lib/programs/program-service";
 
-type DashboardCard = {
-  href: string;
-  category: string;
-  title: string;
-  description: string;
-  value: string;
+const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
+  { href: "/admin", label: "Dashboard Home", icon: LayoutDashboard },
+  { href: "/admin/leadership", label: "Leadership", icon: UsersRound },
+  { href: "/admin/programs", label: "Programs", icon: Target },
+  { href: "/admin/blog", label: "Blog", icon: BookOpenText },
+  { href: "/admin/membership", label: "Applications", icon: UserRoundCheck },
+  { href: "/admin/contact", label: "Messages", icon: Inbox },
+  { href: "/admin/archive", label: "Archive", icon: Archive },
+  { href: "/admin/reports", label: "Reports", icon: ChartNoAxesColumnIncreasing },
+];
+
+const statusColors: Record<string, string> = {
+  APPROVED: "#1f78b4",
+  PENDING: "#f59e0b",
+  REJECTED: "#ef4444",
 };
 
-type StatCard = {
+const statusClasses: Record<string, string> = {
+  APPROVED: "bg-emerald-100 text-emerald-700",
+  PENDING: "bg-amber-100 text-amber-700",
+  REJECTED: "bg-red-100 text-red-700",
+  UNREAD: "bg-sky-100 text-sky-700",
+  READ: "bg-slate-100 text-slate-600",
+  ARCHIVED: "bg-slate-100 text-slate-600",
+};
+
+function initials(value: string): string {
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("") || "AD";
+}
+
+function formatDate(value: Date): string {
+  return new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(value);
+}
+
+function StatCard({
+  label,
+  value,
+  detail,
+  href,
+  icon: Icon,
+  tone,
+}: {
   label: string;
   value: number;
   detail: string;
   href: string;
-};
-
-function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat("en", {
-    dateStyle: "medium",
-  }).format(date);
-}
-
-function latestByDate<T>(items: T[], getDate: (item: T) => Date): T | null {
-  return items.reduce<T | null>((latest, item) => {
-    if (!latest || getDate(item) > getDate(latest)) {
-      return item;
-    }
-
-    return latest;
-  }, null);
-}
-
-function ManagementCard({ card }: { card: DashboardCard }) {
-  return (
-    <Link
-      href={card.href}
-      className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-400"
-    >
-      <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-        {card.category}
-      </p>
-      <h2 className="mt-3 text-2xl font-semibold">{card.title}</h2>
-      <p className="mt-2 text-sm leading-6 text-slate-600">
-        {card.description}
-      </p>
-      <p className="mt-5 text-sm font-semibold text-slate-950">{card.value}</p>
-    </Link>
-  );
-}
-
-function StatCard({ stat }: { stat: StatCard }) {
-  return (
-    <Link
-      href={stat.href}
-      className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-400"
-    >
-      <p className="text-sm font-medium text-slate-500">{stat.label}</p>
-      <p className="mt-2 text-3xl font-semibold text-slate-950">
-        {stat.value}
-      </p>
-      <p className="mt-2 text-sm leading-6 text-slate-600">{stat.detail}</p>
-    </Link>
-  );
-}
-
-function ActivityItem({
-  title,
-  detail,
-  href,
-}: {
-  title: string;
-  detail: string;
-  href: string;
+  icon: LucideIcon;
+  tone: string;
 }) {
   return (
-    <Link
-      href={href}
-      className="rounded-md border border-slate-200 px-4 py-3 transition hover:border-slate-400"
-    >
-      <p className="text-sm font-semibold text-slate-950">{title}</p>
-      <p className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-500">
-        {detail}
-      </p>
+    <Link href={href} className="group min-h-[190px] rounded-[8px] border border-[#dfe5eb] bg-white p-6 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-[#9abbd2] hover:shadow-md motion-reduce:transform-none">
+      <span className={`flex size-12 items-center justify-center rounded-[8px] ${tone}`}><Icon className="size-6" aria-hidden="true" /></span>
+      <p className="mt-6 text-[34px] font-bold leading-none text-[#0a294d]">{value}</p>
+      <p className="mt-3 text-[15px] font-medium text-[#52657c]">{label}</p>
+      <p className="mt-1 text-xs text-[#718196]">{detail}</p>
     </Link>
   );
 }
 
 export default async function AdminPage() {
   const session = await requireAdminSession();
-  const [
-    archive,
-    blog,
-    contactMessages,
-    leadership,
-    membershipApplications,
-    programs,
-  ] = await Promise.all([
+  const [archive, blog, contactMessages, leadership, membershipApplications, programs] = await Promise.all([
     prismaArchiveRepository.listAll(),
     prismaBlogRepository.listAll(),
     prismaContactRepository.listAll(),
@@ -115,231 +98,111 @@ export default async function AdminPage() {
     prismaProgramRepository.listAll(),
   ]);
 
-  const pendingMembership = membershipApplications.filter(
-    (application) => application.status === "PENDING",
-  );
-  const unreadContact = contactMessages.filter(
-    (message) => message.status === "UNREAD",
-  );
-  const draftBlog = blog.filter((post) => post.status === "DRAFT");
-  const publishedBlog = blog.filter((post) => post.status === "PUBLISHED");
-  const scheduledPrograms = programs.filter(
-    (program) => program.status === "SCHEDULED",
-  );
-  const publishedPrograms = programs.filter(
-    (program) => program.status === "PUBLISHED",
-  );
+  const pendingApplications = membershipApplications.filter((item) => item.status === "PENDING");
+  const unreadMessages = contactMessages.filter((item) => item.status === "UNREAD");
+  const livePrograms = programs.filter((item) => item.status === "PUBLISHED" || item.status === "SCHEDULED");
+  const activeLeadership = leadership.filter((item) => item.isActive !== false);
 
-  const managementCards: DashboardCard[] = [
-    {
-      href: "/admin/blog",
-      category: "Content",
-      title: "Manage blog",
-      description: "Create posts, publish updates, and attach blog-owned media.",
-      value: `${blog.length} posts`,
-    },
-    {
-      href: "/admin/leadership",
-      category: "Content",
-      title: "Manage leadership",
-      description: "Add, edit, reorder, hide, and delete leadership profiles.",
-      value: `${leadership.length} profiles`,
-    },
-    {
-      href: "/admin/programs",
-      category: "Content",
-      title: "Manage programs",
-      description: "Create, schedule, publish, archive, cancel, and remove programs.",
-      value: `${programs.length} programs`,
-    },
-    {
-      href: "/admin/archive",
-      category: "Content",
-      title: "Manage archive",
-      description: "Preserve historical SSDU activities and organizational records.",
-      value: `${archive.length} entries`,
-    },
-    {
-      href: "/admin/membership",
-      category: "Review",
-      title: "Review membership",
-      description: "Review submitted membership applications and update statuses.",
-      value: `${pendingMembership.length} pending`,
-    },
-    {
-      href: "/admin/contact",
-      category: "Review",
-      title: "Review contact",
-      description: "Review visitor inquiries and mark messages read or archived.",
-      value: `${unreadContact.length} unread`,
-    },
-    {
-      href: "/admin/reports",
-      category: "Analytics",
-      title: "View reports",
-      description: "Review aggregated website, content, and submission metrics.",
-      value: "Database-backed",
-    },
-  ];
+  const applicationStatuses = ["APPROVED", "PENDING", "REJECTED"].map((status) => ({
+    status,
+    count: membershipApplications.filter((item) => item.status === status).length,
+  }));
+  const applicationTotal = applicationStatuses.reduce((total, item) => total + item.count, 0);
+  let cursor = 0;
+  const donutSegments = applicationStatuses.map((item) => {
+    const start = cursor;
+    cursor += applicationTotal ? (item.count / applicationTotal) * 100 : 0;
+    return `${statusColors[item.status]} ${start}% ${cursor}%`;
+  });
+  const donutBackground = applicationTotal
+    ? `conic-gradient(${donutSegments.join(", ")})`
+    : "conic-gradient(#dbe5ee 0 100%)";
 
-  const statCards: StatCard[] = [
-    {
-      label: "Published blog posts",
-      value: publishedBlog.length,
-      detail: `${draftBlog.length} drafts waiting for review`,
-      href: "/admin/blog",
-    },
-    {
-      label: "Live or scheduled programs",
-      value: publishedPrograms.length + scheduledPrograms.length,
-      detail: `${scheduledPrograms.length} scheduled programs`,
-      href: "/admin/programs",
-    },
-    {
-      label: "Pending membership",
-      value: pendingMembership.length,
-      detail: `${membershipApplications.length} total applications`,
-      href: "/admin/membership",
-    },
-    {
-      label: "Unread contact messages",
-      value: unreadContact.length,
-      detail: `${contactMessages.length} total messages`,
-      href: "/admin/contact",
-    },
-  ];
+  const categoryMap = new Map<string, number>();
+  for (const post of blog) {
+    const category = post.category || "Uncategorized";
+    categoryMap.set(category, (categoryMap.get(category) ?? 0) + 1);
+  }
+  const blogCategories = [...categoryMap.entries()]
+    .map(([category, count]) => ({ category, count }))
+    .sort((a, b) => b.count - a.count || a.category.localeCompare(b.category))
+    .slice(0, 6);
+  const maxCategoryCount = Math.max(1, ...blogCategories.map((item) => item.count));
 
-  const latestPost = latestByDate<BlogRecord>(blog, (post) => post.updatedAt);
-  const latestProgram = latestByDate<ProgramRecord>(
-    programs,
-    (program) => program.updatedAt,
-  );
-  const latestApplication = latestByDate<MembershipApplicationRecord>(
-    membershipApplications,
-    (application) => application.submittedAt,
-  );
-  const latestMessage = latestByDate<ContactMessageRecord>(
-    contactMessages,
-    (message) => message.createdAt,
-  );
-
-  const nextWorkItems = [
-    "Website optimization",
-    "Security hardening",
-    "Production deployment readiness",
-  ];
+  const recentApplications = [...membershipApplications]
+    .sort((a, b) => b.submittedAt.getTime() - a.submittedAt.getTime())
+    .slice(0, 4);
+  const recentMessages = [...contactMessages]
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 4);
+  const adminName = session?.fullName ?? "Administrator";
 
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-950 sm:px-10 lg:px-16">
-      <section className="mx-auto grid max-w-6xl gap-8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="flex flex-col gap-3">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-600">
-              Administrator
-            </p>
-            <h1 className="text-4xl font-semibold tracking-normal">
-              SSDU Admin Dashboard
-            </h1>
-            <p className="max-w-2xl text-base leading-7 text-slate-700">
-              Signed in as{" "}
-              {session?.fullName ?? "an authenticated administrator"}. Monitor
-              content health, review submissions, and open the right management
-              workflow from one place.
-            </p>
-          </div>
-          <Link
-            href="/"
-            className="w-fit rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-950 hover:text-slate-950"
-          >
-            View public site
-          </Link>
+    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
+      <aside className="bg-[#0a294d] text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
+        <div className="flex min-h-[104px] items-center gap-3 border-b border-white/10 px-6">
+          <span className="flex size-12 shrink-0 flex-col items-center justify-center"><Globe2 className="size-7 text-[#27b3f4]" /><span className="text-[7px] font-bold tracking-[0.22em]">SSDU</span></span>
+          <div><p className="text-lg font-bold">SSDU Admin</p><p className="text-sm text-[#27b3f4]">Administrator</p></div>
         </div>
+        <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-4 py-4 lg:flex-1 lg:flex-col lg:overflow-y-auto">
+          {navItems.map(({ href, label, icon: Icon }) => (
+            <Link key={href} href={href} aria-current={href === "/admin" ? "page" : undefined} className={`flex min-h-12 shrink-0 items-center gap-3 rounded-[8px] px-4 text-[15px] font-medium transition-colors ${href === "/admin" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}>
+              <Icon className="size-5" aria-hidden="true" />{label}
+              {href === "/admin/membership" && pendingApplications.length ? <span className="ml-auto rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-[#0a294d]">{pendingApplications.length}</span> : null}
+              {href === "/admin/contact" && unreadMessages.length ? <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadMessages.length}</span> : null}
+            </Link>
+          ))}
+        </nav>
+        <div className="hidden border-t border-white/10 p-4 lg:block">
+          <div className="mb-3 flex items-center gap-3 px-3"><span className="flex size-10 items-center justify-center rounded-full bg-[#1f82c1] font-bold">{initials(adminName)}</span><div className="min-w-0"><p className="truncate text-sm font-semibold">{adminName}</p><p className="truncate text-xs text-white/45">{session?.email}</p></div></div>
+          <LogoutButton />
+        </div>
+      </aside>
 
-        <section aria-labelledby="dashboard-overview">
-          <h2 id="dashboard-overview" className="text-xl font-semibold">
-            Dashboard overview
-          </h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {statCards.map((stat) => (
-              <StatCard key={stat.label} stat={stat} />
-            ))}
-          </div>
-        </section>
+      <div className="min-w-0">
+        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8">
+          <div><h1 className="text-[22px] font-bold">Dashboard Home</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Student Diplomacy Union CMS</p></div>
+          <div className="flex items-center gap-3"><Link href="/" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View public site</Link><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div>
+        </header>
 
-        <section aria-labelledby="management-tools">
-          <h2 id="management-tools" className="text-xl font-semibold">
-            Management tools
-          </h2>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {managementCards.map((card) => (
-              <ManagementCard key={card.href} card={card} />
-            ))}
-          </div>
-        </section>
+        <div className="grid gap-7 p-5 sm:p-8">
+          <section aria-labelledby="dashboard-metrics" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            <h2 id="dashboard-metrics" className="sr-only">Dashboard metrics</h2>
+            <StatCard label="Leadership Profiles" value={activeLeadership.length} detail={`${leadership.length} total profiles`} href="/admin/leadership" icon={UsersRound} tone="bg-sky-50 text-sky-600" />
+            <StatCard label="Live Programs" value={livePrograms.length} detail={`${programs.length} total programs`} href="/admin/programs" icon={Target} tone="bg-emerald-50 text-emerald-600" />
+            <StatCard label="Blog Posts" value={blog.length} detail={`${blog.filter((item) => item.status === "DRAFT").length} drafts`} href="/admin/blog" icon={FileText} tone="bg-violet-50 text-violet-600" />
+            <StatCard label="Pending Applications" value={pendingApplications.length} detail={`${membershipApplications.length} total applications`} href="/admin/membership" icon={UserRoundCheck} tone="bg-amber-50 text-amber-600" />
+            <StatCard label="Unread Messages" value={unreadMessages.length} detail={`${contactMessages.length} total messages`} href="/admin/contact" icon={MessageSquare} tone="bg-red-50 text-red-600" />
+          </section>
 
-        <section className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-xl font-semibold">Recent activity</h2>
-            <div className="mt-4 grid gap-3">
-              {latestPost ? (
-                <ActivityItem
-                  href="/admin/blog"
-                  title={latestPost.title}
-                  detail={`Latest blog update - ${formatDate(latestPost.updatedAt)}`}
-                />
-              ) : null}
-              {latestProgram ? (
-                <ActivityItem
-                  href="/admin/programs"
-                  title={latestProgram.title}
-                  detail={`Latest program update - ${formatDate(latestProgram.updatedAt)}`}
-                />
-              ) : null}
-              {latestApplication ? (
-                <ActivityItem
-                  href="/admin/membership"
-                  title={latestApplication.fullName}
-                  detail={`Latest application - ${formatDate(latestApplication.submittedAt)}`}
-                />
-              ) : null}
-              {latestMessage ? (
-                <ActivityItem
-                  href="/admin/contact"
-                  title={latestMessage.subject}
-                  detail={`Latest contact message - ${formatDate(latestMessage.createdAt)}`}
-                />
-              ) : null}
-              {!latestPost &&
-              !latestProgram &&
-              !latestApplication &&
-              !latestMessage ? (
-                <p className="rounded-md border border-dashed border-slate-300 px-4 py-3 text-sm text-slate-600">
-                  Recent content and submissions will appear here.
-                </p>
-              ) : null}
+          <section className="grid gap-7 xl:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-6 sm:p-8">
+              <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-[24px] font-bold">Blog by Category</h2><p className="mt-1 text-sm text-[#718196]">Published and draft posts from the current database</p></div><Link href="/admin/blog" className="text-sm font-semibold text-[#1f78b4] hover:underline">Manage blog</Link></div>
+              {blogCategories.length ? <div className="mt-8 grid gap-5">{blogCategories.map((item) => <div key={item.category} className="grid grid-cols-[minmax(90px,150px)_1fr_32px] items-center gap-3"><span className="truncate text-sm font-medium text-[#52657c]">{item.category}</span><span className="h-9 overflow-hidden rounded-[5px] bg-[#edf3f8]"><span className="block h-full rounded-[5px] bg-[#2378ad]" style={{ width: `${Math.max(8, (item.count / maxCategoryCount) * 100)}%` }} /></span><span className="text-right text-sm font-bold">{item.count}</span></div>)}</div> : <p className="mt-8 rounded-[8px] border border-dashed border-[#cfd9e2] px-5 py-8 text-center text-sm text-[#718196]">Blog categories will appear after posts are created.</p>}
             </div>
-          </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-xl font-semibold">Next planned feature areas</h2>
-            <div className="mt-4 grid gap-3">
-              {nextWorkItems.map((item, index) => (
-                <div
-                  key={item}
-                  className="rounded-md border border-slate-200 px-4 py-3"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Step {index + 1}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">
-                    {item}
-                  </p>
-                </div>
-              ))}
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-6 sm:p-8">
+              <h2 className="text-[24px] font-bold">Application Status</h2>
+              <div className="mx-auto mt-8 flex size-48 items-center justify-center rounded-full" style={{ background: donutBackground }}><div className="flex size-28 flex-col items-center justify-center rounded-full bg-white"><span className="text-3xl font-bold">{applicationTotal}</span><span className="text-xs text-[#718196]">Total</span></div></div>
+              <dl className="mt-8 grid gap-3">{applicationStatuses.map((item) => <div key={item.status} className="flex items-center justify-between"><dt className="flex items-center gap-2 text-sm text-[#52657c]"><span className="size-3 rounded-full" style={{ backgroundColor: statusColors[item.status] }} />{item.status[0]}{item.status.slice(1).toLowerCase()}</dt><dd className="text-sm font-bold">{item.count}</dd></div>)}</dl>
             </div>
-          </div>
-        </section>
-      </section>
+          </section>
+
+          <section className="grid gap-7 xl:grid-cols-2">
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-6 sm:p-8">
+              <div className="flex items-center justify-between"><h2 className="text-[24px] font-bold">Recent Applications</h2><Link href="/admin/membership" className="text-sm font-semibold text-[#1f78b4] hover:underline">View all</Link></div>
+              <div className="mt-6 divide-y divide-[#e6ebef]">{recentApplications.length ? recentApplications.map((item) => <div key={item.id} className="flex items-center gap-3 py-4"><span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#e7f1f8] text-sm font-bold text-[#1f78b4]">{initials(item.fullName)}</span><div className="min-w-0 flex-1"><p className="truncate font-semibold">{item.fullName}</p><p className="truncate text-sm text-[#718196]">{item.areaOfInterest || "Membership application"}</p></div><span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[item.status] ?? "bg-slate-100 text-slate-600"}`}>{item.status[0]}{item.status.slice(1).toLowerCase()}</span></div>) : <p className="py-8 text-center text-sm text-[#718196]">No membership applications yet.</p>}</div>
+            </div>
+
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-6 sm:p-8">
+              <div className="flex items-center justify-between"><h2 className="text-[24px] font-bold">Recent Messages</h2><Link href="/admin/contact" className="text-sm font-semibold text-[#1f78b4] hover:underline">View all</Link></div>
+              <div className="mt-6 divide-y divide-[#e6ebef]">{recentMessages.length ? recentMessages.map((item) => <div key={item.id} className="flex items-center gap-3 py-4"><span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#e9eff7] text-sm font-bold">{initials(item.fullName || "Message")}</span><div className="min-w-0 flex-1"><p className="truncate font-semibold">{item.fullName || "Website visitor"}</p><p className="truncate text-sm text-[#718196]">{item.subject}</p></div><div className="text-right"><p className="text-xs text-[#718196]">{formatDate(item.createdAt)}</p>{item.status === "UNREAD" ? <span className="mt-2 ml-auto block size-2.5 rounded-full bg-[#1f78b4]" aria-label="Unread" /> : null}</div></div>) : <p className="py-8 text-center text-sm text-[#718196]">No contact messages yet.</p>}</div>
+            </div>
+          </section>
+
+          <section className="flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-[#dfe5eb] bg-white px-5 py-4 text-sm text-[#718196]"><span>{archive.length} archive entries are stored.</span><Link href="/admin/reports" className="inline-flex items-center gap-2 font-semibold text-[#1f78b4] hover:underline"><CircleGauge className="size-4" />Open database reports</Link></section>
+        </div>
+      </div>
     </main>
   );
 }
