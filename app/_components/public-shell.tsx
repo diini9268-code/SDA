@@ -3,7 +3,6 @@ import Link from "next/link";
 const navigationItems = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/programs", label: "Programs" },
   { href: "/blog", label: "Research" },
   { href: "/archive", label: "Archive" },
   { href: "/membership", label: "Membership" },
@@ -104,11 +103,6 @@ export function PublicFooter() {
             <li>
               <Link className="hover:text-white hover:underline" href="/blog">
                 Research
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:text-white hover:underline" href="/programs">
-                Programs
               </Link>
             </li>
             <li>

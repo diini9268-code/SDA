@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
-import { prismaProgramRepository } from "@/lib/programs/program-repository";
 import { getAbsoluteUrl } from "@/lib/site/metadata";
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
@@ -14,7 +13,6 @@ const staticRoutes: Array<{
   { path: "/", priority: 1, changeFrequency: "weekly" },
   { path: "/about", priority: 0.8, changeFrequency: "monthly" },
   { path: "/leadership", priority: 0.8, changeFrequency: "weekly" },
-  { path: "/programs", priority: 0.9, changeFrequency: "weekly" },
   { path: "/blog", priority: 0.9, changeFrequency: "weekly" },
   { path: "/archive", priority: 0.7, changeFrequency: "monthly" },
   { path: "/membership", priority: 0.8, changeFrequency: "monthly" },
@@ -23,9 +21,8 @@ const staticRoutes: Array<{
 
 async function getDynamicRoutes(): Promise<SitemapEntry[]> {
   try {
-    const [posts, programs, archive] = await Promise.all([
+    const [posts, archive] = await Promise.all([
       prismaBlogRepository.listPublic(),
-      prismaProgramRepository.listPublic(),
       prismaArchiveRepository.listPublic(),
     ]);
 
@@ -34,12 +31,6 @@ async function getDynamicRoutes(): Promise<SitemapEntry[]> {
         url: getAbsoluteUrl(`/blog/${post.slug}`),
         lastModified: post.updatedAt,
         changeFrequency: "monthly" as const,
-        priority: 0.7,
-      })),
-      ...programs.map((program) => ({
-        url: getAbsoluteUrl(`/programs/${program.slug}`),
-        lastModified: program.updatedAt,
-        changeFrequency: "weekly" as const,
         priority: 0.7,
       })),
       ...archive.map((entry) => ({

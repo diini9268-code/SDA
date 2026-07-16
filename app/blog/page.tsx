@@ -4,8 +4,6 @@ import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import type { BlogRecord } from "@/lib/blog/blog-service";
-import { prismaProgramRepository } from "@/lib/programs/program-repository";
-import type { ProgramRecord } from "@/lib/programs/program-service";
 import { createPageMetadata } from "@/lib/site/metadata";
 import { publicNavigation } from "@/lib/site/official-content";
 
@@ -14,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata = createPageMetadata({
   title: "Blog",
   description:
-    "Read published SDA analysis, news, program updates, and perspectives on diplomacy and leadership.",
+    "Read published SDA analysis, news, organizational updates, and perspectives on diplomacy and leadership.",
   path: "/blog",
 });
 
@@ -94,17 +92,14 @@ function createBlogHref({
 
 async function getBlogData(): Promise<{
   posts: BlogRecord[];
-  programs: ProgramRecord[];
   available: boolean;
 }> {
-  const [postsResult, programsResult] = await Promise.allSettled([
+  const [postsResult] = await Promise.allSettled([
     prismaBlogRepository.listPublic(),
-    prismaProgramRepository.listPublic(),
   ]);
 
   return {
     posts: postsResult.status === "fulfilled" ? postsResult.value : [],
-    programs: programsResult.status === "fulfilled" ? programsResult.value : [],
     available: postsResult.status === "fulfilled",
   };
 }
@@ -410,33 +405,21 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
           </div>
           <div>
             <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
-              Public Programs
+              Organization
             </h2>
-            {data.programs.length > 0 ? (
-              <ul className="mt-7 space-y-4">
-                {data.programs.slice(0, 5).map((program) => (
-                  <li key={program.id}>
-                    <Link
-                      href={`/programs/${program.slug}`}
-                      className="transition-colors hover:text-white"
-                    >
-                      {program.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-7 leading-7">
-                No public programs are listed yet.
-              </p>
-            )}
+            <ul className="mt-7 space-y-4">
+              <li><Link href="/about" className="transition-colors hover:text-white">About SDA</Link></li>
+              <li><Link href="/leadership" className="transition-colors hover:text-white">Leadership</Link></li>
+              <li><Link href="/archive" className="transition-colors hover:text-white">Archive</Link></li>
+              <li><Link href="/membership" className="transition-colors hover:text-white">Membership</Link></li>
+            </ul>
           </div>
           <div>
             <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
               Contact
             </h2>
             <p className="mt-7 leading-7">
-              Questions about articles, programs, or partnerships are handled
+              Questions about articles, activities, or partnerships are handled
               through the existing contact form.
             </p>
             <Link

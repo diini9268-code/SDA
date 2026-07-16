@@ -2,17 +2,10 @@ import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
-  CalendarDays,
   Clock3,
   Globe2,
-  GraduationCap,
-  Handshake,
-  Heart,
   HeartHandshake,
-  Landmark,
   Mail,
-  MapPin,
-  Star,
   Target,
   UserRound,
 } from "lucide-react";
@@ -21,7 +14,6 @@ import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
-import { prismaProgramRepository } from "@/lib/programs/program-repository";
 import { createPageMetadata } from "@/lib/site/metadata";
 import {
   leadershipProfiles,
@@ -63,15 +55,12 @@ const principles: Array<{
   },
 ];
 
-const programIcons = [GraduationCap, Landmark, Handshake, Heart, Star];
-
 async function getHomeData() {
-  const [archiveResult, blogResult, leadershipResult, programsResult] =
+  const [archiveResult, blogResult, leadershipResult] =
     await Promise.allSettled([
       prismaArchiveRepository.listPublic(),
       prismaBlogRepository.listPublic(),
       prismaLeadershipRepository.listPublic(),
-      prismaProgramRepository.listPublic(),
     ]);
 
   const archive =
@@ -79,9 +68,6 @@ async function getHomeData() {
   const blog = blogResult.status === "fulfilled" ? blogResult.value : [];
   const leadership =
     leadershipResult.status === "fulfilled" ? leadershipResult.value : [];
-  const programs =
-    programsResult.status === "fulfilled" ? programsResult.value : [];
-
   return {
     archiveCount: archiveResult.status === "fulfilled" ? archive.length : null,
     blog: blog.slice(0, 3),
@@ -89,14 +75,10 @@ async function getHomeData() {
     leadership: leadership.slice(0, 4),
     leadershipCount:
       leadershipResult.status === "fulfilled" ? leadership.length : null,
-    programs: programs.slice(0, 5),
-    programCount:
-      programsResult.status === "fulfilled" ? programs.length : null,
     availability: {
       archive: archiveResult.status === "fulfilled",
       blog: blogResult.status === "fulfilled",
       leadership: leadershipResult.status === "fulfilled",
-      programs: programsResult.status === "fulfilled",
     },
   };
 }
@@ -107,10 +89,6 @@ function formatDate(date: Date): string {
     day: "numeric",
     year: "numeric",
   }).format(date);
-}
-
-function formatStatus(status: string): string {
-  return status.charAt(0) + status.slice(1).toLowerCase();
 }
 
 function estimateReadingTime(content: string): number {
@@ -130,7 +108,7 @@ export default async function Home() {
   const data = await getHomeData();
   const statistics = [
     { value: data.blogCount, label: "Published Articles" },
-    { value: data.programCount, label: "Public Programs" },
+    { value: "2024", label: "Founded" },
     { value: data.leadershipCount, label: "Leadership Profiles" },
     { value: data.archiveCount, label: "Archive Records" },
   ];
@@ -354,101 +332,6 @@ export default async function Home() {
         </section>
 
         <section
-          id="programs"
-          className="scroll-mt-20 bg-white pb-20 pt-2 sm:scroll-mt-[90px] lg:pb-24"
-        >
-          <div className="mx-auto max-w-[1780px] px-5 md:px-10 xl:px-12">
-            <div className="mx-auto max-w-[1100px] text-center">
-              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
-                Public Programs
-              </p>
-              <h2 className="mt-6 font-serif text-[42px] font-bold leading-tight text-[#0a294d] md:text-[46px] xl:text-[48px]">
-                Training the Next Diplomatic Generation
-              </h2>
-              <p className="mt-6 text-xl leading-8 text-[#52657c]">
-                Explore SDA training, diplomacy, and international engagement
-                opportunities currently available to the public.
-              </p>
-            </div>
-
-            {data.programs.length > 0 ? (
-              <div className="mt-16 grid gap-8 md:grid-cols-2 xl:mt-20 xl:grid-cols-3">
-                {data.programs.map((program, index) => {
-                  const Icon = programIcons[index % programIcons.length];
-                  return (
-                    <article
-                      key={program.id}
-                      className="group flex min-h-[355px] flex-col rounded-[20px] border border-[#dce2e8] p-8 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-[#b8cfde] hover:shadow-lg focus-within:-translate-y-1 focus-within:border-[#b8cfde] focus-within:shadow-lg motion-reduce:transform-none"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex size-14 items-center justify-center rounded-[18px] bg-[#e8f1f7] text-[#0874b9]">
-                          <Icon
-                            className="size-6"
-                            strokeWidth={1.8}
-                            aria-hidden="true"
-                          />
-                        </div>
-                        <span
-                          className={`rounded-full px-4 py-1 text-sm ${
-                            program.status === "SCHEDULED"
-                              ? "bg-[#dff2ff] text-[#0874b9]"
-                              : "bg-[#dcf8e7] text-[#087a43]"
-                          }`}
-                        >
-                          {formatStatus(program.status)}
-                        </span>
-                      </div>
-                      <h3 className="mt-7 font-serif text-[24px] font-bold leading-8 text-[#071f3c] transition-colors group-hover:text-[#0874b9] group-focus-within:text-[#0874b9]">
-                        <Link
-                          href={`/programs/${program.slug}`}
-                          className="rounded-sm"
-                        >
-                          {program.title}
-                        </Link>
-                      </h3>
-                      <p className="mt-4 line-clamp-3 text-[18px] leading-8 text-[#52657c]">
-                        {program.description}
-                      </p>
-                      <div className="mt-auto grid gap-3 border-t border-[#e4e8ec] pt-5 text-[15px] text-[#52657c] xl:grid-cols-2">
-                        <span className="inline-flex items-center gap-2">
-                          <CalendarDays className="size-4" aria-hidden="true" />
-                          {formatDate(program.eventDate)}
-                        </span>
-                        <span className="inline-flex items-center gap-2 xl:justify-end">
-                          <MapPin className="size-4" aria-hidden="true" />
-                          {program.location}
-                        </span>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="mt-16">
-                <EmptyState>
-                  {data.availability.programs
-                    ? "No public programs are available yet."
-                    : "Public programs are temporarily unavailable."}
-                </EmptyState>
-              </div>
-            )}
-
-            <div className="mt-16 text-center">
-              <Link
-                href="/programs"
-                className="group inline-flex h-14 items-center gap-3 rounded-md bg-[#1778b8] px-8 text-[17px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg motion-reduce:transform-none sm:text-lg"
-              >
-                View All Programs
-                <ArrowRight
-                  className="size-5 transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
-                  aria-hidden="true"
-                />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section
           id="leaders"
           className="scroll-mt-20 bg-[#f4f7fb] py-20 sm:scroll-mt-[90px] lg:py-24"
         >
@@ -532,8 +415,8 @@ export default async function Home() {
                 Ready to Represent Somalia to the World?
               </h2>
               <p className="mx-auto mt-8 max-w-[830px] text-xl leading-9 text-[#e5f1f8]">
-                Contact SDA to learn about membership, public diplomacy
-                programs, professional networks, and opportunities to contribute
+                Contact SDA to learn about membership, diplomatic education,
+                professional networks, and opportunities to contribute
                 to the organization&apos;s work.
               </p>
               <div className="mt-12 flex flex-wrap justify-center gap-5">
@@ -589,28 +472,14 @@ export default async function Home() {
 
           <div>
             <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
-              Public Programs
+              Organization
             </h2>
-            {data.programs.length > 0 ? (
-              <ul className="mt-7 space-y-4">
-                {data.programs.slice(0, 4).map((program) => (
-                  <li key={program.id}>
-                    <Link
-                      href={`/programs/${program.slug}`}
-                      className="rounded-sm transition-colors hover:text-white"
-                    >
-                      {program.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-7 leading-7">
-                {data.availability.programs
-                  ? "No public programs are listed yet."
-                  : "Public programs are temporarily unavailable."}
-              </p>
-            )}
+            <ul className="mt-7 space-y-4">
+              <li><Link href="/about" className="rounded-sm transition-colors hover:text-white">About SDA</Link></li>
+              <li><Link href="/leadership" className="rounded-sm transition-colors hover:text-white">Leadership</Link></li>
+              <li><Link href="/archive" className="rounded-sm transition-colors hover:text-white">Archive</Link></li>
+              <li><Link href="/blog" className="rounded-sm transition-colors hover:text-white">Blog</Link></li>
+            </ul>
           </div>
 
           <div>
@@ -618,7 +487,7 @@ export default async function Home() {
               Contact
             </h2>
             <p className="mt-7 leading-7">
-              Questions about membership, programs, or partnerships are handled
+              Questions about membership, activities, or partnerships are handled
               through the SDA contact form.
             </p>
             <Link

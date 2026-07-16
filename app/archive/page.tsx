@@ -55,21 +55,21 @@ const repositoryCards: RepositoryCard[] = [
     summary:
       "Education in diplomacy, international law, negotiation, and conflict resolution.",
     label: "Training",
-    action: "Program Area",
+    action: "Focus Area",
   },
   {
     title: "Leadership Development",
     summary:
       "Workshops in public speaking, strategic thinking, planning, teamwork, and ethical leadership.",
     label: "Development",
-    action: "Program Area",
+    action: "Focus Area",
   },
   {
     title: "Research and Publications",
     summary:
       "Research and publication activities advancing diplomatic knowledge and informed dialogue.",
     label: "Knowledge",
-    action: "Program Area",
+    action: "Focus Area",
   },
 ];
 
@@ -263,7 +263,7 @@ export default async function ArchivePage() {
             <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <h2 className="font-serif text-4xl font-bold text-[#000613]">
-                  Program and Knowledge Areas
+                  Focus and Knowledge Areas
                 </h2>
                 <p className="mt-5 max-w-2xl text-sm leading-6 text-[#5c636b]">
                   Official areas of work documented in the SDA organization profile.
@@ -309,7 +309,7 @@ export default async function ArchivePage() {
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/75">
               Use the public contact workflow for questions about SDA activities,
-              programs, publications, or official records.
+              activities, publications, or official records.
             </p>
             <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
               <Link

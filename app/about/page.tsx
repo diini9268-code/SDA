@@ -14,8 +14,6 @@ import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
 import type { ArchiveRecord } from "@/lib/archive/archive-service";
-import { prismaProgramRepository } from "@/lib/programs/program-repository";
-import type { ProgramRecord } from "@/lib/programs/program-service";
 import { createPageMetadata } from "@/lib/site/metadata";
 import {
   membershipRequirements,
@@ -28,7 +26,7 @@ export const dynamic = "force-dynamic";
 export const metadata = createPageMetadata({
   title: "About",
   description:
-    "Learn about the Somali Diplomacy Association, its mission, principles, programs, governance, and work supporting Somali youth diplomacy.",
+    "Learn about the Somali Diplomacy Association, its mission, principles, governance, and work supporting Somali youth diplomacy.",
   path: "/about",
 });
 
@@ -45,7 +43,7 @@ const values = [
     icon: Sparkles,
     title: "Integrity",
     description:
-      "We uphold ethical standards across our programs, partnerships, and organizational work.",
+      "We uphold ethical standards across our activities, partnerships, and organizational work.",
   },
   {
     icon: UsersRound,
@@ -80,11 +78,6 @@ const faqs = [
       membershipRequirements.join(" "),
   },
   {
-    question: "How can I find current programs?",
-    answer:
-      "Published programs appear on the Programs page with their date, location, description, and current status.",
-  },
-  {
     question: "Where can I see SDA's previous work?",
     answer:
       "The public Archive contains organizational activities and images published through the existing SDA administration workflow.",
@@ -98,17 +91,14 @@ const faqs = [
 
 async function getAboutData(): Promise<{
   archive: ArchiveRecord[];
-  programs: ProgramRecord[];
   archiveAvailable: boolean;
 }> {
-  const [archiveResult, programResult] = await Promise.allSettled([
+  const [archiveResult] = await Promise.allSettled([
     prismaArchiveRepository.listPublic(),
-    prismaProgramRepository.listPublic(),
   ]);
 
   return {
     archive: archiveResult.status === "fulfilled" ? archiveResult.value : [],
-    programs: programResult.status === "fulfilled" ? programResult.value : [],
     archiveAvailable: archiveResult.status === "fulfilled",
   };
 }
@@ -392,33 +382,21 @@ export default async function AboutPage() {
           </div>
           <div>
             <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
-              Public Programs
+              Organization
             </h2>
-            {data.programs.length > 0 ? (
-              <ul className="mt-7 space-y-4">
-                {data.programs.slice(0, 5).map((program) => (
-                  <li key={program.id}>
-                    <Link
-                      href={`/programs/${program.slug}`}
-                      className="transition-colors hover:text-white"
-                    >
-                      {program.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-7 leading-7">
-                No public programs are listed yet.
-              </p>
-            )}
+            <ul className="mt-7 space-y-4">
+              <li><Link href="/about" className="transition-colors hover:text-white">About SDA</Link></li>
+              <li><Link href="/leadership" className="transition-colors hover:text-white">Leadership</Link></li>
+              <li><Link href="/archive" className="transition-colors hover:text-white">Archive</Link></li>
+              <li><Link href="/blog" className="transition-colors hover:text-white">Blog</Link></li>
+            </ul>
           </div>
           <div>
             <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
               Contact
             </h2>
             <p className="mt-7 leading-7">
-              Membership, program, and partnership questions are handled through
+              Membership, activity, and partnership questions are handled through
               the existing contact form.
             </p>
             <Link

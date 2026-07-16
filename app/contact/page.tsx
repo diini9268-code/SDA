@@ -137,7 +137,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
               Contact Us
             </h1>
             <p className="mx-auto mt-7 max-w-3xl text-[18px] leading-8 text-[#becbd7] sm:text-[23px] sm:leading-10">
-              Send a question about membership, programs, partnerships, or
+              Send a question about membership, activities, partnerships, or
               SDA activities through the official contact workflow.
             </p>
           </div>

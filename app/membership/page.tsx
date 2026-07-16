@@ -35,14 +35,14 @@ const opportunities = [
     title: "Diplomatic Education",
     description:
       "Take part in workshops covering diplomacy, international law, negotiation, and conflict resolution.",
-    href: "/programs",
+    href: "/about",
   },
   {
     icon: UsersRound,
     title: "Leadership Development",
     description:
       "Build public speaking, strategic thinking, teamwork, and ethical leadership skills.",
-    href: "/programs",
+    href: "/about",
   },
   {
     icon: BookOpen,
@@ -67,7 +67,7 @@ const opportunities = [
     icon: Handshake,
     title: "Direct Contact",
     description:
-      "Use the supported contact workflow for membership, program, and partnership questions.",
+      "Use the supported contact workflow for membership, activity, and partnership questions.",
     href: "/contact",
   },
 ];

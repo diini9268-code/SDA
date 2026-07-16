@@ -19,12 +19,6 @@ vi.mock("@/lib/blog/blog-repository", () => ({
   },
 }));
 
-vi.mock("@/lib/programs/program-repository", () => ({
-  prismaProgramRepository: {
-    listPublic: vi.fn(async () => []),
-  },
-}));
-
 describe("SEO metadata", () => {
   it("builds absolute URLs from NEXT_PUBLIC_APP_URL", () => {
     vi.stubEnv("NEXT_PUBLIC_APP_URL", "https://ssdu.example");
@@ -39,15 +33,15 @@ describe("SEO metadata", () => {
     vi.stubEnv("NEXT_PUBLIC_APP_URL", "https://ssdu.example");
 
     const metadata = createPageMetadata({
-      title: "Programs",
-      description: "SSDU programs.",
-      path: "/programs",
+      title: "About",
+      description: "About SDA.",
+      path: "/about",
     });
 
-    expect(metadata.title).toBe("Programs | SDA");
-    expect(metadata.description).toBe("SSDU programs.");
+    expect(metadata.title).toBe("About | SDA");
+    expect(metadata.description).toBe("About SDA.");
     expect(metadata.alternates).toEqual({
-      canonical: "https://ssdu.example/programs",
+      canonical: "https://ssdu.example/about",
     });
 
     vi.unstubAllEnvs();

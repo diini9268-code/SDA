@@ -46,7 +46,7 @@ export const membershipRequirements = [
   "Be of Somali nationality or have strong ties to the Somali community.",
   "Accept and uphold the constitution of the Association.",
   "Maintain the code of conduct and ethical standards of the Association.",
-  "Actively participate in the activities and programs of the Association.",
+  "Actively participate in the activities and initiatives of the Association.",
 ];
 
 export const leadershipProfiles = [
@@ -83,7 +83,6 @@ export const leadershipProfiles = [
 export const publicNavigation = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/programs", label: "Programs" },
   { href: "/blog", label: "Blog" },
   { href: "/membership", label: "Membership" },
   { href: "/leadership", label: "Leadership" },
