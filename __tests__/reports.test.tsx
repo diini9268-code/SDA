@@ -16,6 +16,10 @@ vi.mock("@/lib/auth/require-admin", () => ({
   })),
 }));
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: vi.fn(), refresh: vi.fn() }),
+}));
+
 vi.mock("@/lib/reports/report-repository", () => ({
   prismaReportsRepository: reportRepository,
 }));
@@ -82,11 +86,12 @@ describe("reports and analytics", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Reports and analytics",
+        name: "Reports & Analytics",
       }),
     ).toBeDefined();
-    expect(screen.getByText("Blog posts")).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Content Overview" })).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Applications Overview" })).toBeDefined();
     expect(screen.getByText("Diplomacy")).toBeDefined();
-    expect(screen.queryByText("admin@example.com")).toBeNull();
+    expect(screen.getByText("admin@example.com")).toBeDefined();
   });
 });

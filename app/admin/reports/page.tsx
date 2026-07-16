@@ -1,192 +1,147 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
+import type { LucideIcon } from "lucide-react";
+import {
+  Archive,
+  BookOpenText,
+  ChartNoAxesColumnIncreasing,
+  Globe2,
+  Inbox,
+  LayoutDashboard,
+  Target,
+  UserRound,
+  UserRoundCheck,
+  UsersRound,
+} from "lucide-react";
+import { LogoutButton } from "@/app/admin/_components/logout-button";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { prismaReportsRepository } from "@/lib/reports/report-repository";
 import { getReportsSnapshot } from "@/lib/reports/report-service";
 import type { CategoryCount, StatusCount } from "@/lib/reports/report-service";
 
-function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat("en", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(date);
+const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
+  { href: "/admin", label: "Dashboard Home", icon: LayoutDashboard },
+  { href: "/admin/leadership", label: "Leadership", icon: UsersRound },
+  { href: "/admin/programs", label: "Programs", icon: Target },
+  { href: "/admin/blog", label: "Blog", icon: BookOpenText },
+  { href: "/admin/membership", label: "Applications", icon: UserRoundCheck },
+  { href: "/admin/contact", label: "Messages", icon: Inbox },
+  { href: "/admin/users", label: "Users", icon: UserRound },
+  { href: "/admin/archive", label: "Archive", icon: Archive },
+  { href: "/admin/reports", label: "Reports", icon: ChartNoAxesColumnIncreasing },
+];
+
+const applicationColors: Record<string, string> = {
+  APPROVED: "#1f78b4",
+  PENDING: "#f59e0b",
+  REJECTED: "#ef4444",
+};
+
+function initials(value: string): string {
+  return value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "AD";
 }
 
-function MetricCard({
-  label,
-  value,
-  detail,
-}: {
-  label: string;
-  value: number | string;
-  detail: string;
-}) {
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" }).format(date);
+}
+
+function statusLabel(value: string): string {
+  return value.split("_").map((part) => part[0] + part.slice(1).toLowerCase()).join(" ");
+}
+
+function countStatus(items: StatusCount[], status: string): number {
+  return items.find((item) => item.status === status)?.count ?? 0;
+}
+
+function DonutChart({ items }: { items: StatusCount[] }) {
+  const total = items.reduce((sum, item) => sum + item.count, 0);
+  let cursor = 0;
+  const segments = items.map((item) => {
+    const start = cursor;
+    cursor += total ? (item.count / total) * 100 : 0;
+    return `${applicationColors[item.status] ?? "#94a3b8"} ${start}% ${cursor}%`;
+  });
+  const background = total ? `conic-gradient(${segments.join(", ")})` : "#e2e8f0";
+
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <p className="text-sm font-medium text-slate-500">{label}</p>
-      <p className="mt-2 text-3xl font-semibold text-slate-950">{value}</p>
-      <p className="mt-2 text-sm leading-6 text-slate-600">{detail}</p>
+    <div className="grid items-center gap-7 sm:grid-cols-[220px_minmax(0,1fr)]">
+      <div className="relative mx-auto size-48 rounded-full sm:size-52" style={{ background }} role="img" aria-label={`Application status chart. ${items.map((item) => `${statusLabel(item.status)} ${item.count}`).join(", ")}`}>
+        <div className="absolute inset-[28%] flex flex-col items-center justify-center rounded-full bg-white"><span className="text-3xl font-bold">{total}</span><span className="mt-1 text-xs font-semibold uppercase text-[#718196]">Total</span></div>
+      </div>
+      <dl className="grid gap-3">
+        {items.length ? items.map((item) => <div key={item.status} className="flex items-center justify-between gap-4"><dt className="flex items-center gap-2 text-sm text-[#52657c]"><span className="size-2.5 rounded-full" style={{ backgroundColor: applicationColors[item.status] ?? "#94a3b8" }} />{statusLabel(item.status)}</dt><dd className="font-bold">{item.count}</dd></div>) : <div className="text-sm text-[#718196]">No applications yet.</div>}
+      </dl>
     </div>
   );
 }
 
-function StatusList({ items }: { items: StatusCount[] }) {
-  if (items.length === 0) {
-    return <p className="text-sm text-slate-600">No records yet.</p>;
-  }
+function BarChart({ items }: { items: Array<{ label: string; value: number }> }) {
+  const max = Math.max(1, ...items.map((item) => item.value));
 
   return (
-    <dl className="grid gap-3">
-      {items.map((item) => (
-        <div
-          key={item.status}
-          className="flex items-center justify-between rounded-md border border-slate-200 px-4 py-3"
-        >
-          <dt className="text-sm font-semibold text-slate-800">
-            {item.status}
-          </dt>
-          <dd className="text-sm font-semibold text-slate-950">
-            {item.count}
-          </dd>
-        </div>
-      ))}
+    <dl className="grid gap-4" aria-label="Current content totals">
+      {items.map((item) => <div key={item.label} className="grid grid-cols-[92px_minmax(0,1fr)_36px] items-center gap-3 sm:grid-cols-[110px_minmax(0,1fr)_44px]"><dt className="truncate text-sm font-medium text-[#52657c]">{item.label}</dt><dd className="h-7 overflow-hidden rounded-[4px] bg-[#edf2f7]"><span className="block h-full min-w-1 rounded-[4px] bg-[#1f78b4] transition-[width]" style={{ width: `${(item.value / max) * 100}%` } as CSSProperties} /></dd><dd className="text-right text-sm font-bold">{item.value}</dd></div>)}
     </dl>
   );
 }
 
-function CategoryList({ items }: { items: CategoryCount[] }) {
-  if (items.length === 0) {
-    return <p className="text-sm text-slate-600">No blog categories yet.</p>;
-  }
-
+function Breakdown({ title, items }: { title: string; items: Array<{ label: string; value: number }> }) {
   return (
-    <dl className="grid gap-3">
-      {items.map((item) => (
-        <div
-          key={item.category}
-          className="flex items-center justify-between rounded-md border border-slate-200 px-4 py-3"
-        >
-          <dt className="text-sm font-semibold text-slate-800">
-            {item.category}
-          </dt>
-          <dd className="text-sm font-semibold text-slate-950">
-            {item.count}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <section className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-7">
+      <h2 className="text-xl font-bold">{title}</h2>
+      <dl className="mt-5 divide-y divide-[#e7ebef]">{items.map((item) => <div key={item.label} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"><dt className="text-sm text-[#52657c]">{item.label}</dt><dd className="font-bold">{item.value}</dd></div>)}</dl>
+    </section>
   );
+}
+
+function CategoryBreakdown({ items }: { items: CategoryCount[] }) {
+  return <Breakdown title="Blog Categories" items={items.length ? items.map((item) => ({ label: item.category, value: item.count })) : [{ label: "No categories", value: 0 }]} />;
 }
 
 export default async function AdminReportsPage() {
-  await requireAdminSession();
+  const session = await requireAdminSession();
   const snapshot = await getReportsSnapshot(prismaReportsRepository);
+  const pendingCount = countStatus(snapshot.membership.byStatus, "PENDING");
+  const unreadCount = countStatus(snapshot.contact.byStatus, "UNREAD");
+  const adminName = session?.fullName ?? "Administrator";
+  const contentTotals = [
+    { label: "Blog", value: snapshot.totals.blogPosts },
+    { label: "Programs", value: snapshot.totals.programs },
+    { label: "Applications", value: snapshot.totals.membershipApplications },
+    { label: "Messages", value: snapshot.totals.contactMessages },
+    { label: "Archive", value: snapshot.totals.archiveEntries },
+  ];
 
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-950 sm:px-10 lg:px-16">
-      <section className="mx-auto grid max-w-6xl gap-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <Link
-              href="/admin"
-              className="text-sm font-semibold text-slate-600 hover:text-slate-950"
-            >
-              Back to dashboard
-            </Link>
-            <h1 className="mt-3 text-3xl font-semibold tracking-normal">
-              Reports and analytics
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-              Aggregated SSDU website statistics generated from database
-              records. Personal applicant and sender details are intentionally
-              excluded from this report.
-            </p>
-          </div>
-          <p className="text-sm font-medium text-slate-600">
-            Generated {formatDate(snapshot.generatedAt)}
-          </p>
+    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
+      <aside className="bg-[#0a294d] text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
+        <div className="flex min-h-[104px] items-center gap-3 border-b border-white/10 px-6"><span className="flex size-12 shrink-0 flex-col items-center justify-center"><Globe2 className="size-7 text-[#27b3f4]" /><span className="text-[7px] font-bold tracking-[0.22em]">SSDU</span></span><div><p className="text-lg font-bold">SSDU Admin</p><p className="text-sm text-[#27b3f4]">Administrator</p></div></div>
+        <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-4 py-4 lg:flex-1 lg:flex-col lg:overflow-y-auto">{navItems.map(({ href, label, icon: Icon }) => <Link key={href} href={href} aria-current={href === "/admin/reports" ? "page" : undefined} className={`flex min-h-12 shrink-0 items-center gap-3 rounded-[8px] px-4 text-[15px] font-medium transition-colors ${href === "/admin/reports" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}><Icon className="size-5" aria-hidden="true" />{label}{href === "/admin/membership" && pendingCount ? <span className="ml-auto rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-[#0a294d]">{pendingCount}</span> : null}{href === "/admin/contact" && unreadCount ? <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadCount}</span> : null}</Link>)}</nav>
+        <div className="hidden border-t border-white/10 p-4 lg:block"><div className="mb-3 flex items-center gap-3 px-3"><span className="flex size-10 items-center justify-center rounded-full bg-[#1f82c1] font-bold">{initials(adminName)}</span><div className="min-w-0"><p className="truncate text-sm font-semibold">{adminName}</p><p className="truncate text-xs text-white/45">{session?.email}</p></div></div><LogoutButton /></div>
+      </aside>
+
+      <div className="min-w-0">
+        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8"><div><h1 className="text-[22px] font-bold">Reports &amp; Analytics</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Student Diplomacy Union CMS</p></div><div className="flex items-center gap-3"><span className="hidden text-right text-xs text-[#718196] sm:block">Generated<br />{formatDate(snapshot.generatedAt)}</span><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div></header>
+
+        <div className="grid gap-6 p-5 sm:p-8">
+          <section className="grid gap-6 xl:grid-cols-2">
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-8"><h2 className="text-[23px] font-bold">Content Overview</h2><p className="mt-1 text-sm text-[#718196]">Current records by backend module</p><div className="mt-8"><BarChart items={contentTotals} /></div></div>
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-8"><h2 className="text-[23px] font-bold">Applications Overview</h2><p className="mt-1 text-sm text-[#718196]">Current application review statuses</p><div className="mt-6"><DonutChart items={snapshot.membership.byStatus} /></div></div>
+          </section>
+
+          <section aria-labelledby="report-totals-title" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <h2 id="report-totals-title" className="sr-only">Report totals</h2>
+            {[{ label: "Approval Rate", value: `${snapshot.membership.approvalRate}%`, detail: `${snapshot.totals.membershipApplications} applications` }, { label: "Unread Rate", value: `${snapshot.contact.unreadRate}%`, detail: `${snapshot.totals.contactMessages} messages` }, { label: "Upcoming Programs", value: snapshot.programs.upcoming, detail: `${snapshot.programs.liveOrScheduled} live or scheduled` }, { label: "Blog Media", value: snapshot.totals.blogMedia, detail: `${snapshot.totals.blogPosts} posts` }].map((metric) => <div key={metric.label} className="rounded-[8px] border border-[#dfe5eb] bg-white p-5"><p className="text-3xl font-bold text-[#1f78b4]">{metric.value}</p><p className="mt-3 font-bold">{metric.label}</p><p className="mt-1 text-sm text-[#718196]">{metric.detail}</p></div>)}
+          </section>
+
+          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <Breakdown title="Blog Status" items={[{ label: "Published", value: snapshot.blog.published }, { label: "Draft", value: snapshot.blog.drafts }, { label: "Archived", value: snapshot.blog.archived }]} />
+            <CategoryBreakdown items={snapshot.blog.categories} />
+            <Breakdown title="Program Status" items={snapshot.programs.byStatus.length ? snapshot.programs.byStatus.map((item) => ({ label: statusLabel(item.status), value: item.count })) : [{ label: "No programs", value: 0 }]} />
+            <Breakdown title="Message Status" items={snapshot.contact.byStatus.length ? snapshot.contact.byStatus.map((item) => ({ label: statusLabel(item.status), value: item.count })) : [{ label: "No messages", value: 0 }]} />
+          </section>
         </div>
-
-        <section aria-labelledby="report-totals">
-          <h2 id="report-totals" className="text-xl font-semibold">
-            Totals
-          </h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <MetricCard
-              label="Blog posts"
-              value={snapshot.totals.blogPosts}
-              detail={`${snapshot.totals.blogMedia} blog-owned media records`}
-            />
-            <MetricCard
-              label="Programs"
-              value={snapshot.totals.programs}
-              detail={`${snapshot.programs.upcoming} upcoming public programs`}
-            />
-            <MetricCard
-              label="Membership applications"
-              value={snapshot.totals.membershipApplications}
-              detail={`${snapshot.membership.approvalRate}% approval rate`}
-            />
-            <MetricCard
-              label="Contact messages"
-              value={snapshot.totals.contactMessages}
-              detail={`${snapshot.contact.unreadRate}% unread`}
-            />
-            <MetricCard
-              label="Archive entries"
-              value={snapshot.totals.archiveEntries}
-              detail="Historical activity records"
-            />
-            <MetricCard
-              label="Live programs"
-              value={snapshot.programs.liveOrScheduled}
-              detail="Published or scheduled programs"
-            />
-          </div>
-        </section>
-
-        <section className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-xl font-semibold">Blog by status</h2>
-            <div className="mt-4">
-              <StatusList
-                items={[
-                  { status: "PUBLISHED", count: snapshot.blog.published },
-                  { status: "DRAFT", count: snapshot.blog.drafts },
-                  { status: "ARCHIVED", count: snapshot.blog.archived },
-                ]}
-              />
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-xl font-semibold">Blog categories</h2>
-            <div className="mt-4">
-              <CategoryList items={snapshot.blog.categories} />
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-xl font-semibold">Programs by status</h2>
-            <div className="mt-4">
-              <StatusList items={snapshot.programs.byStatus} />
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-xl font-semibold">Membership by status</h2>
-            <div className="mt-4">
-              <StatusList items={snapshot.membership.byStatus} />
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2">
-            <h2 className="text-xl font-semibold">Contact messages by status</h2>
-            <div className="mt-4">
-              <StatusList items={snapshot.contact.byStatus} />
-            </div>
-          </div>
-        </section>
-      </section>
+      </div>
     </main>
   );
 }
