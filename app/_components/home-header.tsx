@@ -20,19 +20,19 @@ export function BrandLogo({
   return (
     <span className="flex min-w-0 items-center gap-3">
       <span
-        className={`relative size-[54px] shrink-0 overflow-hidden rounded-lg transition-colors sm:size-[58px] ${inverse ? "bg-white" : "bg-white ring-1 ring-[#d7e2e9]"}`}
+        className={`relative size-[54px] shrink-0 overflow-hidden rounded-lg transition-colors sm:size-[58px] xl:size-[52px] ${inverse ? "bg-white" : "bg-white ring-1 ring-[#d7e2e9]"}`}
       >
         <Image src="/official/sda-logo.png" alt="" width={180} height={180} className="absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-[40%] scale-[0.8]" />
       </span>
       <span
-        className={`min-w-0 font-serif text-[18px] font-bold leading-[1.05] transition-colors ${
+        className={`min-w-0 font-serif text-[18px] font-bold leading-[1.05] transition-colors xl:text-[17px] ${
           inverse ? "text-white" : "text-[#0a294d]"
         } ${compactOnMobile ? "hidden sm:block" : "block"}`}
       >
         Somali Diplomacy
         <br />
         Association
-        <span className="mt-1 block font-sans text-[10px] font-bold tracking-[0.28em] text-[#27a9ec]">
+        <span className="mt-1 block font-sans text-[10px] font-bold tracking-[0.28em] text-[#27a9ec] xl:text-[9px]">
           DIPLOMACY / LEADERSHIP / UNITY
         </span>
       </span>
@@ -71,13 +71,13 @@ export function HomeHeader({
           : "border-white/10 bg-[#071e38]/55 shadow-none backdrop-blur-sm"
       }`}
     >
-      <div className="mx-auto flex h-20 max-w-[1780px] items-center justify-between gap-4 px-5 sm:h-[90px] md:px-10 xl:gap-8 xl:px-12">
+      <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between gap-4 px-5 sm:h-[90px] md:px-10 xl:h-[78px] xl:gap-7 xl:px-10">
         <Link href="/" aria-label="SDA home" className="shrink-0 rounded-lg">
           <BrandLogo compactOnMobile inverse={!scrolled && overlay} />
         </Link>
 
         <nav
-          className="hidden items-center gap-8 xl:flex 2xl:gap-10"
+          className="hidden items-center gap-7 xl:flex 2xl:gap-8"
           aria-label="Primary"
         >
           {items.map((item) => (
@@ -85,7 +85,7 @@ export function HomeHeader({
               key={`${item.label}-${item.href}`}
               href={item.href}
               aria-current={item.href === activeHref ? "page" : undefined}
-              className={`py-3 text-[16px] transition-colors 2xl:text-[17px] ${
+              className={`py-3 text-[15px] transition-colors 2xl:text-[16px] ${
                 item.href === activeHref
                   ? "font-semibold text-[#29b6f6]"
                   : scrolled || !overlay
@@ -101,7 +101,7 @@ export function HomeHeader({
         <div className="flex shrink-0 items-center gap-2 sm:gap-3 xl:gap-5">
           <Link
             href={secondaryItem.href}
-            className={`hidden min-h-11 items-center px-2 text-[16px] transition-colors sm:inline-flex ${
+            className={`hidden min-h-11 items-center px-2 text-[16px] transition-colors sm:inline-flex xl:min-h-10 xl:text-[15px] ${
               scrolled || !overlay
                 ? "text-[#0a294d] hover:text-[#0874b9]"
                 : "text-white/90 hover:text-white"
@@ -112,7 +112,7 @@ export function HomeHeader({
           <Link
             href={joinHref}
             aria-label="Join SDA"
-            className="inline-flex h-11 items-center gap-2 rounded-[22px] bg-[#1778b8] px-4 text-[15px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg motion-reduce:transform-none sm:gap-3 sm:px-5 sm:text-[16px]"
+            className="inline-flex h-11 items-center gap-2 rounded-[22px] bg-[#1778b8] px-4 text-[15px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg motion-reduce:transform-none sm:gap-3 sm:px-5 sm:text-[16px] xl:h-10 xl:px-4 xl:text-[15px]"
           >
             <span className="sm:hidden" aria-hidden="true">
               Join
