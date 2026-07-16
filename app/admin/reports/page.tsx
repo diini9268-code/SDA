@@ -18,6 +18,7 @@ import { requireAdminSession } from "@/lib/auth/require-admin";
 import { prismaReportsRepository } from "@/lib/reports/report-repository";
 import { getReportsSnapshot } from "@/lib/reports/report-service";
 import type { CategoryCount, StatusCount } from "@/lib/reports/report-service";
+import type { MonthlyCount } from "@/lib/reports/report-service";
 
 const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/admin", label: "Dashboard Home", icon: LayoutDashboard },
@@ -85,6 +86,29 @@ function BarChart({ items }: { items: Array<{ label: string; value: number }> })
   );
 }
 
+function LineChart({ items }: { items: MonthlyCount[] }) {
+  const values = items.length ? items : [{ month: "No data", count: 0 }];
+  const max = Math.max(1, ...values.map((item) => item.count));
+  const points = values.map((item, index) => {
+    const x = values.length === 1 ? 50 : (index / (values.length - 1)) * 100;
+    const y = 92 - (item.count / max) * 76;
+    return { ...item, x, y };
+  });
+
+  return (
+    <div>
+      <div className="relative h-56 border-b border-l border-[#91a0b2]" role="img" aria-label={`Application submissions over six months. ${values.map((item) => `${item.month} ${item.count}`).join(", ")}`}>
+        <div className="pointer-events-none absolute inset-0 grid grid-rows-4">{Array.from({ length: 4 }, (_, index) => <span key={index} className="border-t border-dashed border-[#e5eaf0]" />)}</div>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
+          <polyline points={points.map((point) => `${point.x},${point.y}`).join(" ")} fill="none" stroke="#1f78b4" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+          {points.map((point) => <circle key={point.month} cx={point.x} cy={point.y} r="1.8" fill="#1f78b4" vectorEffect="non-scaling-stroke" />)}
+        </svg>
+      </div>
+      <div className="mt-3 grid" style={{ gridTemplateColumns: `repeat(${values.length}, minmax(0, 1fr))` }}>{values.map((item) => <div key={item.month} className="text-center"><p className="text-xs font-semibold text-[#52657c]">{item.month}</p><p className="mt-1 text-xs text-[#718196]">{item.count}</p></div>)}</div>
+    </div>
+  );
+}
+
 function Breakdown({ title, items }: { title: string; items: Array<{ label: string; value: number }> }) {
   return (
     <section className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-7">
@@ -125,7 +149,7 @@ export default async function AdminReportsPage() {
 
         <div className="grid gap-6 p-5 sm:p-8">
           <section className="grid gap-6 xl:grid-cols-2">
-            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-8"><h2 className="text-[23px] font-bold">Content Overview</h2><p className="mt-1 text-sm text-[#718196]">Current records by backend module</p><div className="mt-8"><BarChart items={contentTotals} /></div></div>
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-8"><h2 className="text-[23px] font-bold">Application Growth</h2><p className="mt-1 text-sm text-[#718196]">Submissions received over the last six months</p><div className="mt-8"><LineChart items={snapshot.membership.monthlyApplications} /></div></div>
             <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-8"><h2 className="text-[23px] font-bold">Applications Overview</h2><p className="mt-1 text-sm text-[#718196]">Current application review statuses</p><div className="mt-6"><DonutChart items={snapshot.membership.byStatus} /></div></div>
           </section>
 
@@ -133,6 +157,8 @@ export default async function AdminReportsPage() {
             <h2 id="report-totals-title" className="sr-only">Report totals</h2>
             {[{ label: "Approval Rate", value: `${snapshot.membership.approvalRate}%`, detail: `${snapshot.totals.membershipApplications} applications` }, { label: "Unread Rate", value: `${snapshot.contact.unreadRate}%`, detail: `${snapshot.totals.contactMessages} messages` }, { label: "Upcoming Programs", value: snapshot.programs.upcoming, detail: `${snapshot.programs.liveOrScheduled} live or scheduled` }, { label: "Blog Media", value: snapshot.totals.blogMedia, detail: `${snapshot.totals.blogPosts} posts` }].map((metric) => <div key={metric.label} className="rounded-[8px] border border-[#dfe5eb] bg-white p-5"><p className="text-3xl font-bold text-[#1f78b4]">{metric.value}</p><p className="mt-3 font-bold">{metric.label}</p><p className="mt-1 text-sm text-[#718196]">{metric.detail}</p></div>)}
           </section>
+
+          <section className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-7"><h2 className="text-xl font-bold">Current Content Totals</h2><p className="mt-1 text-sm text-[#718196]">Records currently stored by backend module</p><div className="mt-6"><BarChart items={contentTotals} /></div></section>
 
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <Breakdown title="Blog Status" items={[{ label: "Published", value: snapshot.blog.published }, { label: "Draft", value: snapshot.blog.drafts }, { label: "Archived", value: snapshot.blog.archived }]} />

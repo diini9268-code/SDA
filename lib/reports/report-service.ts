@@ -8,6 +8,11 @@ export type CategoryCount = {
   count: number;
 };
 
+export type MonthlyCount = {
+  month: string;
+  count: number;
+};
+
 export type ReportsSnapshot = {
   generatedAt: Date;
   totals: {
@@ -32,6 +37,7 @@ export type ReportsSnapshot = {
   membership: {
     byStatus: StatusCount[];
     approvalRate: number;
+    monthlyApplications: MonthlyCount[];
   };
   contact: {
     byStatus: StatusCount[];
@@ -66,6 +72,7 @@ export function buildReportsSnapshot(input: {
   programStatusCounts: StatusCount[];
   upcomingProgramCount: number;
   membershipStatusCounts: StatusCount[];
+  monthlyApplicationCounts?: MonthlyCount[];
   contactStatusCounts: StatusCount[];
   archiveCount: number;
 }): ReportsSnapshot {
@@ -117,6 +124,7 @@ export function buildReportsSnapshot(input: {
     membership: {
       byStatus: input.membershipStatusCounts,
       approvalRate: percentage(approvedApplications, membershipApplications),
+      monthlyApplications: input.monthlyApplicationCounts ?? [],
     },
     contact: {
       byStatus: input.contactStatusCounts,

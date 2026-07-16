@@ -46,6 +46,10 @@ describe("reports and analytics", () => {
         { status: "PENDING", count: 3 },
         { status: "REJECTED", count: 1 },
       ],
+      monthlyApplicationCounts: [
+        { month: "Feb", count: 1 },
+        { month: "Mar", count: 2 },
+      ],
       contactStatusCounts: [
         { status: "UNREAD", count: 2 },
         { status: "READ", count: 6 },
@@ -89,7 +93,7 @@ describe("reports and analytics", () => {
         name: "Reports & Analytics",
       }),
     ).toBeDefined();
-    expect(screen.getByRole("heading", { name: "Content Overview" })).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Application Growth" })).toBeDefined();
     expect(screen.getByRole("heading", { name: "Applications Overview" })).toBeDefined();
     expect(screen.getByText("Diplomacy")).toBeDefined();
     expect(screen.getByText("admin@example.com")).toBeDefined();
