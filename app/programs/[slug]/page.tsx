@@ -53,8 +53,8 @@ export default async function ProgramDetailPage({
 
   return (
     <PublicPageShell>
-      <main className="px-5 py-16 sm:px-10 lg:py-24 xl:px-16">
-        <article className="mx-auto max-w-[1100px]">
+      <main className="px-6 py-12 sm:px-10 lg:px-16">
+        <article className="mx-auto max-w-3xl">
           <Link
             href="/programs"
             className="text-sm font-semibold text-slate-600 hover:text-slate-950"
@@ -65,7 +65,7 @@ export default async function ProgramDetailPage({
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-600">
               {program.status}
             </p>
-            <h1 className="mt-4 font-serif text-4xl font-bold leading-tight tracking-normal text-slate-950 sm:text-5xl lg:text-6xl">
+            <h1 className="mt-3 text-4xl font-semibold tracking-normal text-slate-950">
               {program.title}
             </h1>
             <p className="mt-3 text-sm font-medium text-slate-600">
@@ -73,7 +73,7 @@ export default async function ProgramDetailPage({
             </p>
           </header>
 
-          <div className="mt-10 max-w-4xl whitespace-pre-wrap text-[17px] leading-8 text-slate-800">
+          <div className="mt-8 whitespace-pre-wrap text-base leading-8 text-slate-800">
             {program.description}
           </div>
         </article>

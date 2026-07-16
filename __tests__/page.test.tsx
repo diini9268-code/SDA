@@ -25,7 +25,7 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Diplomacy, leadership and unity for Somalia's next generation.",
+        name: "Shaping Somalia's Diplomatic Future",
       }),
     ).toBeDefined();
     expect(
@@ -52,7 +52,7 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "About the Somali Diplomacy Association",
+        name: "About SDA",
       }),
     ).toBeDefined();
     expect(
@@ -67,7 +67,7 @@ describe("Public pages", () => {
         ?.getAttribute("aria-current"),
     ).toBe("page");
     expect(
-      screen.getByRole("heading", { level: 2, name: "Organizational Structure" }),
+      screen.getByRole("heading", { level: 2, name: "The Principles That Guide Us" }),
     ).toBeDefined();
     expect(
       screen.getByRole("link", { name: "Login" }).getAttribute("href"),
@@ -85,12 +85,12 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Leadership grounded in service and accountability.",
+        name: "Our Leadership",
       }),
     ).toBeDefined();
     expect(
       screen.getByRole("heading", {
-        level: 3,
+        level: 2,
         name: "Abdullaahi Abdikariim Ahmed",
       }),
     ).toBeDefined();

@@ -1,120 +1,655 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BookOpenText, CalendarDays, Globe2, Handshake, Target, UsersRound } from "lucide-react";
-import { HomeHeader } from "@/app/_components/home-header";
+import type { LucideIcon } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  Clock3,
+  Globe2,
+  GraduationCap,
+  Handshake,
+  Heart,
+  HeartHandshake,
+  Landmark,
+  Mail,
+  MapPin,
+  Star,
+  Target,
+  UserRound,
+} from "lucide-react";
+import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
-import { SiteFooter } from "@/app/_components/site-footer";
+import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
 import { prismaProgramRepository } from "@/lib/programs/program-repository";
+import { createPageMetadata } from "@/lib/site/metadata";
 import {
-  foundedLabel,
   leadershipProfiles,
   officialMission,
   officialValues,
-  organizationLocation,
-  organizationMotto,
   publicNavigation,
   strategicObjectives,
 } from "@/lib/site/official-content";
-import { createPageMetadata } from "@/lib/site/metadata";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = createPageMetadata({
-  description: "The official website of the Somali Diplomacy Association, empowering Somali youth through diplomatic education, leadership development, research, and international engagement.",
+  description:
+    "The Somali Diplomacy Association empowers Somali youth through diplomatic education, leadership development, and international engagement.",
   path: "/",
 });
 
+const navigationItems = publicNavigation;
+
+const principles: Array<{
+  title: string;
+  description: string;
+  icon: LucideIcon;
+}> = [
+  {
+    title: "Our Mission",
+    description: officialMission,
+    icon: Target,
+  },
+  {
+    title: "Our Objectives",
+    description: strategicObjectives.slice(0, 2).join(" "),
+    icon: Globe2,
+  },
+  {
+    title: "Our Values",
+    description: officialValues.join(", ") + ".",
+    icon: HeartHandshake,
+  },
+];
+
+const programIcons = [GraduationCap, Landmark, Handshake, Heart, Star];
+
 async function getHomeData() {
-  const [blogResult, leadershipResult, programsResult] = await Promise.allSettled([
-    prismaBlogRepository.listPublic(),
-    prismaLeadershipRepository.listPublic(),
-    prismaProgramRepository.listPublic(),
-  ]);
+  const [archiveResult, blogResult, leadershipResult, programsResult] =
+    await Promise.allSettled([
+      prismaArchiveRepository.listPublic(),
+      prismaBlogRepository.listPublic(),
+      prismaLeadershipRepository.listPublic(),
+      prismaProgramRepository.listPublic(),
+    ]);
+
+  const archive =
+    archiveResult.status === "fulfilled" ? archiveResult.value : [];
   const blog = blogResult.status === "fulfilled" ? blogResult.value : [];
-  const leadership = leadershipResult.status === "fulfilled" ? leadershipResult.value : [];
-  const programs = programsResult.status === "fulfilled" ? programsResult.value : [];
+  const leadership =
+    leadershipResult.status === "fulfilled" ? leadershipResult.value : [];
+  const programs =
+    programsResult.status === "fulfilled" ? programsResult.value : [];
 
   return {
+    archiveCount: archiveResult.status === "fulfilled" ? archive.length : null,
     blog: blog.slice(0, 3),
-    programs: programs.slice(0, 3),
-    statistics: [
-      { value: blogResult.status === "fulfilled" ? blog.length : null, label: "Published Articles" },
-      { value: programsResult.status === "fulfilled" ? programs.length : null, label: "Public Programs" },
-      { value: leadershipResult.status === "fulfilled" ? leadership.length : null, label: "Published Leadership Profiles" },
-    ],
+    blogCount: blogResult.status === "fulfilled" ? blog.length : null,
+    leadership: leadership.slice(0, 4),
+    leadershipCount:
+      leadershipResult.status === "fulfilled" ? leadership.length : null,
+    programs: programs.slice(0, 5),
+    programCount:
+      programsResult.status === "fulfilled" ? programs.length : null,
+    availability: {
+      archive: archiveResult.status === "fulfilled",
+      blog: blogResult.status === "fulfilled",
+      leadership: leadershipResult.status === "fulfilled",
+      programs: programsResult.status === "fulfilled",
+    },
   };
 }
 
 function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(date);
+  return new Intl.DateTimeFormat("en", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
+function formatStatus(status: string): string {
+  return status.charAt(0) + status.slice(1).toLowerCase();
+}
+
+function estimateReadingTime(content: string): number {
+  const words = content.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 220));
+}
+
+function EmptyState({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-[20px] border border-dashed border-[#b9c7d4] bg-white px-6 py-12 text-center text-[17px] text-[#52657c]">
+      {children}
+    </div>
+  );
 }
 
 export default async function Home() {
   const data = await getHomeData();
+  const statistics = [
+    { value: data.blogCount, label: "Published Articles" },
+    { value: data.programCount, label: "Public Programs" },
+    { value: data.leadershipCount, label: "Leadership Profiles" },
+    { value: data.archiveCount, label: "Archive Records" },
+  ];
 
   return (
-    <div className="home-shell min-w-0 bg-white text-[#071f3c]">
-      <a href="#main-content" className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-md bg-white px-4 py-3 font-semibold shadow-xl transition-transform focus:translate-y-0">Skip to main content</a>
-      <HomeHeader items={publicNavigation} activeHref="/" />
+    <div className="home-shell min-w-0 bg-white text-[#0a294d]">
+      <a
+        href="#main-content"
+        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-md bg-white px-4 py-3 font-semibold text-[#0a294d] shadow-xl transition-transform focus:translate-y-0"
+      >
+        Skip to main content
+      </a>
+      <HomeHeader
+        items={navigationItems}
+        secondaryItem={{ href: "/login", label: "Login" }}
+        joinHref="/membership"
+      />
+      <main id="main-content" tabIndex={-1}>
+        <section className="relative min-h-[760px] overflow-hidden bg-[#0a294d] text-white xl:min-h-[min(805px,100svh)]">
+          <OptimizedFillImage
+            src="/official/sda-official-venue-group.jpg"
+            alt="Somali Diplomacy Association members gathered at an official venue"
+            className="h-full w-full object-cover"
+            sizes="100vw"
+            priority
+          />
+          <div className="absolute inset-0 bg-[#061b34]/45" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,24,48,0.90)_0%,rgba(4,24,48,0.58)_50%,rgba(4,24,48,0.28)_100%)]" />
 
-      <main id="main-content">
-        <section className="relative isolate min-h-[760px] overflow-hidden bg-[#071f3c] text-white lg:min-h-[860px]">
-          <OptimizedFillImage src="/official/sda-official-venue-group.jpg" alt="Somali Diplomacy Association members gathered at an official venue" className="object-cover object-center" priority sizes="100vw" />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,25,48,0.96)_0%,rgba(4,25,48,0.84)_42%,rgba(4,25,48,0.34)_72%,rgba(4,25,48,0.24)_100%)]" />
-          <div className="relative mx-auto grid min-h-[760px] w-full max-w-[1600px] items-end px-5 pb-20 pt-32 sm:px-8 sm:pb-24 md:px-10 lg:min-h-[860px] lg:grid-cols-[minmax(0,1.15fr)_minmax(390px,0.85fr)] lg:items-center lg:gap-16 lg:pb-16 xl:px-16">
-            <div className="home-fade-up max-w-[900px]">
-              <p className="text-sm font-bold uppercase tracking-[0.28em] text-[#29b6f6]">Founded {foundedLabel} · {organizationLocation}</p>
-              <h1 className="mt-7 max-w-[900px] font-serif text-[48px] font-bold leading-[1.02] sm:text-[66px] lg:text-[78px] xl:text-[88px]">Diplomacy, leadership and unity for Somalia&apos;s next generation.</h1>
-              <p className="mt-8 max-w-[760px] text-lg leading-8 text-white/78 sm:text-xl sm:leading-9">{officialMission}</p>
-              <div className="mt-10 flex flex-wrap gap-4">
-                <Link href="/membership" className="inline-flex min-h-14 items-center gap-3 rounded-[8px] bg-[#0a9fda] px-7 text-lg font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#0787bb] motion-reduce:transform-none">Become a Member <ArrowRight className="size-5" aria-hidden="true" /></Link>
-                <Link href="/about" className="inline-flex min-h-14 items-center rounded-[8px] border border-white/60 px-7 text-lg font-semibold transition hover:bg-white/10">About SDA</Link>
+          <div className="relative mx-auto grid min-h-[760px] w-full min-w-0 max-w-[1780px] items-center gap-11 px-5 pb-20 pt-32 sm:pt-36 md:px-10 xl:min-h-[min(805px,100svh)] xl:grid-cols-[minmax(0,1.04fr)_minmax(0,1fr)] xl:px-12 xl:pt-[130px]">
+            <div className="home-fade-up min-w-0 xl:max-w-[840px] xl:translate-y-14">
+              <p className="max-w-full text-[11px] font-bold uppercase tracking-[0.2em] text-[#2cb6f6] sm:text-[14px] sm:tracking-[0.32em]">
+                Diplomacy / Leadership / Unity
+              </p>
+              <h1
+                aria-label="Shaping Somalia's Diplomatic Future"
+                className="mt-7 font-serif text-[44px] font-bold leading-[0.98] tracking-normal sm:text-[58px] md:text-[68px] xl:text-[72px] xl:leading-[1.12] 2xl:text-[78px] 2xl:leading-[1.16]"
+              >
+                <span className="block">Shaping Somalia&apos;s</span>
+                <span className="block text-[#28b1f2]">Diplomatic</span>
+                <span className="block">Future</span>
+              </h1>
+              <p className="mt-8 max-w-[600px] text-[18px] leading-8 text-[#d7e0e8] sm:text-[21px] sm:leading-10">
+                The Somali Diplomacy Association empowers Somali youth through
+                diplomatic education, leadership development, and international engagement.
+              </p>
+              <div className="mt-10 flex flex-wrap items-start gap-4 sm:gap-5 xl:mt-14">
+                <Link
+                  href="/membership"
+                  className="group inline-flex h-14 items-center gap-3 rounded-md bg-[#1778b8] px-7 text-[17px] font-semibold text-white shadow-lg transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-xl motion-reduce:transform-none sm:px-8 sm:text-lg"
+                >
+                  Join SDA
+                  <ArrowRight
+                    className="size-5 transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
+                    aria-hidden="true"
+                  />
+                </Link>
+                <Link
+                  href="/about"
+                  className="inline-flex h-14 items-center rounded-md border-2 border-[#8fc9eb] px-7 text-[17px] font-semibold text-white transition-colors hover:bg-white/10 sm:px-8 sm:text-lg"
+                >
+                  Learn More
+                </Link>
               </div>
             </div>
-            <dl className="mt-14 grid gap-3 sm:grid-cols-3 lg:mt-0 lg:grid-cols-1">
-              {data.statistics.map((item) => <div key={item.label} className="border-l-2 border-[#29b6f6] bg-[#0a294d]/72 px-6 py-5 backdrop-blur-md"><dt className="text-sm font-semibold uppercase tracking-[0.12em] text-white/60">{item.label}</dt><dd className="mt-2 font-serif text-4xl font-bold text-white">{item.value ?? "—"}</dd></div>)}
+
+            <dl className="home-fade-up home-fade-up-delay grid min-w-0 grid-cols-2 gap-3 sm:gap-5 xl:translate-y-20">
+              {statistics.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="flex min-h-[132px] min-w-0 flex-col rounded-[18px] border border-white/25 bg-[#dce9f5]/15 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_12px_35px_rgba(0,0,0,0.18)] backdrop-blur-md sm:min-h-[145px] sm:p-6 xl:min-h-[155px] xl:p-8"
+                >
+                  <dt className="order-2 mt-3 text-[15px] leading-5 text-[#d5dce4] sm:mt-4 sm:text-[17px] xl:text-[18px]">
+                    {stat.label}
+                  </dt>
+                  <dd className="order-1 font-serif text-[36px] font-bold leading-none text-[#2cb6f6] sm:text-[42px] xl:text-[46px]">
+                    {stat.value ?? <span aria-label="Unavailable">--</span>}
+                  </dd>
+                </div>
+              ))}
             </dl>
           </div>
         </section>
 
-        <section className="py-24 lg:py-32">
-          <div className="mx-auto w-full max-w-[1600px] px-5 sm:px-8 md:px-10 xl:px-16">
-            <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-end lg:gap-20">
-              <div><p className="text-sm font-bold uppercase tracking-[0.24em] text-[#0874b9]">Who We Are</p><h2 className="mt-5 font-serif text-[42px] font-bold leading-[1.08] sm:text-[54px] lg:text-[62px]">A platform for diplomatic knowledge and youth leadership.</h2></div>
-              <p className="max-w-3xl text-lg leading-9 text-[#52657c]">SDA is an independent, youth-led organization building the capacity of young Somalis to engage in community affairs, international relations, and peace-building. It brings together students, young professionals, and aspiring diplomats committed to shaping a better future for Somalia.</p>
+        <section className="bg-white pb-24 pt-9 lg:pb-28">
+          <div className="mx-auto max-w-[1780px] px-5 md:px-10 xl:px-12">
+            <div className="mx-auto max-w-[960px] text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
+                Who We Are
+              </p>
+              <h2 className="mt-6 font-serif text-[40px] font-bold leading-tight text-[#0a294d] md:text-[48px]">
+                Built on Principles, Driven by Purpose
+              </h2>
+              <p className="mt-6 text-xl leading-8 text-[#52657c]">
+                SDA is an independent, youth-led organization building diplomatic
+                knowledge, leadership skills, and meaningful international engagement.
+              </p>
             </div>
-            <div className="mt-16 grid gap-6 lg:grid-cols-3">
-              {[{ icon: Target, title: "Our Mission", text: officialMission }, { icon: Globe2, title: "Strategic Objectives", text: strategicObjectives.slice(0, 3).join(" ") }, { icon: Handshake, title: "Our Principles", text: officialValues.join(" · ") }].map(({ icon: Icon, title, text }) => <article key={title} className="border-t-4 border-[#0a9fda] bg-[#f4f8fb] p-7 sm:p-9"><Icon className="size-8 text-[#0874b9]" aria-hidden="true" /><h3 className="mt-7 font-serif text-2xl font-bold">{title}</h3><p className="mt-4 text-[16px] leading-8 text-[#52657c]">{text}</p></article>)}
+
+            <div className="mt-18 grid gap-8 md:grid-cols-2 xl:grid-cols-3 xl:gap-10">
+              {principles.map((principle) => {
+                const Icon = principle.icon;
+                return (
+                  <article
+                    key={principle.title}
+                    className="min-h-[350px] rounded-[20px] border border-[#dce2e8] p-8 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-[#b8cfde] hover:shadow-lg motion-reduce:transform-none sm:p-10 md:last:col-span-2 md:last:w-[calc(50%-1rem)] md:last:justify-self-center xl:last:col-span-1 xl:last:w-auto xl:p-11"
+                  >
+                    <div className="flex size-16 items-center justify-center rounded-[18px] bg-[#e8f1f7] text-[#0874b9]">
+                      <Icon
+                        className="size-7"
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <h3 className="mt-8 font-serif text-[26px] font-bold text-[#071f3c]">
+                      {principle.title}
+                    </h3>
+                    <p className="mt-5 text-[18px] leading-8 text-[#52657c]">
+                      {principle.description}
+                    </p>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        <section className="bg-[#f3f7fa] py-24 lg:py-32">
-          <div className="mx-auto w-full max-w-[1600px] px-5 sm:px-8 md:px-10 xl:px-16">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"><div><p className="text-sm font-bold uppercase tracking-[0.24em] text-[#0874b9]">Programs & Activities</p><h2 className="mt-5 font-serif text-[42px] font-bold sm:text-[54px]">Learning through engagement.</h2></div><Link href="/programs" className="inline-flex items-center gap-2 font-semibold text-[#0874b9] hover:underline">View published programs <ArrowRight className="size-4" /></Link></div>
-            <div className="mt-14 grid gap-7 lg:grid-cols-2">
-              <article className="relative min-h-[460px] overflow-hidden bg-[#071f3c] text-white"><Image src="/official/sda-diplomacy-workshop.jpg" alt="SDA diplomacy training workshop" fill className="object-cover" sizes="(min-width: 1024px) 50vw, 100vw" /><div className="absolute inset-0 bg-gradient-to-t from-[#071f3c] via-[#071f3c]/25 to-transparent" /><div className="absolute inset-x-0 bottom-0 p-7 sm:p-10"><h3 className="font-serif text-3xl font-bold">Diplomacy Training Workshop</h3><p className="mt-3 max-w-2xl leading-7 text-white/75">Interactive learning on diplomacy, international law, negotiation, and conflict resolution for Somali students and professionals.</p></div></article>
-              <article className="relative min-h-[460px] overflow-hidden bg-[#071f3c] text-white"><Image src="/official/sda-interactive-discussion.jpg" alt="SDA members participating in an interactive group discussion" fill className="object-cover" sizes="(min-width: 1024px) 50vw, 100vw" /><div className="absolute inset-0 bg-gradient-to-t from-[#071f3c] via-[#071f3c]/25 to-transparent" /><div className="absolute inset-x-0 bottom-0 p-7 sm:p-10"><h3 className="font-serif text-3xl font-bold">Diplomatic Awareness & Dialogue</h3><p className="mt-3 max-w-2xl leading-7 text-white/75">Structured discussions on diplomacy, Somalia&apos;s foreign policy priorities, and the role of youth in diplomatic outcomes.</p></div></article>
+        <section
+          id="articles"
+          className="scroll-mt-20 bg-[#f4f7fb] pb-20 sm:scroll-mt-[90px] lg:pb-24"
+        >
+          <div className="mx-auto max-w-[1780px] px-5 md:px-10 xl:px-12">
+            <div className="flex items-end justify-between gap-6">
+              <div>
+                <h2 className="font-serif text-[42px] font-bold leading-tight text-[#0a294d] md:text-[50px]">
+                  From the SDA Desk
+                </h2>
+              </div>
+              <Link
+                href="/blog"
+                className="group hidden h-12 items-center gap-3 rounded-[20px] border-2 border-[#0874b9] px-5 text-[#0874b9] transition-colors hover:bg-[#e7f3fb] sm:inline-flex"
+              >
+                All Articles
+                <ArrowRight
+                  className="size-4 transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
+                  aria-hidden="true"
+                />
+              </Link>
             </div>
-            {data.programs.length ? <div className="mt-8 grid gap-5 md:grid-cols-3">{data.programs.map((program) => <Link key={program.id} href={`/programs/${program.slug}`} className="group border border-[#dbe4eb] bg-white p-6 transition hover:-translate-y-1 hover:shadow-lg motion-reduce:transform-none"><CalendarDays className="size-6 text-[#0a9fda]" /><h3 className="mt-5 font-serif text-xl font-bold group-hover:text-[#0874b9]">{program.title}</h3><p className="mt-3 text-sm leading-6 text-[#52657c]">{program.location} · {formatDate(program.eventDate)}</p></Link>)}</div> : null}
+
+            {data.blog.length > 0 ? (
+              <div className="mt-16 grid gap-8 md:grid-cols-2 xl:grid-cols-3 xl:gap-10">
+                {data.blog.map((post) => {
+                  const media = post.media[0];
+                  return (
+                    <article
+                      key={post.id}
+                      className="group flex min-h-[520px] flex-col overflow-hidden rounded-[20px] border border-[#dce2e8] bg-white transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-[#b8cfde] hover:shadow-xl focus-within:-translate-y-1 focus-within:border-[#b8cfde] focus-within:shadow-xl motion-reduce:transform-none"
+                    >
+                      {media ? (
+                        <div className="relative h-[260px] overflow-hidden">
+                          <OptimizedFillImage
+                            src={media.url}
+                            alt={media.altText ?? post.title}
+                            className="h-full w-full object-cover"
+                            sizes="(min-width: 1024px) 33vw, 100vw"
+                          />
+                        </div>
+                      ) : null}
+                      <div className="flex grow flex-col p-8">
+                        <div className="flex flex-wrap items-center gap-3 text-[15px] text-[#52657c]">
+                          <span className="rounded-full bg-[#e8f1f7] px-3 py-1 text-[#0874b9]">
+                            {post.category}
+                          </span>
+                          <span className="inline-flex items-center gap-1.5">
+                            <Clock3 className="size-4" aria-hidden="true" />
+                            {estimateReadingTime(post.content)} min read
+                          </span>
+                        </div>
+                        <h3 className="mt-6 line-clamp-2 font-serif text-[25px] font-bold leading-9 text-[#071f3c] transition-colors group-hover:text-[#0874b9] group-focus-within:text-[#0874b9]">
+                          <Link
+                            href={`/blog/${post.slug}`}
+                            className="rounded-sm"
+                          >
+                            {post.title}
+                          </Link>
+                        </h3>
+                        <p className="mt-4 line-clamp-2 text-[18px] leading-8 text-[#52657c]">
+                          {post.excerpt ?? post.content}
+                        </p>
+                        <div className="mt-auto flex items-end justify-between gap-4 pt-7 text-[15px] text-[#52657c]">
+                          <time dateTime={post.publishedAt.toISOString()}>
+                            {formatDate(post.publishedAt)}
+                          </time>
+                          <Link
+                            href={`/blog/${post.slug}`}
+                            className="inline-flex items-center gap-2 rounded-sm text-[#0874b9]"
+                          >
+                            Read
+                            <ArrowRight
+                              className="size-4 transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
+                              aria-hidden="true"
+                            />
+                          </Link>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="mt-16">
+                <EmptyState>
+                  {data.availability.blog
+                    ? "No published articles are available yet."
+                    : "Published articles are temporarily unavailable."}
+                </EmptyState>
+              </div>
+            )}
           </div>
         </section>
 
-        <section className="py-24 lg:py-32">
-          <div className="mx-auto w-full max-w-[1600px] px-5 sm:px-8 md:px-10 xl:px-16">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"><div><p className="text-sm font-bold uppercase tracking-[0.24em] text-[#0874b9]">Leadership</p><h2 className="mt-5 font-serif text-[42px] font-bold sm:text-[54px]">People advancing the mission.</h2></div><Link href="/leadership" className="inline-flex items-center gap-2 font-semibold text-[#0874b9] hover:underline">Meet the leadership <ArrowRight className="size-4" /></Link></div>
-            <div className="mt-14 grid gap-7 sm:grid-cols-2 xl:grid-cols-4">{leadershipProfiles.map((leader) => <article key={leader.name}><div className="relative aspect-[4/5] overflow-hidden bg-[#e8f1f7]"><Image src={leader.photo} alt={`Portrait of ${leader.name}`} fill className="object-cover object-top" sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw" /></div><h3 className="mt-5 font-serif text-2xl font-bold">{leader.name}</h3><p className="mt-1 text-sm font-semibold leading-6 text-[#0874b9]">{leader.position}</p></article>)}</div>
+        <section
+          id="programs"
+          className="scroll-mt-20 bg-white pb-20 pt-2 sm:scroll-mt-[90px] lg:pb-24"
+        >
+          <div className="mx-auto max-w-[1780px] px-5 md:px-10 xl:px-12">
+            <div className="mx-auto max-w-[1100px] text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
+                Public Programs
+              </p>
+              <h2 className="mt-6 font-serif text-[42px] font-bold leading-tight text-[#0a294d] md:text-[46px] xl:text-[48px]">
+                Training the Next Diplomatic Generation
+              </h2>
+              <p className="mt-6 text-xl leading-8 text-[#52657c]">
+                Explore SDA training, diplomacy, and international engagement
+                opportunities currently available to the public.
+              </p>
+            </div>
+
+            {data.programs.length > 0 ? (
+              <div className="mt-16 grid gap-8 md:grid-cols-2 xl:mt-20 xl:grid-cols-3">
+                {data.programs.map((program, index) => {
+                  const Icon = programIcons[index % programIcons.length];
+                  return (
+                    <article
+                      key={program.id}
+                      className="group flex min-h-[355px] flex-col rounded-[20px] border border-[#dce2e8] p-8 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-[#b8cfde] hover:shadow-lg focus-within:-translate-y-1 focus-within:border-[#b8cfde] focus-within:shadow-lg motion-reduce:transform-none"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex size-14 items-center justify-center rounded-[18px] bg-[#e8f1f7] text-[#0874b9]">
+                          <Icon
+                            className="size-6"
+                            strokeWidth={1.8}
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <span
+                          className={`rounded-full px-4 py-1 text-sm ${
+                            program.status === "SCHEDULED"
+                              ? "bg-[#dff2ff] text-[#0874b9]"
+                              : "bg-[#dcf8e7] text-[#087a43]"
+                          }`}
+                        >
+                          {formatStatus(program.status)}
+                        </span>
+                      </div>
+                      <h3 className="mt-7 font-serif text-[24px] font-bold leading-8 text-[#071f3c] transition-colors group-hover:text-[#0874b9] group-focus-within:text-[#0874b9]">
+                        <Link
+                          href={`/programs/${program.slug}`}
+                          className="rounded-sm"
+                        >
+                          {program.title}
+                        </Link>
+                      </h3>
+                      <p className="mt-4 line-clamp-3 text-[18px] leading-8 text-[#52657c]">
+                        {program.description}
+                      </p>
+                      <div className="mt-auto grid gap-3 border-t border-[#e4e8ec] pt-5 text-[15px] text-[#52657c] xl:grid-cols-2">
+                        <span className="inline-flex items-center gap-2">
+                          <CalendarDays className="size-4" aria-hidden="true" />
+                          {formatDate(program.eventDate)}
+                        </span>
+                        <span className="inline-flex items-center gap-2 xl:justify-end">
+                          <MapPin className="size-4" aria-hidden="true" />
+                          {program.location}
+                        </span>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="mt-16">
+                <EmptyState>
+                  {data.availability.programs
+                    ? "No public programs are available yet."
+                    : "Public programs are temporarily unavailable."}
+                </EmptyState>
+              </div>
+            )}
+
+            <div className="mt-16 text-center">
+              <Link
+                href="/programs"
+                className="group inline-flex h-14 items-center gap-3 rounded-md bg-[#1778b8] px-8 text-[17px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg motion-reduce:transform-none sm:text-lg"
+              >
+                View All Programs
+                <ArrowRight
+                  className="size-5 transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
+                  aria-hidden="true"
+                />
+              </Link>
+            </div>
           </div>
         </section>
 
-        {data.blog.length ? <section className="bg-[#f3f7fa] py-24 lg:py-32"><div className="mx-auto w-full max-w-[1600px] px-5 sm:px-8 md:px-10 xl:px-16"><div className="flex items-end justify-between gap-6"><div><p className="text-sm font-bold uppercase tracking-[0.24em] text-[#0874b9]">Insights</p><h2 className="mt-5 font-serif text-[42px] font-bold sm:text-[54px]">From the SDA Blog</h2></div><BookOpenText className="hidden size-12 text-[#9db9cc] sm:block" /></div><div className="mt-14 grid gap-7 lg:grid-cols-3">{data.blog.map((post) => <Link key={post.id} href={`/blog/${post.slug}`} className="group bg-white p-7 sm:p-8"><p className="text-sm font-semibold text-[#0874b9]">{post.category}</p><h3 className="mt-5 font-serif text-2xl font-bold leading-8 group-hover:text-[#0874b9]">{post.title}</h3><p className="mt-5 line-clamp-3 leading-7 text-[#52657c]">{post.excerpt ?? post.content}</p><p className="mt-7 text-sm text-[#718196]">{formatDate(post.publishedAt ?? post.createdAt)}</p></Link>)}</div></div></section> : null}
+        <section
+          id="leaders"
+          className="scroll-mt-20 bg-[#f4f7fb] py-20 sm:scroll-mt-[90px] lg:py-24"
+        >
+          <div className="mx-auto max-w-[1780px] px-5 text-center md:px-10 xl:px-12">
+            <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
+              Our Leaders
+            </p>
+            <h2 className="mt-6 font-serif text-[42px] font-bold leading-tight text-[#0a294d] md:text-[50px]">
+              Guided by Purpose, Driven by Service
+            </h2>
 
-        <section className="relative isolate overflow-hidden bg-[#071f3c] text-white"><Image src="/official/sda-workshop-provided.jpg" alt="SDA diplomacy workshop participants" fill className="object-cover" sizes="100vw" /><div className="absolute inset-0 bg-[#071f3c]/82" /><div className="relative mx-auto max-w-[1100px] px-5 py-24 text-center sm:px-8 lg:py-32"><UsersRound className="mx-auto size-10 text-[#29b6f6]" /><p className="mt-7 text-sm font-bold uppercase tracking-[0.25em] text-[#29b6f6]">{organizationMotto}</p><h2 className="mt-5 font-serif text-[42px] font-bold leading-tight sm:text-[58px]">Take part in Somalia&apos;s diplomatic future.</h2><p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/72">Membership is open to people committed to SDA&apos;s mission, constitution, ethical standards, and active participation.</p><Link href="/membership" className="mt-9 inline-flex min-h-14 items-center gap-3 rounded-[8px] bg-white px-8 text-lg font-semibold text-[#0874b9]">Apply for Membership <ArrowRight className="size-5" /></Link></div></section>
+            {leadershipProfiles.length > 0 ? (
+              <div className="mt-16 grid gap-12 sm:grid-cols-2 xl:mt-20 xl:grid-cols-4">
+                {leadershipProfiles.map((leader) => (
+                  <article key={leader.name} className="text-center">
+                    {leader.photo ? (
+                      <div className="relative mx-auto size-32 overflow-hidden rounded-[18px] border border-[#b9c7d4]">
+                        <OptimizedFillImage
+                          src={leader.photo}
+                          alt={`Portrait of ${leader.name}`}
+                          className="h-full w-full object-cover"
+                          sizes="128px"
+                        />
+                      </div>
+                    ) : (
+                      <div className="mx-auto flex size-32 items-center justify-center rounded-[18px] bg-[#e4edf5] text-[#0874b9]">
+                        <UserRound
+                          className="size-12"
+                          strokeWidth={1.5}
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
+                    <h3 className="mt-7 text-[19px] font-bold text-[#071f3c]">
+                      {leader.name}
+                    </h3>
+                    <p className="mt-1 text-[#0874b9]">{leader.position}</p>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-16">
+                <EmptyState>
+                  {data.availability.leadership
+                    ? "No active leadership profiles are available yet."
+                    : "Leadership profiles are temporarily unavailable."}
+                </EmptyState>
+              </div>
+            )}
+
+            <Link
+              href="/leadership"
+              className="group mt-16 inline-flex h-14 items-center gap-3 rounded-[8px] border-2 border-[#0874b9] px-7 text-lg text-[#0874b9] transition-colors hover:bg-[#e7f3fb]"
+            >
+              Meet All Leadership
+              <ArrowRight
+                className="size-5 transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
+                aria-hidden="true"
+              />
+            </Link>
+          </div>
+        </section>
+
+        <section
+          id="membership-cta"
+          className="relative min-h-[580px] scroll-mt-20 overflow-hidden bg-[#126da8] text-white sm:scroll-mt-[90px]"
+        >
+          <OptimizedFillImage
+            src="/official/sda-workshop-provided.jpg"
+            alt="SDA diplomacy workshop participants"
+            className="h-full w-full object-cover"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-[#086ba8]/80" />
+          <div className="relative mx-auto flex min-h-[580px] max-w-[1780px] items-center justify-center px-5 py-20 text-center md:px-10 xl:px-12">
+            <div className="max-w-[900px]">
+              <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#c9e8fa]">
+                Become a Member
+              </p>
+              <h2 className="mt-7 font-serif text-[40px] font-bold leading-[1.05] sm:text-[48px] md:text-[58px]">
+                Ready to Represent Somalia to the World?
+              </h2>
+              <p className="mx-auto mt-8 max-w-[830px] text-xl leading-9 text-[#e5f1f8]">
+                Contact SDA to learn about membership, public diplomacy
+                programs, professional networks, and opportunities to contribute
+                to the organization&apos;s work.
+              </p>
+              <div className="mt-12 flex flex-wrap justify-center gap-5">
+                <Link
+                  href="/contact"
+                  className="group inline-flex h-14 items-center gap-3 rounded-md bg-white px-8 text-[17px] font-semibold text-[#0874b9] shadow-lg transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#edf7fc] hover:shadow-xl motion-reduce:transform-none sm:text-lg"
+                >
+                  Membership Inquiry
+                  <ArrowRight
+                    className="size-5 transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
+                    aria-hidden="true"
+                  />
+                </Link>
+                <Link
+                  href="/about"
+                  className="inline-flex h-14 items-center rounded-md border-2 border-white/60 px-8 text-[17px] font-semibold text-white transition-colors hover:bg-white/10 sm:text-lg"
+                >
+                  Learn About SDA
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
-      <SiteFooter />
+      <footer className="bg-[#0a294d] text-[#c3cfda]">
+        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12">
+          <div>
+            <BrandLogo inverse />
+            <p className="mt-7 max-w-sm text-[16px] leading-7">
+              Empowering the next generation of Somali diplomats through
+              training, dialogue, research, and international engagement.
+            </p>
+          </div>
+
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Quick Links
+            </h2>
+            <ul className="mt-7 space-y-4">
+              {navigationItems.map((item) => (
+                <li key={`${item.label}-${item.href}`}>
+                  <Link
+                    href={item.href}
+                    className="rounded-sm transition-colors hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Public Programs
+            </h2>
+            {data.programs.length > 0 ? (
+              <ul className="mt-7 space-y-4">
+                {data.programs.slice(0, 4).map((program) => (
+                  <li key={program.id}>
+                    <Link
+                      href={`/programs/${program.slug}`}
+                      className="rounded-sm transition-colors hover:text-white"
+                    >
+                      {program.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-7 leading-7">
+                {data.availability.programs
+                  ? "No public programs are listed yet."
+                  : "Public programs are temporarily unavailable."}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Contact
+            </h2>
+            <p className="mt-7 leading-7">
+              Questions about membership, programs, or partnerships are handled
+              through the SDA contact form.
+            </p>
+            <Link
+              href="/contact"
+              className="mt-7 inline-flex min-h-11 items-center gap-3 rounded-sm text-white transition-colors hover:text-[#28b1f2]"
+            >
+              <Mail className="size-5" aria-hidden="true" /> Contact SDA
+            </Link>
+          </div>
+        </div>
+
+        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
+          <p>
+            &copy; 2026 Somali Diplomacy Association. All rights reserved.
+          </p>
+          <div className="flex gap-6">
+            <Link
+              href="/contact"
+              className="rounded-sm transition-colors hover:text-white"
+            >
+              Privacy inquiries
+            </Link>
+            <Link
+              href="/contact"
+              className="rounded-sm transition-colors hover:text-white"
+            >
+              Terms inquiries
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

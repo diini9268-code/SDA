@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { ArrowRight, FileText, Search } from "lucide-react";
-import { HomeHeader } from "@/app/_components/home-header";
+import { ArrowRight, FileText, Mail, Search } from "lucide-react";
+import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
-import { SiteFooter } from "@/app/_components/site-footer";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import type { BlogRecord } from "@/lib/blog/blog-service";
-import { publicNavigation } from "@/lib/site/official-content";
+import { prismaProgramRepository } from "@/lib/programs/program-repository";
+import type { ProgramRecord } from "@/lib/programs/program-service";
 import { createPageMetadata } from "@/lib/site/metadata";
+import { publicNavigation } from "@/lib/site/official-content";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,8 @@ export const metadata = createPageMetadata({
 type BlogPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
+
+const navigationItems = publicNavigation;
 
 const PAGE_SIZE = 12;
 
@@ -91,13 +94,19 @@ function createBlogHref({
 
 async function getBlogData(): Promise<{
   posts: BlogRecord[];
+  programs: ProgramRecord[];
   available: boolean;
 }> {
-  try {
-    return { posts: await prismaBlogRepository.listPublic(), available: true };
-  } catch {
-    return { posts: [], available: false };
-  }
+  const [postsResult, programsResult] = await Promise.allSettled([
+    prismaBlogRepository.listPublic(),
+    prismaProgramRepository.listPublic(),
+  ]);
+
+  return {
+    posts: postsResult.status === "fulfilled" ? postsResult.value : [],
+    programs: programsResult.status === "fulfilled" ? programsResult.value : [],
+    available: postsResult.status === "fulfilled",
+  };
 }
 
 function PostImage({
@@ -134,7 +143,7 @@ function PostImage({
 
 function BlogCard({ post }: { post: BlogRecord }) {
   return (
-    <article className="group flex min-h-[520px] flex-col overflow-hidden rounded-[8px] border border-[#dbe3ea] bg-white transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-[#abc7d8] hover:shadow-xl motion-reduce:transform-none">
+    <article className="group flex min-h-[520px] flex-col overflow-hidden rounded-[18px] border border-[#dbe3ea] bg-white transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-[#abc7d8] hover:shadow-xl motion-reduce:transform-none">
       <Link
         href={`/blog/${post.slug}`}
         className="relative block h-[260px] overflow-hidden bg-[#e7f1f8]"
@@ -208,7 +217,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         Skip to main content
       </a>
       <HomeHeader
-        items={publicNavigation}
+        items={navigationItems}
         activeHref="/blog"
         overlay={false}
         secondaryItem={{ href: "/login", label: "Login" }}
@@ -247,10 +256,10 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
         {featured && !hasFilters ? (
           <section className="py-20 lg:py-24">
-            <article className="group mx-auto grid max-w-[1600px] items-center gap-12 px-5 md:px-10 lg:grid-cols-[1.08fr_0.92fr] xl:gap-20 xl:px-16">
+            <article className="group mx-auto grid max-w-[1780px] items-center gap-10 px-5 md:px-10 lg:grid-cols-2 xl:gap-16 xl:px-12">
               <Link
                 href={`/blog/${featured.slug}`}
-                className="relative block min-h-[360px] overflow-hidden rounded-[8px] bg-[#e7f1f8] sm:min-h-[520px]"
+                className="relative block min-h-[360px] overflow-hidden rounded-[20px] bg-[#e7f1f8] sm:min-h-[480px]"
                 aria-label={`Read ${featured.title}`}
               >
                 <PostImage post={featured} featured />
@@ -293,7 +302,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         ) : null}
 
         <section className="bg-[#f4f7fb] py-16 lg:py-20">
-          <div className="mx-auto max-w-[1600px] px-5 md:px-10 xl:px-16">
+          <div className="mx-auto max-w-[1780px] px-5 md:px-10 xl:px-12">
             <nav
               className="flex gap-3 overflow-x-auto pb-2"
               aria-label="Blog categories"
@@ -346,7 +355,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                 ) : null}
               </>
             ) : (
-              <div className="mt-12 rounded-[8px] border border-dashed border-[#b9c7d4] bg-white px-6 py-14 text-center">
+              <div className="mt-12 rounded-[18px] border border-dashed border-[#b9c7d4] bg-white px-6 py-14 text-center">
                 <h2 className="font-serif text-3xl font-bold text-[#071f3c]">
                   {hasFilters
                     ? "No articles match these filters."
@@ -373,7 +382,80 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         </section>
       </main>
 
-      <SiteFooter />
+      <footer className="bg-[#0a294d] text-[#c3cfda]">
+        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12">
+          <div>
+            <BrandLogo inverse />
+            <p className="mt-7 max-w-sm text-[16px] leading-7">
+              Empowering Somali youth through training, dialogue, research, and
+              international engagement.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Quick Links
+            </h2>
+            <ul className="mt-7 space-y-4">
+              {navigationItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="transition-colors hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Public Programs
+            </h2>
+            {data.programs.length > 0 ? (
+              <ul className="mt-7 space-y-4">
+                {data.programs.slice(0, 5).map((program) => (
+                  <li key={program.id}>
+                    <Link
+                      href={`/programs/${program.slug}`}
+                      className="transition-colors hover:text-white"
+                    >
+                      {program.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-7 leading-7">
+                No public programs are listed yet.
+              </p>
+            )}
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
+              Contact
+            </h2>
+            <p className="mt-7 leading-7">
+              Questions about articles, programs, or partnerships are handled
+              through the existing contact form.
+            </p>
+            <Link
+              href="/contact"
+              className="mt-7 inline-flex min-h-11 items-center gap-3 text-white transition-colors hover:text-[#28b1f2]"
+            >
+              <Mail className="size-5" aria-hidden="true" /> Contact SDA
+            </Link>
+          </div>
+        </div>
+        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
+          <p>
+            &copy; 2026 Somali Diplomacy Association. All rights reserved.
+          </p>
+          <Link href="/contact" className="transition-colors hover:text-white">
+            Privacy and terms inquiries
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }

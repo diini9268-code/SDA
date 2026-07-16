@@ -19,7 +19,9 @@ export function BrandLogo({
 }) {
   return (
     <span className="flex min-w-0 items-center gap-3">
-      <span className={`relative size-[52px] shrink-0 overflow-hidden rounded-lg sm:size-[58px] ${inverse ? "bg-white" : "bg-white ring-1 ring-[#d7e2e9]"}`}>
+      <span
+        className={`relative size-[54px] shrink-0 overflow-hidden rounded-lg transition-colors sm:size-[58px] ${inverse ? "bg-white" : "bg-white ring-1 ring-[#d7e2e9]"}`}
+      >
         <Image src="/official/sda-logo.png" alt="" width={180} height={180} className="absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-[40%] scale-[0.8]" />
       </span>
       <span
@@ -31,7 +33,7 @@ export function BrandLogo({
         <br />
         Association
         <span className="mt-1 block font-sans text-[10px] font-bold tracking-[0.28em] text-[#27a9ec]">
-          DIPLOMACY · LEADERSHIP · UNITY
+          DIPLOMACY / LEADERSHIP / UNITY
         </span>
       </span>
     </span>
@@ -69,7 +71,7 @@ export function HomeHeader({
           : "border-white/10 bg-[#071e38]/55 shadow-none backdrop-blur-sm"
       }`}
     >
-      <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between gap-4 px-5 sm:h-[90px] sm:px-8 md:px-10 xl:gap-8 xl:px-16">
+      <div className="mx-auto flex h-20 max-w-[1780px] items-center justify-between gap-4 px-5 sm:h-[90px] md:px-10 xl:gap-8 xl:px-12">
         <Link href="/" aria-label="SDA home" className="shrink-0 rounded-lg">
           <BrandLogo compactOnMobile inverse={!scrolled && overlay} />
         </Link>
