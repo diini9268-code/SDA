@@ -28,7 +28,7 @@ export async function generateMetadata({
   if (!post) {
     return createPageMetadata({
       title: "Blog post",
-      description: "SSDU blog post.",
+      description: "SDA blog post.",
       path: `/blog/${slug}`,
     });
   }
@@ -37,7 +37,7 @@ export async function generateMetadata({
     title: post.title,
     description:
       post.excerpt ??
-      `Read ${post.title}, a ${post.category} update from SSDU.`,
+      `Read ${post.title}, a ${post.category} update from SDA.`,
     path: `/blog/${post.slug}`,
   });
 }
@@ -52,8 +52,8 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
   return (
     <PublicPageShell>
-      <main className="px-6 py-12 sm:px-10 lg:px-16">
-        <article className="mx-auto max-w-3xl">
+      <main className="px-5 py-16 sm:px-10 lg:py-24 xl:px-16">
+        <article className="mx-auto max-w-[1100px]">
           <Link
             href="/blog"
             className="text-sm font-semibold text-slate-600 hover:text-slate-950"
@@ -64,7 +64,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-600">
               {post.category}
             </p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-normal text-slate-950">
+            <h1 className="mt-4 font-serif text-4xl font-bold leading-tight tracking-normal text-slate-950 sm:text-5xl lg:text-6xl">
               {post.title}
             </h1>
             <p className="mt-3 text-sm font-medium text-slate-600">
@@ -94,7 +94,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             </section>
           ) : null}
 
-          <div className="mt-8 whitespace-pre-wrap text-base leading-8 text-slate-800">
+          <div className="mt-10 max-w-4xl whitespace-pre-wrap text-[17px] leading-8 text-slate-800">
             {post.content}
           </div>
         </article>

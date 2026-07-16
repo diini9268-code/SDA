@@ -1,7 +1,7 @@
-# SSDU Website
+# Somali Diplomacy Association Website
 
-Somali Student Diplomacy Union website and administrator content management
-system.
+Official Somali Diplomacy Association public website and administrator content
+management system.
 
 ## Getting Started
 

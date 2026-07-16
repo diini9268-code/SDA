@@ -25,11 +25,11 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Shaping Somalia's Diplomatic Future",
+        name: "Diplomacy, leadership and unity for Somalia's next generation.",
       }),
     ).toBeDefined();
     expect(
-      screen.getAllByRole("link", { name: /Join SSDU/ }).length,
+      screen.getAllByRole("link", { name: /Join SDA/ }).length,
     ).toBeGreaterThan(0);
     expect(
       screen.getByRole("link", { name: "Skip to main content" }),
@@ -40,7 +40,7 @@ describe("Public pages", () => {
         ?.getAttribute("aria-current"),
     ).toBe("page");
     expect(screen.getByRole("link", { name: "Login" }).getAttribute("href")).toBe("/login");
-    for (const link of screen.getAllByRole("link", { name: /Join SSDU/ })) {
+    for (const link of screen.getAllByRole("link", { name: /Join SDA/ })) {
       expect(link.getAttribute("href")).toBe("/membership");
     }
   });
@@ -52,7 +52,7 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "About SSDU",
+        name: "About the Somali Diplomacy Association",
       }),
     ).toBeDefined();
     expect(
@@ -67,12 +67,12 @@ describe("Public pages", () => {
         ?.getAttribute("aria-current"),
     ).toBe("page");
     expect(
-      screen.getByRole("heading", { level: 2, name: "Published Milestones" }),
+      screen.getByRole("heading", { level: 2, name: "Organizational Structure" }),
     ).toBeDefined();
     expect(
       screen.getByRole("link", { name: "Login" }).getAttribute("href"),
     ).toBe("/login");
-    for (const link of screen.getAllByRole("link", { name: /Join SSDU/ })) {
+    for (const link of screen.getAllByRole("link", { name: /Join SDA/ })) {
       expect(link.getAttribute("href")).toBe("/membership");
     }
     expect(screen.queryByRole("button", { name: /newsletter/i })).toBeNull();
@@ -85,14 +85,13 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Our Leadership",
+        name: "Leadership grounded in service and accountability.",
       }),
     ).toBeDefined();
-    expect(screen.getByText("Published Profiles")).toBeDefined();
     expect(
       screen.getByRole("heading", {
         level: 3,
-        name: "No leadership profiles are published yet.",
+        name: "Abdullaahi Abdikariim Ahmed",
       }),
     ).toBeDefined();
     expect(screen.queryByRole("button", { name: "Supreme Council" })).toBeNull();
@@ -109,7 +108,7 @@ describe("Public pages", () => {
     render(await BlogPage({}));
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "The SSDU Blog" }),
+      screen.getByRole("heading", { level: 1, name: "The SDA Blog" }),
     ).toBeDefined();
     expect(
       screen
@@ -133,7 +132,7 @@ describe("Public pages", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Join the SSDU Community",
+        name: "Join the SDA Community",
       }),
     ).toBeDefined();
     for (const fieldName of [

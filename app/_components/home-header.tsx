@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Globe2, Menu, X } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type NavigationItem = {
@@ -18,26 +19,19 @@ export function BrandLogo({
 }) {
   return (
     <span className="flex min-w-0 items-center gap-3">
-      <span
-        className={`flex size-[54px] shrink-0 flex-col items-center justify-center rounded-lg transition-colors sm:size-[58px] ${
-          inverse ? "bg-white/10" : "bg-[#0a294d]"
-        }`}
-      >
-        <Globe2 className="size-7 text-[#27b3f4]" strokeWidth={1.7} />
-        <span className="mt-0.5 text-[8px] font-bold tracking-[0.24em] text-white">
-          SSDU
-        </span>
+      <span className={`relative size-[52px] shrink-0 overflow-hidden rounded-lg sm:size-[58px] ${inverse ? "bg-white" : "bg-white ring-1 ring-[#d7e2e9]"}`}>
+        <Image src="/official/sda-logo.png" alt="" width={180} height={180} className="absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-[40%] scale-[0.8]" />
       </span>
       <span
         className={`min-w-0 font-serif text-[18px] font-bold leading-[1.05] transition-colors ${
           inverse ? "text-white" : "text-[#0a294d]"
         } ${compactOnMobile ? "hidden sm:block" : "block"}`}
       >
-        Somali Student
+        Somali Diplomacy
         <br />
-        Diplomacy Union
+        Association
         <span className="mt-1 block font-sans text-[10px] font-bold tracking-[0.28em] text-[#27a9ec]">
-          DIPLOMACY / UNITY
+          DIPLOMACY · LEADERSHIP · UNITY
         </span>
       </span>
     </span>
@@ -48,8 +42,8 @@ export function HomeHeader({
   items,
   activeHref = "/",
   overlay = true,
-  secondaryItem = { href: "/archive", label: "Archive" },
-  joinHref = "/contact",
+  secondaryItem = { href: "/login", label: "Login" },
+  joinHref = "/membership",
 }: {
   items: NavigationItem[];
   activeHref?: string;
@@ -75,8 +69,8 @@ export function HomeHeader({
           : "border-white/10 bg-[#071e38]/55 shadow-none backdrop-blur-sm"
       }`}
     >
-      <div className="mx-auto flex h-20 max-w-[1780px] items-center justify-between gap-4 px-5 sm:h-[90px] md:px-10 xl:gap-8 xl:px-12">
-        <Link href="/" aria-label="SSDU home" className="shrink-0 rounded-lg">
+      <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between gap-4 px-5 sm:h-[90px] sm:px-8 md:px-10 xl:gap-8 xl:px-16">
+        <Link href="/" aria-label="SDA home" className="shrink-0 rounded-lg">
           <BrandLogo compactOnMobile inverse={!scrolled && overlay} />
         </Link>
 
@@ -115,14 +109,14 @@ export function HomeHeader({
           </Link>
           <Link
             href={joinHref}
-            aria-label="Join SSDU"
+            aria-label="Join SDA"
             className="inline-flex h-11 items-center gap-2 rounded-[22px] bg-[#1778b8] px-4 text-[15px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg motion-reduce:transform-none sm:gap-3 sm:px-5 sm:text-[16px]"
           >
             <span className="sm:hidden" aria-hidden="true">
               Join
             </span>
             <span className="hidden sm:inline" aria-hidden="true">
-              Join SSDU
+              Join SDA
             </span>
             <ArrowRight className="size-4" aria-hidden="true" />
           </Link>

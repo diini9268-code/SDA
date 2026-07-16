@@ -44,7 +44,7 @@ describe("SEO metadata", () => {
       path: "/programs",
     });
 
-    expect(metadata.title).toBe("Programs | SSDU");
+    expect(metadata.title).toBe("Programs | SDA");
     expect(metadata.description).toBe("SSDU programs.");
     expect(metadata.alternates).toEqual({
       canonical: "https://ssdu.example/programs",

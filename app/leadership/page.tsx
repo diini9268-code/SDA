@@ -1,30 +1,21 @@
-import Link from "next/link";
-import { Mail, UserRound } from "lucide-react";
-import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
+import Image from "next/image";
+import { HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
+import { SiteFooter } from "@/app/_components/site-footer";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
 import type { LeadershipProfile } from "@/lib/leadership/leadership-service";
+import { leadershipProfiles, publicNavigation } from "@/lib/site/official-content";
 import { createPageMetadata } from "@/lib/site/metadata";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = createPageMetadata({
   title: "Leadership",
-  description:
-    "Meet the active SSDU leaders published through the organization’s leadership directory.",
+  description: "Meet the official leadership of the Somali Diplomacy Association and learn about its governance structure.",
   path: "/leadership",
 });
 
-const navigationItems = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/blog", label: "Blog" },
-  { href: "/membership", label: "Membership" },
-  { href: "/leadership", label: "Leadership" },
-  { href: "/contact", label: "Contact" },
-];
-
-async function getLeadershipProfiles(): Promise<LeadershipProfile[]> {
+async function getPublishedProfiles(): Promise<LeadershipProfile[]> {
   try {
     return await prismaLeadershipRepository.listPublic();
   } catch {
@@ -32,171 +23,25 @@ async function getLeadershipProfiles(): Promise<LeadershipProfile[]> {
   }
 }
 
-function LeadershipCard({ profile }: { profile: LeadershipProfile }) {
-  return (
-    <article className="group overflow-hidden rounded-[20px] border border-[#dce3e9] bg-white shadow-[0_10px_35px_rgba(10,41,77,0.06)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-[#b9d4e5] hover:shadow-[0_20px_45px_rgba(10,41,77,0.13)] motion-reduce:transform-none">
-      <div className="relative aspect-[1.44/1] overflow-hidden bg-[#e8f1f7]">
-        {profile.photo ? (
-          <OptimizedFillImage
-            src={profile.photo}
-            alt={`Portrait of ${profile.fullName}`}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transform-none"
-            sizes="(min-width: 1280px) 31vw, (min-width: 768px) 48vw, 100vw"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center" role="img" aria-label={`No portrait published for ${profile.fullName}`}>
-            <UserRound className="size-16 text-[#79a7c3]" strokeWidth={1.25} aria-hidden="true" />
-          </div>
-        )}
-      </div>
-      <div className="p-6 sm:p-8">
-        <p className="inline-flex rounded-full border border-[#cbd9e3] px-4 py-1 text-sm font-medium text-[#52657c]">
-          Leadership
-        </p>
-        <h2 className="mt-5 font-serif text-[26px] font-bold leading-tight text-[#071f3c] sm:text-[29px]">
-          {profile.fullName}
-        </h2>
-        <p className="mt-1 text-[17px] font-medium text-[#0874b9]">
-          {profile.position}
-        </p>
-        <p className="mt-5 line-clamp-4 text-[16px] leading-7 text-[#52657c]">
-          {profile.biography}
-        </p>
-      </div>
-    </article>
-  );
-}
-
 export default async function LeadershipPage() {
-  const profiles = await getLeadershipProfiles();
+  const publishedProfiles = await getPublishedProfiles();
+  const officialNames = new Set(leadershipProfiles.map((profile) => profile.name.toLowerCase()));
+  const additionalProfiles = publishedProfiles.filter((profile) => !officialNames.has(profile.fullName.toLowerCase()));
 
   return (
-    <div className="min-h-screen bg-[#f4f7fa] text-[#071f3c]">
-      <a
-        href="#main-content"
-        className="sr-only z-[100] rounded-md bg-white px-4 py-3 text-[#071f3c] focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
-      >
-        Skip to main content
-      </a>
-      <HomeHeader
-        items={navigationItems}
-        activeHref="/leadership"
-        overlay={false}
-        secondaryItem={{ href: "/login", label: "Login" }}
-        joinHref="/membership"
-      />
-
+    <div className="min-w-0 bg-white text-[#071f3c]">
+      <a href="#main-content" className="sr-only z-[100] rounded-md bg-white px-4 py-3 focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Skip to main content</a>
+      <HomeHeader items={publicNavigation} activeHref="/leadership" overlay={false} />
       <main id="main-content" className="pt-20 sm:pt-[90px]">
-        <section className="flex min-h-[500px] items-center justify-center bg-[#0a294d] px-5 py-24 text-center text-white sm:min-h-[590px] md:px-10">
-          <div className="mx-auto max-w-4xl">
-            <p className="text-sm font-bold uppercase tracking-[0.32em] text-[#2ab3f3] sm:text-base">
-              Leadership
-            </p>
-            <h1 className="mt-7 font-serif text-[46px] font-bold leading-[1.05] sm:text-[64px] lg:text-[74px]">
-              Our Leadership
-            </h1>
-            <p className="mx-auto mt-7 max-w-3xl text-[18px] leading-8 text-[#becbd7] sm:text-[23px] sm:leading-10">
-              Meet the active leaders currently published by SSDU and guiding
-              its work with experience, integrity, and vision.
-            </p>
-          </div>
-        </section>
+        <section className="bg-[#071f3c] text-white"><div className="mx-auto grid min-h-[560px] w-full max-w-[1600px] gap-12 px-5 py-20 sm:px-8 md:px-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:py-24 xl:px-16"><div><p className="text-sm font-bold uppercase tracking-[0.26em] text-[#29b6f6]">Leadership</p><h1 className="mt-6 font-serif text-[46px] font-bold leading-[1.03] sm:text-[68px] lg:text-[78px]">Leadership grounded in service and accountability.</h1><p className="mt-7 max-w-2xl text-lg leading-9 text-white/70">SDA&apos;s leadership guides the Association&apos;s strategy, institutional development, research, international cooperation, and youth engagement.</p></div><div className="relative aspect-[3/2] overflow-hidden"><Image src="/official/sda-official-venue-group.jpg" alt="Somali Diplomacy Association members and leaders" fill className="object-cover" priority sizes="(min-width: 1024px) 60vw, 100vw" /></div></div></section>
 
-        <section aria-labelledby="directory-heading" className="px-5 py-20 sm:py-24 md:px-10 xl:px-12">
-          <div className="mx-auto max-w-[1780px]">
-            <div className="flex flex-col gap-5 text-center sm:items-center">
-              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
-                Published Profiles
-              </p>
-              <h2 id="directory-heading" className="font-serif text-[38px] font-bold leading-tight sm:text-[52px]">
-                The People Guiding SSDU
-              </h2>
-              <p className="max-w-2xl text-[17px] leading-8 text-[#52657c]">
-                Profiles appear in the order maintained by authorized SSDU
-                administrators.
-              </p>
-            </div>
+        <section className="py-24 lg:py-32"><div className="mx-auto w-full max-w-[1600px] px-5 sm:px-8 md:px-10 xl:px-16"><div className="max-w-4xl"><p className="text-sm font-bold uppercase tracking-[0.24em] text-[#0874b9]">Official Leadership</p><h2 className="mt-5 font-serif text-[42px] font-bold sm:text-[56px]">The people guiding SDA.</h2></div><div className="mt-14 grid gap-x-7 gap-y-14 sm:grid-cols-2 xl:grid-cols-4">{leadershipProfiles.map((profile) => <article key={profile.name} className="group"><div className="relative aspect-[4/5] overflow-hidden bg-[#e8f1f7]"><Image src={profile.photo} alt={`Portrait of ${profile.name}`} fill className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transform-none" sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw" /></div><h3 className="mt-6 font-serif text-[27px] font-bold leading-tight">{profile.name}</h3><p className="mt-2 min-h-12 text-[15px] font-semibold leading-6 text-[#0874b9]">{profile.position}</p><p className="mt-4 text-[15px] leading-7 text-[#52657c]">{profile.biography}</p></article>)}</div></div></section>
 
-            {profiles.length > 0 ? (
-              <div className="mt-14 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
-                {profiles.map((profile) => (
-                  <LeadershipCard key={profile.id} profile={profile} />
-                ))}
-              </div>
-            ) : (
-              <div className="mx-auto mt-14 max-w-3xl rounded-[20px] border border-dashed border-[#b8cbd8] bg-white px-6 py-16 text-center sm:px-12">
-                <UserRound className="mx-auto size-12 text-[#2486c0]" strokeWidth={1.4} aria-hidden="true" />
-                <h3 className="mt-6 font-serif text-[28px] font-bold">
-                  No leadership profiles are published yet.
-                </h3>
-                <p className="mx-auto mt-4 max-w-xl text-[16px] leading-7 text-[#52657c]">
-                  Active profiles will appear here after an authorized
-                  administrator publishes them.
-                </p>
-              </div>
-            )}
-          </div>
-        </section>
+        <section className="bg-[#f3f7fa] py-24 lg:py-32"><div className="mx-auto grid w-full max-w-[1600px] gap-7 px-5 sm:px-8 md:px-10 lg:grid-cols-2 xl:px-16"><article className="bg-white p-7 sm:p-10"><p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0874b9]">Supreme Council</p><h2 className="mt-5 font-serif text-3xl font-bold">Strategic governance</h2><p className="mt-5 text-[17px] leading-8 text-[#52657c]">Sets the Association&apos;s strategic direction and policy, oversees activities and programs, approves major initiatives and budgets, and safeguards the constitution and governance framework.</p><p className="mt-7 border-t border-[#dce5eb] pt-5 font-semibold">Chairperson · Deputy Chairperson</p></article><article className="bg-white p-7 sm:p-10"><p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0874b9]">Executive Council</p><h2 className="mt-5 font-serif text-3xl font-bold">Day-to-day leadership</h2><p className="mt-5 text-[17px] leading-8 text-[#52657c]">Manages the daily operations of the Association and carries forward the strategy and decisions established through SDA&apos;s governance structure.</p><p className="mt-7 border-t border-[#dce5eb] pt-5 font-semibold">Director General · Deputy Director General · Secretary General</p></article></div></section>
 
-        <section className="bg-white px-5 py-20 text-center md:px-10">
-          <div className="mx-auto max-w-3xl">
-            <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
-              Connect
-            </p>
-            <h2 className="mt-6 font-serif text-[38px] font-bold leading-tight sm:text-[50px]">
-              Contact the Organization
-            </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-[17px] leading-8 text-[#52657c]">
-              Leadership and partnership questions are handled through the
-              existing public contact workflow.
-            </p>
-            <Link
-              href="/contact"
-              className="mt-9 inline-flex min-h-12 items-center gap-3 rounded-[24px] bg-[#1778b8] px-7 font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0874b9] motion-reduce:transform-none"
-            >
-              <Mail className="size-5" aria-hidden="true" /> Contact SSDU
-            </Link>
-          </div>
-        </section>
+        {additionalProfiles.length ? <section className="py-24"><div className="mx-auto w-full max-w-[1600px] px-5 sm:px-8 md:px-10 xl:px-16"><div><p className="text-sm font-bold uppercase tracking-[0.24em] text-[#0874b9]">Published Directory</p><h2 className="mt-5 font-serif text-[38px] font-bold sm:text-[48px]">Additional active profiles</h2><p className="mt-4 max-w-3xl leading-7 text-[#52657c]">These profiles are maintained through the existing protected SDA administration system.</p></div><div className="mt-12 grid gap-7 md:grid-cols-2 xl:grid-cols-3">{additionalProfiles.map((profile) => <article key={profile.id} className="border border-[#dce5eb] bg-white"><div className="relative aspect-[4/3] overflow-hidden bg-[#e8f1f7]">{profile.photo ? <OptimizedFillImage src={profile.photo} alt={`Portrait of ${profile.fullName}`} className="object-cover object-top" sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw" /> : null}</div><div className="p-7"><h3 className="font-serif text-2xl font-bold">{profile.fullName}</h3><p className="mt-2 font-semibold text-[#0874b9]">{profile.position}</p><p className="mt-4 line-clamp-5 leading-7 text-[#52657c]">{profile.biography}</p></div></article>)}</div></div></section> : null}
       </main>
-
-      <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
-          <div>
-            <BrandLogo inverse />
-            <p className="mt-7 max-w-sm text-[16px] leading-7">
-              Empowering Somali youth through training, dialogue, research,
-              and international engagement.
-            </p>
-          </div>
-          <div>
-            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">Quick Links</h2>
-            <ul className="mt-7 grid grid-cols-2 gap-4">
-              {navigationItems.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="transition-colors hover:text-white focus-visible:text-white">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">Contact</h2>
-            <p className="mt-7 max-w-md leading-7">
-              Use the supported public contact form for leadership,
-              membership, and partnership inquiries.
-            </p>
-            <Link href="/contact" className="mt-7 inline-flex min-h-11 items-center gap-3 text-white transition-colors hover:text-[#28b1f2]">
-              <Mail className="size-5" aria-hidden="true" /> Contact SSDU
-            </Link>
-          </div>
-        </div>
-        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
-          <p>&copy; 2026 Somali Student Diplomacy Union. All rights reserved.</p>
-          <Link href="/contact" className="transition-colors hover:text-white">Privacy and terms inquiries</Link>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

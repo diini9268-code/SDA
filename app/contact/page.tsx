@@ -8,29 +8,22 @@ import {
   Send,
 } from "lucide-react";
 import { SubmitButton } from "@/app/admin/_components/form-controls";
-import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
+import { HomeHeader } from "@/app/_components/home-header";
+import { SiteFooter } from "@/app/_components/site-footer";
 import { submitContactMessageAction } from "@/app/contact/actions";
+import { publicNavigation } from "@/lib/site/official-content";
 import { createPageMetadata } from "@/lib/site/metadata";
 
 export const metadata = createPageMetadata({
   title: "Contact",
   description:
-    "Send SSDU a message through the supported public contact workflow.",
+    "Send the Somali Diplomacy Association a message through the supported public contact workflow.",
   path: "/contact",
 });
 
 type ContactPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
-
-const navigationItems = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/blog", label: "Blog" },
-  { href: "/membership", label: "Membership" },
-  { href: "/leadership", label: "Leadership" },
-  { href: "/contact", label: "Contact" },
-];
 
 const workflowFacts = [
   {
@@ -43,7 +36,7 @@ const workflowFacts = [
     icon: ClipboardCheck,
     title: "Admin review",
     description:
-      "The SSDU administration team can review and manage the status of each inquiry.",
+      "The SDA administration team can review and manage the status of each inquiry.",
   },
   {
     icon: Mail,
@@ -126,7 +119,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         Skip to main content
       </a>
       <HomeHeader
-        items={navigationItems}
+        items={publicNavigation}
         activeHref="/contact"
         overlay={false}
         secondaryItem={{ href: "/login", label: "Login" }}
@@ -144,13 +137,13 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             </h1>
             <p className="mx-auto mt-7 max-w-3xl text-[18px] leading-8 text-[#becbd7] sm:text-[23px] sm:leading-10">
               Send a question about membership, programs, partnerships, or
-              SSDU activities through the official contact workflow.
+              SDA activities through the official contact workflow.
             </p>
           </div>
         </section>
 
-        <section className="px-5 py-20 md:px-10 xl:px-12 xl:py-24">
-          <div className="mx-auto grid max-w-[1780px] gap-8 lg:grid-cols-[minmax(270px,0.7fr)_minmax(0,1.5fr)] xl:gap-14">
+        <section className="px-5 py-20 md:px-10 xl:px-16 xl:py-28">
+          <div className="mx-auto grid max-w-[1600px] gap-10 lg:grid-cols-[minmax(300px,0.72fr)_minmax(0,1.55fr)] xl:gap-16">
             <aside aria-labelledby="contact-process-heading" className="space-y-5">
               <div className="mb-8">
                 <p className="text-sm font-bold uppercase tracking-[0.28em] text-[#0874b9]">What happens next</p>
@@ -159,8 +152,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
                 </h2>
               </div>
               {workflowFacts.map(({ icon: Icon, title, description }) => (
-                <article key={title} className="flex gap-5 rounded-[18px] border border-[#dce3e9] bg-white p-6 transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-lg motion-reduce:transform-none">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-[14px] bg-[#e7f1f7] text-[#0874b9]">
+                <article key={title} className="flex gap-5 rounded-[8px] border border-[#dce3e9] bg-white p-6 transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-lg motion-reduce:transform-none">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-[8px] bg-[#e7f1f7] text-[#0874b9]">
                     <Icon className="size-6" strokeWidth={1.8} aria-hidden="true" />
                   </span>
                   <div>
@@ -170,11 +163,11 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
                 </article>
               ))}
               <Link href="/membership" className="inline-flex min-h-11 items-center gap-2 px-1 pt-4 font-semibold text-[#0874b9] transition-colors hover:text-[#075d92]">
-                Looking to join SSDU? <ArrowRight className="size-4" aria-hidden="true" />
+                Looking to join SDA? <ArrowRight className="size-4" aria-hidden="true" />
               </Link>
             </aside>
 
-            <div className="rounded-[22px] border border-[#dce3e9] bg-white p-6 shadow-[0_16px_50px_rgba(10,41,77,0.08)] sm:p-9 xl:p-12">
+            <div className="rounded-[8px] border border-[#dce3e9] bg-white p-6 shadow-[0_16px_50px_rgba(10,41,77,0.08)] sm:p-9 xl:p-12">
               <h2 className="font-serif text-[34px] font-bold sm:text-[42px]">Send a Message</h2>
               <p className="mt-3 max-w-2xl text-[16px] leading-7 text-[#52657c]">
                 All fields are required. Messages enter the private admin inbox
@@ -195,13 +188,13 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
                     rows={7}
                     maxLength={5000}
                     placeholder="Write your message here..."
-                    className="min-h-[190px] resize-y rounded-[16px] border border-[#cbd8e2] bg-[#edf3f8] px-5 py-4 text-[16px] leading-7 outline-none transition-[border-color,background-color,box-shadow] placeholder:text-[#718196] hover:border-[#9db9cc] focus:border-[#1684c2] focus:bg-white focus:ring-4 focus:ring-[#1684c2]/15"
+                    className="min-h-[190px] resize-y rounded-[8px] border border-[#cbd8e2] bg-[#edf3f8] px-5 py-4 text-[16px] leading-7 outline-none transition-[border-color,background-color,box-shadow] placeholder:text-[#718196] hover:border-[#9db9cc] focus:border-[#1684c2] focus:bg-white focus:ring-4 focus:ring-[#1684c2]/15"
                   />
                 </div>
                 <StatusMessage error={error} success={success} />
                 <SubmitButton
                   pendingLabel="Sending..."
-                  className="inline-flex min-h-[58px] w-full items-center justify-center gap-3 rounded-[18px] bg-[#1778b8] px-7 text-[18px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg disabled:cursor-not-allowed disabled:bg-[#7698ad] motion-reduce:transform-none"
+                  className="inline-flex min-h-[58px] w-full items-center justify-center gap-3 rounded-[8px] bg-[#1778b8] px-7 text-[18px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg disabled:cursor-not-allowed disabled:bg-[#7698ad] motion-reduce:transform-none"
                 >
                   Send Message <Send className="size-5" aria-hidden="true" />
                 </SubmitButton>
@@ -211,33 +204,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         </section>
       </main>
 
-      <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
-          <div>
-            <BrandLogo inverse />
-            <p className="mt-7 max-w-sm text-[16px] leading-7">Empowering Somali youth through training, dialogue, research, and international engagement.</p>
-          </div>
-          <div>
-            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">Quick Links</h2>
-            <ul className="mt-7 grid grid-cols-2 gap-4">
-              {navigationItems.map((item) => (
-                <li key={item.href}><Link href={item.href} className="transition-colors hover:text-white">{item.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">Contact workflow</h2>
-            <p className="mt-7 max-w-md leading-7">Messages submitted above are stored for private administrator review.</p>
-            <a href="#main-content" className="mt-7 inline-flex min-h-11 items-center gap-3 text-white transition-colors hover:text-[#28b1f2]">
-              <Mail className="size-5" aria-hidden="true" /> Return to contact form
-            </a>
-          </div>
-        </div>
-        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
-          <p>&copy; 2026 Somali Student Diplomacy Union. All rights reserved.</p>
-          <span>Contact details are provided by the sender.</span>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

@@ -1,24 +1,27 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  BookOpen,
   ChevronDown,
   ClipboardCheck,
-  FileText,
   Handshake,
   Landmark,
-  Mail,
   Send,
   UsersRound,
 } from "lucide-react";
-import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
+import { HomeHeader } from "@/app/_components/home-header";
+import { SiteFooter } from "@/app/_components/site-footer";
 import { submitMembershipApplicationAction } from "@/app/membership/actions";
+import {
+  membershipCategories,
+  membershipRequirements,
+  publicNavigation,
+} from "@/lib/site/official-content";
 import { createPageMetadata } from "@/lib/site/metadata";
 
 export const metadata = createPageMetadata({
   title: "Membership",
   description:
-    "Apply for SSDU membership through the public application workflow.",
+    "Learn about Somali Diplomacy Association membership and submit an application for administrative review.",
   path: "/membership",
 });
 
@@ -26,49 +29,26 @@ type MembershipPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-const navigationItems = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/blog", label: "Blog" },
-  { href: "/membership", label: "Membership" },
-  { href: "/leadership", label: "Leadership" },
-  { href: "/contact", label: "Contact" },
-];
-
 const opportunities = [
   {
     icon: Landmark,
-    title: "Public Programs",
+    title: "Diplomatic Education",
     description:
-      "Discover published training sessions, events, and diplomacy programs through the public program directory.",
+      "Take part in workshops covering diplomacy, international law, negotiation, and conflict resolution.",
     href: "/programs",
   },
   {
     icon: UsersRound,
-    title: "Leadership Profiles",
+    title: "Leadership Development",
     description:
-      "Learn about the active leaders currently published by the SSDU administration team.",
-    href: "/leadership",
-  },
-  {
-    icon: BookOpen,
-    title: "Insights & Publications",
-    description:
-      "Read public articles, analysis, and organizational updates published through the SSDU blog.",
-    href: "/blog",
-  },
-  {
-    icon: FileText,
-    title: "Public Archive",
-    description:
-      "Browse published records and images documenting SSDU activities and organizational work.",
-    href: "/archive",
+      "Build public speaking, strategic thinking, planning, teamwork, and ethical leadership skills.",
+    href: "/programs",
   },
   {
     icon: ClipboardCheck,
-    title: "Application Review",
+    title: "Active Participation",
     description:
-      "Applications are stored with a pending status for review by authorized SSDU administrators.",
+      "Contribute to forums, research, community activities, and other initiatives organized by SDA.",
   },
   {
     icon: Handshake,
@@ -88,12 +68,12 @@ const faqs = [
   {
     question: "What happens after I submit?",
     answer:
-      "Your application is stored with a pending status so an authorized administrator can review it.",
+      "Your application is stored with a pending status so an authorized SDA administrator can review it.",
   },
   {
     question: "Can I ask a question before applying?",
     answer:
-      "Yes. Use the Contact page to send a membership question to the SSDU administration team.",
+      "Yes. Use the Contact page to send a membership question to the SDA administration team.",
   },
   {
     question: "Can I track my application online?",
@@ -125,7 +105,7 @@ export default async function MembershipPage({
         Skip to main content
       </a>
       <HomeHeader
-        items={navigationItems}
+        items={publicNavigation}
         activeHref="/membership"
         overlay={false}
         secondaryItem={{ href: "/login", label: "Login" }}
@@ -138,11 +118,12 @@ export default async function MembershipPage({
             Membership
           </p>
           <h1 className="mt-7 font-serif text-[48px] font-bold leading-none sm:text-[62px] lg:text-[70px]">
-            Join the SSDU Community
+            Join the SDA Community
           </h1>
           <p className="mx-auto mt-8 max-w-[860px] text-lg leading-8 text-[#c3cfda] sm:text-xl">
             Submit your information for administrative review and explore
-            SSDU&apos;s published programs, leadership, articles, and archive.
+            SDA&apos;s diplomatic education, leadership development, research,
+            and international engagement activities.
           </p>
           <a
             href="#application"
@@ -157,13 +138,13 @@ export default async function MembershipPage({
         </section>
 
         <section className="py-20 lg:py-28">
-          <div className="mx-auto max-w-[1780px] px-5 md:px-10 xl:px-12">
+          <div className="mx-auto max-w-[1600px] px-5 md:px-10 xl:px-16">
             <div className="text-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
-                Explore SSDU
+                Participate with SDA
               </p>
               <h2 className="mt-6 font-serif text-[40px] font-bold leading-tight sm:text-[50px]">
-                What Membership Connects You To
+                Opportunities to Learn and Contribute
               </h2>
             </div>
             <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -171,7 +152,7 @@ export default async function MembershipPage({
                 const Icon = item.icon;
                 const content = (
                   <>
-                    <div className="flex size-14 shrink-0 items-center justify-center rounded-[16px] bg-[#e7f1f8] text-[#0874b9]">
+                    <div className="flex size-14 shrink-0 items-center justify-center rounded-[8px] bg-[#e7f1f8] text-[#0874b9]">
                       <Icon
                         className="size-7"
                         strokeWidth={1.8}
@@ -193,14 +174,14 @@ export default async function MembershipPage({
                   <Link
                     key={item.title}
                     href={item.href}
-                    className="flex min-h-[220px] gap-6 rounded-[18px] border border-[#dbe3ea] bg-white p-8 transition-[transform,box-shadow,border-color] hover:-translate-y-1 hover:border-[#abc7d8] hover:shadow-xl motion-reduce:transform-none"
+                    className="flex min-h-[220px] gap-6 rounded-[8px] border border-[#dbe3ea] bg-white p-8 transition-[transform,box-shadow,border-color] hover:-translate-y-1 hover:border-[#abc7d8] hover:shadow-xl motion-reduce:transform-none"
                   >
                     {content}
                   </Link>
                 ) : (
                   <article
                     key={item.title}
-                    className="flex min-h-[220px] gap-6 rounded-[18px] border border-[#dbe3ea] bg-white p-8"
+                    className="flex min-h-[220px] gap-6 rounded-[8px] border border-[#dbe3ea] bg-white p-8"
                   >
                     {content}
                   </article>
@@ -210,9 +191,43 @@ export default async function MembershipPage({
           </div>
         </section>
 
+        <section className="bg-[#eef4f8] py-20 lg:py-28">
+          <div className="mx-auto grid max-w-[1600px] gap-12 px-5 md:px-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start xl:px-16">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
+                Official Membership
+              </p>
+              <h2 className="mt-6 font-serif text-[40px] font-bold leading-tight sm:text-[50px]">
+                Categories and Requirements
+              </h2>
+              <p className="mt-6 max-w-2xl text-[17px] leading-8 text-[#52657c]">
+                SDA membership is organized into three categories. Every
+                member is expected to uphold the Association&apos;s constitution,
+                professional conduct, and active participation standards.
+              </p>
+              <ul className="mt-8 space-y-4">
+                {membershipRequirements.map((requirement) => (
+                  <li key={requirement} className="flex gap-3 text-[17px] leading-7 text-[#29445f]">
+                    <span className="mt-2 size-2 shrink-0 rounded-full bg-[#1b86c4]" aria-hidden="true" />
+                    {requirement}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              {membershipCategories.map((category) => (
+                <article key={category.title} className="rounded-[8px] border border-[#d4e0e8] bg-white p-7">
+                  <h3 className="font-serif text-2xl font-bold text-[#071f3c]">{category.title}</h3>
+                  <p className="mt-4 text-[16px] leading-7 text-[#52657c]">{category.description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section
           id="application"
-          className="scroll-mt-24 bg-[#f4f7fb] py-20 lg:py-28"
+          className="scroll-mt-24 bg-white py-20 lg:py-28"
         >
           <div className="mx-auto max-w-[980px] px-5 md:px-10">
             <div className="text-center">
@@ -247,7 +262,7 @@ export default async function MembershipPage({
 
             <form
               action={submitMembershipApplicationAction}
-              className="mt-10 rounded-[20px] border border-[#dbe3ea] bg-white p-6 shadow-[0_18px_50px_rgba(10,41,77,0.10)] sm:p-10"
+              className="mt-10 rounded-[8px] border border-[#dbe3ea] bg-white p-6 shadow-[0_18px_50px_rgba(10,41,77,0.10)] sm:p-10"
             >
               <div className="grid gap-6 md:grid-cols-2">
                 <label className="text-[16px] font-semibold text-[#071f3c]">
@@ -330,7 +345,7 @@ export default async function MembershipPage({
               {faqs.map((faq) => (
                 <details
                   key={faq.question}
-                  className="group rounded-[18px] border border-[#dbe3ea] bg-white px-6 open:shadow-md sm:px-9"
+                  className="group rounded-[8px] border border-[#dbe3ea] bg-white px-6 open:shadow-md sm:px-9"
                 >
                   <summary className="flex min-h-20 cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold text-[#071f3c] [&::-webkit-details-marker]:hidden">
                     {faq.question}
@@ -349,57 +364,7 @@ export default async function MembershipPage({
         </section>
       </main>
 
-      <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
-          <div>
-            <BrandLogo inverse />
-            <p className="mt-7 max-w-sm text-[16px] leading-7">
-              Empowering Somali youth through training, dialogue, research, and
-              international engagement.
-            </p>
-          </div>
-          <div>
-            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
-              Quick Links
-            </h2>
-            <ul className="mt-7 grid grid-cols-2 gap-4">
-              {navigationItems.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="transition-colors hover:text-white"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
-              Contact
-            </h2>
-            <p className="mt-7 max-w-md leading-7">
-              Questions about membership are handled through the existing
-              contact form.
-            </p>
-            <Link
-              href="/contact"
-              className="mt-7 inline-flex min-h-11 items-center gap-3 text-white transition-colors hover:text-[#28b1f2]"
-            >
-              <Mail className="size-5" aria-hidden="true" /> Contact SSDU
-            </Link>
-          </div>
-        </div>
-        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
-          <p>
-            &copy; 2026 Somali Student Diplomacy Union. All rights reserved.
-          </p>
-          <Link href="/contact" className="transition-colors hover:text-white">
-            Privacy and terms inquiries
-          </Link>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
-export const siteName = "Somali Student Diplomacy Union";
-export const siteShortName = "SSDU";
+export const siteName = "Somali Diplomacy Association";
+export const siteShortName = "SDA";
 export const siteDescription =
-  "Student-led diplomacy, leadership, programs, publications, membership, and civic engagement platform.";
+  "An independent, youth-led organization empowering Somali youth through diplomatic education, leadership development, and international engagement.";
 
 export function getSiteUrl(): URL {
   const configuredUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
@@ -35,11 +35,11 @@ export function createPageMetadata({
     title: pageTitle,
     description,
     keywords: [
-      "Somali Student Diplomacy Union",
-      "SSDU",
+      "Somali Diplomacy Association",
+      "SDA",
       "Somali diplomacy",
-      "student leadership",
-      "policy research",
+      "youth leadership",
+      "diplomatic education",
       "international relations",
     ],
     alternates: {
