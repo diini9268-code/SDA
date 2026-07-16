@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
-  Archive,
   BookOpenText,
   CalendarDays,
   ChartNoAxesColumnIncreasing,
@@ -54,7 +53,6 @@ const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/admin/membership", label: "Applications", icon: UserRoundCheck },
   { href: "/admin/contact", label: "Messages", icon: Inbox },
   { href: "/admin/users", label: "Users", icon: UserRound },
-  { href: "/admin/archive", label: "Archive", icon: Archive },
   { href: "/admin/reports", label: "Reports", icon: ChartNoAxesColumnIncreasing },
 ];
 

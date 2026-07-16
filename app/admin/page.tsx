@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
-  Archive,
   BookOpenText,
   ChartNoAxesColumnIncreasing,
   CircleGauge,
@@ -17,7 +16,6 @@ import {
 } from "lucide-react";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
 import { requireAdminSession } from "@/lib/auth/require-admin";
-import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import { prismaContactRepository } from "@/lib/contact/contact-repository";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
@@ -32,7 +30,6 @@ const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/admin/membership", label: "Applications", icon: UserRoundCheck },
   { href: "/admin/contact", label: "Messages", icon: Inbox },
   { href: "/admin/users", label: "Users", icon: UserRound },
-  { href: "/admin/archive", label: "Archive", icon: Archive },
   { href: "/admin/reports", label: "Reports", icon: ChartNoAxesColumnIncreasing },
 ];
 
@@ -91,8 +88,7 @@ function StatCard({
 
 export default async function AdminPage() {
   const session = await requireAdminSession();
-  const [archive, blog, contactMessages, leadership, membershipApplications, programs] = await Promise.all([
-    prismaArchiveRepository.listAll(),
+  const [blog, contactMessages, leadership, membershipApplications, programs] = await Promise.all([
     prismaBlogRepository.listAll(),
     prismaContactRepository.listAll(),
     prismaLeadershipRepository.listAll(),
@@ -202,7 +198,7 @@ export default async function AdminPage() {
             </div>
           </section>
 
-          <section className="flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-[#dfe5eb] bg-white px-5 py-4 text-sm text-[#718196]"><span>{archive.length} archive entries are stored.</span><Link href="/admin/reports" className="inline-flex items-center gap-2 font-semibold text-[#1f78b4] hover:underline"><CircleGauge className="size-4" />Open database reports</Link></section>
+          <section className="flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-[#dfe5eb] bg-white px-5 py-4 text-sm text-[#718196]"><span>Reports use current aggregate database records.</span><Link href="/admin/reports" className="inline-flex items-center gap-2 font-semibold text-[#1f78b4] hover:underline"><CircleGauge className="size-4" />Open database reports</Link></section>
         </div>
       </div>
     </main>
