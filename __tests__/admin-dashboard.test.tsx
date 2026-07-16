@@ -143,7 +143,9 @@ describe("Admin dashboard", () => {
     expect(screen.getByRole("heading", { name: "Blog by Category" })).toBeDefined();
     expect(screen.getByRole("heading", { name: "Application Status" })).toBeDefined();
     expect(screen.getAllByRole("link", { name: /Applications/ }).length).toBeGreaterThan(0);
-    expect(screen.queryByRole("link", { name: "Users" })).toBeNull();
+    expect(screen.getByRole("link", { name: "Users" }).getAttribute("href")).toBe(
+      "/admin/users",
+    );
     expect(screen.queryByRole("searchbox")).toBeNull();
   });
 });

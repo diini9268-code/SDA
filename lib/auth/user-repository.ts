@@ -1,6 +1,19 @@
 import { getPrismaClient } from "@/lib/db/prisma";
 import type { AdminUserRecord, AuthUserRepository } from "@/lib/auth/auth-service";
 
+export type AdminUserSummary = {
+  id: string;
+  fullName: string;
+  email: string;
+  role: "ADMIN";
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type AdminUserDirectoryRepository = {
+  listAdmins(): Promise<AdminUserSummary[]>;
+};
+
 export const prismaAuthUserRepository: AuthUserRepository = {
   async findAdminByEmail(email: string): Promise<AdminUserRecord | null> {
     const user = await getPrismaClient().user.findUnique({
@@ -25,5 +38,22 @@ export const prismaAuthUserRepository: AuthUserRepository = {
       passwordHash: user.passwordHash,
       role: user.role,
     };
+  },
+};
+
+export const prismaAdminUserDirectoryRepository: AdminUserDirectoryRepository = {
+  async listAdmins(): Promise<AdminUserSummary[]> {
+    return getPrismaClient().user.findMany({
+      where: { role: "ADMIN" },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: [{ fullName: "asc" }, { email: "asc" }],
+    });
   },
 };

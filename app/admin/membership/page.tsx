@@ -10,6 +10,7 @@ import {
   Mail,
   Phone,
   Target,
+  UserRound,
   UserRoundCheck,
   UsersRound,
 } from "lucide-react";
@@ -39,6 +40,7 @@ const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/admin/blog", label: "Blog", icon: BookOpenText },
   { href: "/admin/membership", label: "Applications", icon: UserRoundCheck },
   { href: "/admin/contact", label: "Messages", icon: Inbox },
+  { href: "/admin/users", label: "Users", icon: UserRound },
   { href: "/admin/archive", label: "Archive", icon: Archive },
   { href: "/admin/reports", label: "Reports", icon: ChartNoAxesColumnIncreasing },
 ];
