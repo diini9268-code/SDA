@@ -5,7 +5,6 @@ import {
   ChartNoAxesColumnIncreasing,
   ChevronDown,
   Clock3,
-  Globe2,
   Inbox,
   LayoutDashboard,
   Mail,
@@ -15,6 +14,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { SubmitButton } from "@/app/admin/_components/form-controls";
+import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
 import { updateContactStatusAction } from "@/app/admin/contact/actions";
 import { requireAdminSession } from "@/lib/auth/require-admin";
@@ -130,12 +130,12 @@ export default async function ContactAdminPage({ searchParams }: ContactAdminPag
   ]);
   const unreadCount = messages.filter((message) => message.status === "UNREAD").length;
   const pendingCount = applications.filter((application) => application.status === "PENDING").length;
-  const adminName = session?.fullName ?? "Administrator";
+  const adminName = getAdminDisplayName(session?.fullName);
 
   return (
-    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
+    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
       <aside className="bg-[#0a294d] text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
-        <div className="flex min-h-[104px] items-center gap-3 border-b border-white/10 px-6"><span className="flex size-12 shrink-0 flex-col items-center justify-center"><Globe2 className="size-7 text-[#27b3f4]" /><span className="text-[7px] font-bold tracking-[0.22em]">SSDU</span></span><div><p className="text-lg font-bold">SSDU Admin</p><p className="text-sm text-[#27b3f4]">Administrator</p></div></div>
+        <div className="flex min-h-[104px] items-center border-b border-white/10 px-5"><AdminBrand /></div>
         <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-4 py-4 lg:flex-1 lg:flex-col lg:overflow-y-auto">
           {navItems.map(({ href, label, icon: Icon }) => <Link key={href} href={href} aria-current={href === "/admin/contact" ? "page" : undefined} className={`flex min-h-12 shrink-0 items-center gap-3 rounded-[8px] px-4 text-[15px] font-medium transition-colors ${href === "/admin/contact" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}><Icon className="size-5" aria-hidden="true" />{label}{href === "/admin/membership" && pendingCount ? <span className="ml-auto rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-[#0a294d]">{pendingCount}</span> : null}{href === "/admin/contact" && unreadCount ? <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadCount}</span> : null}</Link>)}
         </nav>
@@ -143,12 +143,12 @@ export default async function ContactAdminPage({ searchParams }: ContactAdminPag
       </aside>
 
       <div className="min-w-0">
-        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8">
-          <div><h1 className="text-[22px] font-bold">Messages</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Student Diplomacy Union CMS</p></div>
+        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8 xl:px-10 2xl:px-12">
+          <div><h1 className="text-[22px] font-bold">Messages</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Diplomacy Association CMS</p></div>
           <div className="flex items-center gap-3"><Link href="/contact" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View contact page</Link><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div>
         </header>
 
-        <div className="p-5 sm:p-8">
+        <div className="p-5 sm:p-8 xl:p-10 2xl:p-12">
           <StatusMessage error={firstParam(params.error)} success={firstParam(params.success)} />
           <section className={`overflow-hidden rounded-[8px] border border-[#dfe5eb] bg-white ${firstParam(params.error) || firstParam(params.success) ? "mt-5" : ""}`} aria-labelledby="contact-messages-title">
             <div className="flex min-h-[100px] items-center justify-between gap-4 px-5 sm:px-8">

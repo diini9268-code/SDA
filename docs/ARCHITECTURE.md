@@ -4,7 +4,7 @@
 
 ## System Overview
 
-The SSDU Website follows a full-stack web architecture designed to provide information, publish blog content, manage organizational content, and support membership applications.
+The SDA Website follows a full-stack web architecture designed to provide information, publish blog content, manage organizational content, and support membership applications.
 
 ```
 Visitors / Members / Leadership / Administrators

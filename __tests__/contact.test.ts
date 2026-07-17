@@ -16,7 +16,7 @@ function createContactMessageRecord(
     fullName: "Amina Hassan",
     email: "amina@example.com",
     subject: "Partnership inquiry",
-    message: "I would like to learn more about SSDU partnerships.",
+    message: "I would like to learn more about SDA partnerships.",
     status: "UNREAD",
     createdAt: now,
     updatedAt: now,
@@ -58,7 +58,7 @@ describe("contact messages", () => {
         fullName: " Amina Hassan ",
         email: "AMINA@EXAMPLE.COM",
         subject: "Partnership inquiry",
-        message: "I would like to learn more about SSDU partnerships.",
+        message: "I would like to learn more about SDA partnerships.",
       },
       repository,
     );

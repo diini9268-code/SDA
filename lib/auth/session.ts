@@ -41,7 +41,7 @@ function getSessionSecret(): string {
     throw new Error("JWT_SECRET is required in production.");
   }
 
-  return "development-only-ssdu-session-secret";
+  return "development-only-sda-session-secret";
 }
 
 export function getSessionMaxAgeSeconds(): number {

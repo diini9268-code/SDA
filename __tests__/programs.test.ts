@@ -17,7 +17,7 @@ function createProgramRecord(
     id: "83d75fcb-7873-4eba-b7f7-df6ef5df0fb4",
     title: "Diplomacy Workshop",
     slug: "diplomacy-workshop",
-    description: "A practical workshop for student diplomacy skills.",
+    description: "A practical workshop for diplomacy skills.",
     eventDate,
     location: "Mogadishu",
     status: "SCHEDULED",
@@ -78,7 +78,7 @@ describe("program management", () => {
     const result = await createProgram(
       {
         title: " Diplomacy Workshop ",
-        description: "A practical workshop for student diplomacy skills.",
+        description: "A practical workshop for diplomacy skills.",
         eventDate: "2026-08-10T15:00:00.000Z",
         location: "Mogadishu",
         status: "SCHEDULED",

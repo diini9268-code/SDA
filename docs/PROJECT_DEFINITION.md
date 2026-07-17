@@ -2,31 +2,31 @@
 
 ## Product Name
 
-Somali Student Diplomacy Union (SSDU) Website
+Somali Diplomacy Association (SDA) Website
 
 ## Team Name
 
-SSDU Development Team
+SDA Development Team
 
 ## Purpose
 
-The Somali Student Diplomacy Union (SSDU) Website is a centralized digital platform designed to present the organization's mission, leadership, blog updates, programs, membership opportunities, and organizational activities. It provides a professional online presence while enabling administrators to manage website content efficiently and allowing visitors to engage with SSDU through blog content, programs, membership applications, and contact services.
+The Somali Diplomacy Association (SDA) Website is a centralized digital platform designed to present the organization's mission, leadership, blog updates, programs, membership opportunities, and organizational activities. It provides a professional online presence while enabling administrators to manage website content efficiently and allowing visitors to engage with SDA through blog content, programs, membership applications, and contact services.
 
 ## Problem Statement
 
-SSDU currently lacks a centralized digital platform to present its activities and organizational information. Information is often shared through different communication channels, making it difficult for students, partners, and the public to access accurate and up-to-date content. This creates several challenges:
+SDA currently lacks a centralized digital platform to present its activities and organizational information. Information is often shared through different communication channels, making it difficult for students, partners, and the public to access accurate and up-to-date content. This creates several challenges:
 
 - No centralized platform for organizational information
 - Limited visibility of organizational updates and programs
 - No structured system for managing leadership information
 - Manual handling of membership applications
 - No centralized archive of organizational activities
-- Limited communication between SSDU and interested visitors
+- Limited communication between SDA and interested visitors
 - Difficulty maintaining consistent and updated website content
 
 ## Product Goals
 
-- Establish a professional online presence for SSDU
+- Establish a professional online presence for SDA
 - Publish blog updates and organizational programs
 - Present leadership information in a structured manner
 - Allow visitors to apply for membership online
@@ -43,7 +43,7 @@ SSDU currently lacks a centralized digital platform to present its activities an
 - View programs and events
 - Explore leadership information
 - Submit membership applications
-- Contact SSDU
+- Contact SDA
 
 ### Member
 

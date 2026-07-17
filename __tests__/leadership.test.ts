@@ -14,7 +14,7 @@ function createProfile(overrides: Partial<LeadershipProfile> = {}): LeadershipPr
     id: "5d38f82c-8e32-4e64-8a1a-222f8a02d0fa",
     fullName: "Ayan Hassan",
     position: "President",
-    biography: "Leads SSDU diplomacy and student engagement programs.",
+    biography: "Leads SDA diplomacy and student engagement programs.",
     photo: null,
     displayOrder: 0,
     isActive: true,
@@ -65,7 +65,7 @@ describe("leadership management", () => {
       {
         fullName: " Ayan Hassan ",
         position: "President",
-        biography: "Leads SSDU diplomacy and student engagement programs.",
+        biography: "Leads SDA diplomacy and student engagement programs.",
         photo: "/images/leadership/ayan.jpg",
         displayOrder: 2,
       },

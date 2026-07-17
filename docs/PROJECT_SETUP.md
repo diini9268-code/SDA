@@ -31,7 +31,7 @@
 ## Suggested Repository Structure
 
 ```text
-ssdu-website/
+sda-website/
   docs/
     ARCHITECTURE.md
     CONSTRAINTS.md

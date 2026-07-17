@@ -5,7 +5,7 @@
 - Article reference: `C:\Users\Owner\Pictures\Screenshots\Screenshot 2026-07-13 134914.png` at 1896 x 850.
 - Program reference: `C:\Users\Owner\Pictures\Screenshots\Screenshot 2026-07-13 134930.png` at 1885 x 810.
 - Hero, principles, leadership, membership CTA, and footer references: screenshots attached in the user request.
-- Intentional content constraint: the implementation retains SSDU's real product name, public repository data, and supported routes rather than reproducing unsupported SDA sample content.
+- Content constraint: the implementation uses the official SDA identity and supplied organization information while keeping dynamic claims tied to supported repository data and routes.
 
 ## Implementation Evidence
 
@@ -57,7 +57,7 @@
 - Join and membership CTAs route to the supported contact workflow.
 - Keyboard Tab exposes the skip link with a 3 px solid cyan focus outline.
 - Reduced-motion emulation reports `animation-name: none` and near-zero transition duration.
-- The hero heading exposes the complete accessible name, Home exposes `aria-current="page"`, and Join SSDU resolves to `/contact`.
+- The hero heading exposes the complete accessible name, Home exposes `aria-current="page"`, and Join SDA resolves to `/contact`.
 
 ## Result
 
@@ -285,7 +285,7 @@ final result: passed
 ## Source And Constraints
 
 - Source: the desktop About-page screenshots supplied in the July 13, 2026 request.
-- The implementation preserves the repository's real SSDU identity instead of copying unsupported SDA founding dates, membership counts, partner claims, or contact details from the mockup.
+- The implementation uses the official SDA identity and confirmed organization profile while omitting dynamic counts, partner claims, and contact details that are not supported by supplied content or backend records.
 - Journey and gallery content comes only from public `Archive` records; footer program links come only from published `Program` records.
 
 ## Rendered Evidence
@@ -309,7 +309,7 @@ final result: passed
 - P0: none.
 - P1: none.
 - P2: none in the latest captures.
-- P3: the source uses SDA wording and dated institutional claims that are not represented in the current backend; the implementation uses SSDU naming and neutral editorial copy.
+- P3: dated institutional claims that are not represented in the current backend remain omitted; confirmed SDA content is used elsewhere.
 - P3: populated journey and gallery states could not be captured because the connected public archive currently returns no records.
 
 ## Result

@@ -1,6 +1,6 @@
 const weakJwtSecrets = new Set([
   "replace-with-a-long-random-secret",
-  "development-only-ssdu-session-secret",
+  "development-only-sda-session-secret",
 ]);
 
 function requireEnv(name: string): string {

@@ -31,7 +31,7 @@ describe("administrator authorization", () => {
     const token = createSessionToken({
       sub: "0f1f3e1a-3d10-44fd-8c58-bf222d0cb98f",
       email: "admin@example.com",
-      fullName: "SSDU Administrator",
+      fullName: "SDA Administrator",
       role: "ADMIN",
     });
     const result = authorizeAdminRequest(`${SESSION_COOKIE_NAME}=${token}`);
@@ -55,7 +55,7 @@ describe("administrator authorization", () => {
     const token = createSignedToken({
       sub: "member-user-id",
       email: "member@example.com",
-      fullName: "SSDU Member",
+      fullName: "SDA Member",
       role: "MEMBER",
       iat: now,
       exp: now + 3600,

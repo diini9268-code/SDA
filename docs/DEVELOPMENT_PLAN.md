@@ -1,6 +1,6 @@
 # Development Plan
 
-This document defines the implementation order, feature specifications, testing expectations, security requirements, deployment readiness, and manual quality assurance process for the **Somali Student Diplomacy Union (SSDU) Website**.
+This document defines the implementation order, feature specifications, testing expectations, security requirements, deployment readiness, and manual quality assurance process for the **Somali Diplomacy Association (SDA) Website**.
 
 Each feature must be completed, tested, and manually verified before the next feature begins.
 
@@ -340,7 +340,7 @@ Maintain historical organizational records.
 
 ### Goal
 
-Allow visitors to apply for SSDU membership.
+Allow visitors to apply for SDA membership.
 
 ### Scope
 
@@ -373,7 +373,7 @@ Allow visitors to apply for SSDU membership.
 
 ### Goal
 
-Allow visitors to contact SSDU.
+Allow visitors to contact SDA.
 
 ### Scope
 
@@ -565,7 +565,7 @@ Prepare the application for production security.
 
 ### Goal
 
-Prepare SSDU Website for production deployment.
+Prepare SDA Website for production deployment.
 
 ### Scope
 

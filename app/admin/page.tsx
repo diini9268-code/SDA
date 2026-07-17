@@ -5,7 +5,6 @@ import {
   ChartNoAxesColumnIncreasing,
   CircleGauge,
   FileText,
-  Globe2,
   Inbox,
   LayoutDashboard,
   MessageSquare,
@@ -14,6 +13,7 @@ import {
   UserRoundCheck,
   UsersRound,
 } from "lucide-react";
+import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
@@ -133,14 +133,13 @@ export default async function AdminPage() {
   const recentMessages = [...contactMessages]
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
     .slice(0, 4);
-  const adminName = session?.fullName ?? "Administrator";
+  const adminName = getAdminDisplayName(session?.fullName);
 
   return (
-    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
+    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
       <aside className="bg-[#0a294d] text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
-        <div className="flex min-h-[104px] items-center gap-3 border-b border-white/10 px-6">
-          <span className="flex size-12 shrink-0 flex-col items-center justify-center"><Globe2 className="size-7 text-[#27b3f4]" /><span className="text-[7px] font-bold tracking-[0.22em]">SSDU</span></span>
-          <div><p className="text-lg font-bold">SSDU Admin</p><p className="text-sm text-[#27b3f4]">Administrator</p></div>
+        <div className="flex min-h-[104px] items-center border-b border-white/10 px-5">
+          <AdminBrand />
         </div>
         <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-4 py-4 lg:flex-1 lg:flex-col lg:overflow-y-auto">
           {navItems.map(({ href, label, icon: Icon }) => (
@@ -158,13 +157,13 @@ export default async function AdminPage() {
       </aside>
 
       <div className="min-w-0">
-        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8">
-          <div><h1 className="text-[22px] font-bold">Dashboard Home</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Student Diplomacy Union CMS</p></div>
+        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8 xl:px-10 2xl:px-12">
+          <div><h1 className="text-[22px] font-bold">Dashboard Home</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Diplomacy Association CMS</p></div>
           <div className="flex items-center gap-3"><Link href="/" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View public site</Link><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div>
         </header>
 
-        <div className="grid gap-7 p-5 sm:p-8">
-          <section aria-labelledby="dashboard-metrics" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-8 p-5 sm:p-8 xl:p-10 2xl:p-12">
+          <section aria-labelledby="dashboard-metrics" className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
             <h2 id="dashboard-metrics" className="sr-only">Dashboard metrics</h2>
             <StatCard label="Leadership Profiles" value={activeLeadership.length} detail={`${leadership.length} total profiles`} href="/admin/leadership" icon={UsersRound} tone="bg-sky-50 text-sky-600" />
             <StatCard label="Live Programs" value={livePrograms.length} detail={`${programs.length} total programs`} href="/admin/programs" icon={Target} tone="bg-emerald-50 text-emerald-600" />

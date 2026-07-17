@@ -24,7 +24,7 @@ describe("administrator authentication", () => {
           return {
             id: "0f1f3e1a-3d10-44fd-8c58-bf222d0cb98f",
             email,
-            fullName: "SSDU Administrator",
+            fullName: "SDA Administrator",
             passwordHash,
             role: "ADMIN",
           };
@@ -37,7 +37,7 @@ describe("administrator authentication", () => {
       user: {
         id: "0f1f3e1a-3d10-44fd-8c58-bf222d0cb98f",
         email: "admin@example.com",
-        fullName: "SSDU Administrator",
+        fullName: "SDA Administrator",
         role: "ADMIN",
       },
     });
@@ -55,7 +55,7 @@ describe("administrator authentication", () => {
           return {
             id: "0f1f3e1a-3d10-44fd-8c58-bf222d0cb98f",
             email: "admin@example.com",
-            fullName: "SSDU Administrator",
+            fullName: "SDA Administrator",
             passwordHash,
             role: "ADMIN",
           };
@@ -95,14 +95,14 @@ describe("administrator sessions", () => {
     const token = createSessionToken({
       sub: "0f1f3e1a-3d10-44fd-8c58-bf222d0cb98f",
       email: "admin@example.com",
-      fullName: "SSDU Administrator",
+      fullName: "SDA Administrator",
       role: "ADMIN",
     });
 
     expect(verifySessionToken(token)).toMatchObject({
       sub: "0f1f3e1a-3d10-44fd-8c58-bf222d0cb98f",
       email: "admin@example.com",
-      fullName: "SSDU Administrator",
+      fullName: "SDA Administrator",
       role: "ADMIN",
     });
 
@@ -115,7 +115,7 @@ describe("administrator sessions", () => {
     const token = createSessionToken({
       sub: "0f1f3e1a-3d10-44fd-8c58-bf222d0cb98f",
       email: "admin@example.com",
-      fullName: "SSDU Administrator",
+      fullName: "SDA Administrator",
       role: "ADMIN",
     });
 

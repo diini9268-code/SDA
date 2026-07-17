@@ -3,7 +3,6 @@ import type { LucideIcon } from "lucide-react";
 import {
   BookOpenText,
   ChartNoAxesColumnIncreasing,
-  Globe2,
   Inbox,
   LayoutDashboard,
   Mail,
@@ -14,6 +13,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { SubmitButton } from "@/app/admin/_components/form-controls";
+import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
 import { updateMembershipStatusAction } from "@/app/admin/membership/actions";
 import { requireAdminSession } from "@/lib/auth/require-admin";
@@ -91,20 +91,20 @@ export default async function MembershipAdminPage({ searchParams }: MembershipAd
   const approvedCount = applications.filter((application) => application.status === "APPROVED").length;
   const rejectedCount = applications.filter((application) => application.status === "REJECTED").length;
   const unreadCount = messages.filter((message) => message.status === "UNREAD").length;
-  const adminName = session?.fullName ?? "Administrator";
+  const adminName = getAdminDisplayName(session?.fullName);
 
   return (
-    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
+    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
       <aside className="bg-[#0a294d] text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
-        <div className="flex min-h-[104px] items-center gap-3 border-b border-white/10 px-6"><span className="flex size-12 shrink-0 flex-col items-center justify-center"><Globe2 className="size-7 text-[#27b3f4]" /><span className="text-[7px] font-bold tracking-[0.22em]">SSDU</span></span><div><p className="text-lg font-bold">SSDU Admin</p><p className="text-sm text-[#27b3f4]">Administrator</p></div></div>
+        <div className="flex min-h-[104px] items-center border-b border-white/10 px-5"><AdminBrand /></div>
         <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-4 py-4 lg:flex-1 lg:flex-col lg:overflow-y-auto">{navItems.map(({ href, label, icon: Icon }) => <Link key={href} href={href} aria-current={href === "/admin/membership" ? "page" : undefined} className={`flex min-h-12 shrink-0 items-center gap-3 rounded-[8px] px-4 text-[15px] font-medium transition-colors ${href === "/admin/membership" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}><Icon className="size-5" aria-hidden="true" />{label}{href === "/admin/membership" && pendingCount ? <span className="ml-auto rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-[#0a294d]">{pendingCount}</span> : null}{href === "/admin/contact" && unreadCount ? <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadCount}</span> : null}</Link>)}</nav>
         <div className="hidden border-t border-white/10 p-4 lg:block"><div className="mb-3 flex items-center gap-3 px-3"><span className="flex size-10 items-center justify-center rounded-full bg-[#1f82c1] font-bold">{initials(adminName)}</span><div className="min-w-0"><p className="truncate text-sm font-semibold">{adminName}</p><p className="truncate text-xs text-white/45">{session?.email}</p></div></div><LogoutButton /></div>
       </aside>
 
       <div className="min-w-0">
-        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8"><div><h1 className="text-[22px] font-bold">Membership Applications</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Student Diplomacy Union CMS</p></div><div className="flex items-center gap-3"><Link href="/membership" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View application page</Link><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div></header>
+        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8 xl:px-10 2xl:px-12"><div><h1 className="text-[22px] font-bold">Membership Applications</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Diplomacy Association CMS</p></div><div className="flex items-center gap-3"><Link href="/membership" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View application page</Link><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div></header>
 
-        <div className="grid gap-6 p-5 sm:p-8">
+        <div className="grid gap-7 p-5 sm:p-8 xl:p-10 2xl:p-12">
           <div><h2 className="text-2xl font-bold">Application review</h2><p className="mt-1 max-w-2xl text-sm text-[#718196]">Review application details and update the existing status. Applicant contact information remains inside the protected administration area.</p></div>
           <StatusMessage error={firstParam(params.error)} success={firstParam(params.success)} />
 

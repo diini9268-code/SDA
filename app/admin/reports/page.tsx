@@ -4,7 +4,6 @@ import type { LucideIcon } from "lucide-react";
 import {
   BookOpenText,
   ChartNoAxesColumnIncreasing,
-  Globe2,
   Inbox,
   LayoutDashboard,
   Target,
@@ -12,6 +11,7 @@ import {
   UserRoundCheck,
   UsersRound,
 } from "lucide-react";
+import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { prismaReportsRepository } from "@/lib/reports/report-repository";
@@ -125,7 +125,7 @@ export default async function AdminReportsPage() {
   const snapshot = await getReportsSnapshot(prismaReportsRepository);
   const pendingCount = countStatus(snapshot.membership.byStatus, "PENDING");
   const unreadCount = countStatus(snapshot.contact.byStatus, "UNREAD");
-  const adminName = session?.fullName ?? "Administrator";
+  const adminName = getAdminDisplayName(session?.fullName);
   const contentTotals = [
     { label: "Blog", value: snapshot.totals.blogPosts },
     { label: "Programs", value: snapshot.totals.programs },
@@ -135,17 +135,17 @@ export default async function AdminReportsPage() {
   ];
 
   return (
-    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
+    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
       <aside className="bg-[#0a294d] text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
-        <div className="flex min-h-[104px] items-center gap-3 border-b border-white/10 px-6"><span className="flex size-12 shrink-0 flex-col items-center justify-center"><Globe2 className="size-7 text-[#27b3f4]" /><span className="text-[7px] font-bold tracking-[0.22em]">SSDU</span></span><div><p className="text-lg font-bold">SSDU Admin</p><p className="text-sm text-[#27b3f4]">Administrator</p></div></div>
+        <div className="flex min-h-[104px] items-center border-b border-white/10 px-5"><AdminBrand /></div>
         <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-4 py-4 lg:flex-1 lg:flex-col lg:overflow-y-auto">{navItems.map(({ href, label, icon: Icon }) => <Link key={href} href={href} aria-current={href === "/admin/reports" ? "page" : undefined} className={`flex min-h-12 shrink-0 items-center gap-3 rounded-[8px] px-4 text-[15px] font-medium transition-colors ${href === "/admin/reports" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}><Icon className="size-5" aria-hidden="true" />{label}{href === "/admin/membership" && pendingCount ? <span className="ml-auto rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-[#0a294d]">{pendingCount}</span> : null}{href === "/admin/contact" && unreadCount ? <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadCount}</span> : null}</Link>)}</nav>
         <div className="hidden border-t border-white/10 p-4 lg:block"><div className="mb-3 flex items-center gap-3 px-3"><span className="flex size-10 items-center justify-center rounded-full bg-[#1f82c1] font-bold">{initials(adminName)}</span><div className="min-w-0"><p className="truncate text-sm font-semibold">{adminName}</p><p className="truncate text-xs text-white/45">{session?.email}</p></div></div><LogoutButton /></div>
       </aside>
 
       <div className="min-w-0">
-        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8"><div><h1 className="text-[22px] font-bold">Reports &amp; Analytics</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Student Diplomacy Union CMS</p></div><div className="flex items-center gap-3"><span className="hidden text-right text-xs text-[#718196] sm:block">Generated<br />{formatDate(snapshot.generatedAt)}</span><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div></header>
+        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8 xl:px-10 2xl:px-12"><div><h1 className="text-[22px] font-bold">Reports &amp; Analytics</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Diplomacy Association CMS</p></div><div className="flex items-center gap-3"><span className="hidden text-right text-xs text-[#718196] sm:block">Generated<br />{formatDate(snapshot.generatedAt)}</span><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div></header>
 
-        <div className="grid gap-6 p-5 sm:p-8">
+        <div className="grid gap-7 p-5 sm:p-8 xl:p-10 2xl:p-12">
           <section className="grid gap-6 xl:grid-cols-2">
             <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-8"><h2 className="text-[23px] font-bold">Application Growth</h2><p className="mt-1 text-sm text-[#718196]">Submissions received over the last six months</p><div className="mt-8"><LineChart items={snapshot.membership.monthlyApplications} /></div></div>
             <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-8"><h2 className="text-[23px] font-bold">Applications Overview</h2><p className="mt-1 text-sm text-[#718196]">Current application review statuses</p><div className="mt-6"><DonutChart items={snapshot.membership.byStatus} /></div></div>

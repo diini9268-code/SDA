@@ -15,9 +15,9 @@ function createArchiveRecord(
 ): ArchiveRecord {
   return {
     id: "99ef3ab6-7cc8-4706-961d-43c04c84ec93",
-    title: "SSDU Launch Event",
-    slug: "ssdu-launch-event",
-    summary: "A historical record of the SSDU launch event.",
+    title: "SDA Launch Event",
+    slug: "sda-launch-event",
+    summary: "A historical record of the SDA launch event.",
     activityDate,
     images: [],
     createdAt: now,
@@ -68,8 +68,8 @@ describe("archive management", () => {
     const repository = createRepository();
     const result = await createArchiveEntry(
       {
-        title: " SSDU Launch Event ",
-        summary: "A historical record of the SSDU launch event.",
+        title: " SDA Launch Event ",
+        summary: "A historical record of the SDA launch event.",
         activityDate: "2026-08-10T15:00:00.000Z",
         images: [
           "https://example.com/archive-photo.jpg",
@@ -83,8 +83,8 @@ describe("archive management", () => {
     expect(result).toMatchObject({
       ok: true,
       data: {
-        title: "SSDU Launch Event",
-        slug: "ssdu-launch-event",
+        title: "SDA Launch Event",
+        slug: "sda-launch-event",
         images: [
           "https://example.com/archive-photo.jpg",
           "/images/archive/local.jpg",
@@ -101,7 +101,7 @@ describe("archive management", () => {
     const result = await updateArchiveEntry(
       "99ef3ab6-7cc8-4706-961d-43c04c84ec93",
       {
-        title: "Updated SSDU Launch Event",
+        title: "Updated SDA Launch Event",
         images: ["https://example.com/updated.jpg"],
       },
       repository,
@@ -110,8 +110,8 @@ describe("archive management", () => {
     expect(result).toMatchObject({
       ok: true,
       data: {
-        title: "Updated SSDU Launch Event",
-        slug: "updated-ssdu-launch-event",
+        title: "Updated SDA Launch Event",
+        slug: "updated-sda-launch-event",
         images: ["https://example.com/updated.jpg"],
       },
     });
@@ -137,7 +137,7 @@ describe("archive management", () => {
     const repository = createRepository();
     const result = await createArchiveEntry(
       {
-        title: "SSDU Launch Event",
+        title: "SDA Launch Event",
         summary: "A historical record.",
         activityDate: "2026-08-10T15:00:00.000Z",
         images: ["data:image/png;base64,unsafe"],
@@ -161,7 +161,7 @@ describe("archive management", () => {
 
     const result = await createArchiveEntry(
       {
-        title: "SSDU Launch Event",
+        title: "SDA Launch Event",
         summary: "A historical record.",
         activityDate: "2026-08-10T15:00:00.000Z",
       },

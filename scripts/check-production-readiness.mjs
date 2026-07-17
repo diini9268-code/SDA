@@ -41,7 +41,7 @@ const requiredVariables = [
 
 const placeholderValues = new Set([
   "replace-with-a-long-random-secret",
-  "development-only-ssdu-session-secret",
+  "development-only-sda-session-secret",
   "postgresql://USER:PASSWORD@HOST:5432/DATABASE?schema=public",
   "http://localhost:3000",
 ]);

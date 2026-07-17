@@ -1,6 +1,6 @@
 # Deployment
 
-This guide prepares the SSDU Website for production deployment on Vercel with
+This guide prepares the SDA Website for production deployment on Vercel with
 Supabase PostgreSQL.
 
 ## Production Environment Variables

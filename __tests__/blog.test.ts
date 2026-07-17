@@ -16,11 +16,11 @@ function createBlogRecord(overrides: Partial<BlogRecord> = {}): BlogRecord {
 
   return {
     id,
-    title: "SSDU Field Notes",
-    slug: "ssdu-field-notes",
+    title: "SDA Field Notes",
+    slug: "sda-field-notes",
     category: "Updates",
-    excerpt: "A short update from SSDU.",
-    content: "A complete blog post about SSDU activities.",
+    excerpt: "A short update from SDA.",
+    content: "A complete blog post about SDA activities.",
     status: "PUBLISHED",
     publishedAt,
     createdAt: now,
@@ -126,16 +126,16 @@ describe("blog management", () => {
     const repository = createRepository();
     const result = await createBlogPost(
       {
-        title: " SSDU Field Notes ",
+        title: " SDA Field Notes ",
         category: "Updates",
-        excerpt: "A short update from SSDU.",
-        content: "A complete blog post about SSDU activities.",
+        excerpt: "A short update from SDA.",
+        content: "A complete blog post about SDA activities.",
         status: "PUBLISHED",
         publishedAt: "2026-08-10T15:00:00.000Z",
         media: [
           {
             url: "https://example.com/photo.jpg",
-            altText: "Students at an SSDU program",
+            altText: "Students at an SDA program",
             mimeType: "image/jpeg",
             sizeBytes: 250000,
           },
@@ -147,8 +147,8 @@ describe("blog management", () => {
     expect(result).toMatchObject({
       ok: true,
       data: {
-        title: "SSDU Field Notes",
-        slug: "ssdu-field-notes",
+        title: "SDA Field Notes",
+        slug: "sda-field-notes",
         category: "Updates",
         status: "PUBLISHED",
         media: [
@@ -192,7 +192,7 @@ describe("blog management", () => {
     const result = await updateBlogPost(
       "7f4603b4-0a92-4072-95e6-f93844b438d0",
       {
-        title: "Updated SSDU Field Notes",
+        title: "Updated SDA Field Notes",
         status: "ARCHIVED",
         media: [
           {
@@ -208,8 +208,8 @@ describe("blog management", () => {
     expect(result).toMatchObject({
       ok: true,
       data: {
-        title: "Updated SSDU Field Notes",
-        slug: "updated-ssdu-field-notes",
+        title: "Updated SDA Field Notes",
+        slug: "updated-sda-field-notes",
         status: "ARCHIVED",
         media: [
           {
@@ -263,7 +263,7 @@ describe("blog management", () => {
     const repository = createRepository();
     const result = await createBlogPost(
       {
-        title: "SSDU Field Notes",
+        title: "SDA Field Notes",
         category: "Updates",
         content: "A complete blog post.",
         publishedAt: "2026-08-10T15:00:00.000Z",
@@ -293,7 +293,7 @@ describe("blog management", () => {
 
     const result = await createBlogPost(
       {
-        title: "SSDU Field Notes",
+        title: "SDA Field Notes",
         category: "Updates",
         content: "A complete blog post.",
         publishedAt: "2026-08-10T15:00:00.000Z",
