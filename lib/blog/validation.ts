@@ -46,6 +46,15 @@ const allowedMimeTypes = new Set([
 ]);
 
 const maxMediaSizeBytes = 10 * 1024 * 1024;
+const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
+
+export function formatPublicationDateInput(value: Date): string {
+  if (Number.isNaN(value.getTime())) {
+    return "";
+  }
+
+  return value.toISOString().slice(0, 10);
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -118,6 +127,12 @@ function readPublishedAt(source: Record<string, unknown>): Date | null {
 
   if (typeof value !== "string" && !(value instanceof Date)) {
     return null;
+  }
+
+  if (typeof value === "string" && dateOnlyPattern.test(value)) {
+    const date = new Date(`${value}T00:00:00.000Z`);
+
+    return formatPublicationDateInput(date) === value ? date : null;
   }
 
   const date = new Date(value);

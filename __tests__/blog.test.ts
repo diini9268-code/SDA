@@ -6,6 +6,7 @@ import {
   type BlogRepository,
   updateBlogPost,
 } from "@/lib/blog/blog-service";
+import { formatPublicationDateInput } from "@/lib/blog/validation";
 
 const now = new Date("2026-07-07T00:00:00.000Z");
 const publishedAt = new Date("2026-08-10T15:00:00.000Z");
@@ -93,6 +94,34 @@ function createRepository(): BlogRepository & {
 }
 
 describe("blog management", () => {
+  it("formats stored publication dates for a date input without a timezone shift", () => {
+    expect(
+      formatPublicationDateInput(new Date("2026-07-17T23:30:00.000Z")),
+    ).toBe("2026-07-17");
+  });
+
+  it("creates a draft from a complete date-only form value", async () => {
+    const repository = createRepository();
+    const result = await createBlogPost(
+      {
+        title: "Draft field notes",
+        category: "Updates",
+        content: "A draft blog post.",
+        status: "DRAFT",
+        publishedAt: "2026-07-17",
+      },
+      repository,
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      data: {
+        status: "DRAFT",
+        publishedAt: new Date("2026-07-17T00:00:00.000Z"),
+      },
+    });
+  });
+
   it("creates a blog post with blog-owned media", async () => {
     const repository = createRepository();
     const result = await createBlogPost(
@@ -134,6 +163,28 @@ describe("blog management", () => {
     expect(repository.posts).toHaveLength(1);
   });
 
+  it("creates a published post from a date-only form value", async () => {
+    const repository = createRepository();
+    const result = await createBlogPost(
+      {
+        title: "Published field notes",
+        category: "Updates",
+        content: "A published blog post.",
+        status: "PUBLISHED",
+        publishedAt: "2026-07-17",
+      },
+      repository,
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      data: {
+        status: "PUBLISHED",
+        publishedAt: new Date("2026-07-17T00:00:00.000Z"),
+      },
+    });
+  });
+
   it("edits a blog post and replaces blog-owned media", async () => {
     const repository = createRepository();
     repository.posts.push(createBlogRecord());
@@ -167,6 +218,28 @@ describe("blog management", () => {
           },
         ],
       },
+    });
+    expect(repository.posts[0]?.publishedAt).toEqual(publishedAt);
+  });
+
+  it("rejects an empty publication date because the database field is required", async () => {
+    const repository = createRepository();
+    const result = await createBlogPost(
+      {
+        title: "Draft without a date",
+        category: "Updates",
+        content: "A draft blog post.",
+        status: "DRAFT",
+        publishedAt: "",
+      },
+      repository,
+    );
+
+    expect(result).toEqual({
+      ok: false,
+      status: 400,
+      error:
+        "Blog requires valid title, category, content, and publishedAt fields.",
     });
   });
 

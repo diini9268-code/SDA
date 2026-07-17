@@ -29,7 +29,10 @@ import {
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import type { BlogRecord } from "@/lib/blog/blog-service";
-import type { BlogStatusValue } from "@/lib/blog/validation";
+import {
+  formatPublicationDateInput,
+  type BlogStatusValue,
+} from "@/lib/blog/validation";
 import { prismaContactRepository } from "@/lib/contact/contact-repository";
 import { prismaMembershipRepository } from "@/lib/membership/membership-repository";
 
@@ -68,12 +71,6 @@ function formatDate(value: Date): string {
   return new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" }).format(value);
 }
 
-function formatDateTimeInput(value?: Date): string {
-  if (!value) return "";
-  const offset = value.getTimezoneOffset() * 60_000;
-  return new Date(value.getTime() - offset).toISOString().slice(0, 16);
-}
-
 function statusLabel(status: BlogStatusValue): string {
   return status[0] + status.slice(1).toLowerCase();
 }
@@ -90,13 +87,16 @@ function StatusMessage({ error, success }: { error: string | null; success: stri
 
 function BlogForm({ action, blog, submitLabel }: { action: (formData: FormData) => void; blog?: BlogRecord; submitLabel: string }) {
   const fieldClass = "min-h-12 rounded-[8px] border border-[#ced9e3] bg-[#f6f9fc] px-4 text-[15px] text-[#0a294d] outline-none transition focus:border-[#1f78b4] focus:ring-2 focus:ring-[#1f78b4]/15";
+  const publicationDate = formatPublicationDateInput(
+    blog?.publishedAt ?? new Date(),
+  );
 
   return (
     <form action={action} className="grid gap-5">
       <div className="grid gap-5 md:grid-cols-[minmax(0,2fr)_minmax(180px,1fr)]"><label className="grid gap-2 text-sm font-semibold">Post title<input name="title" required maxLength={220} defaultValue={blog?.title} className={fieldClass} /></label><label className="grid gap-2 text-sm font-semibold">Category<input name="category" required maxLength={120} defaultValue={blog?.category} className={fieldClass} /></label></div>
       <label className="grid gap-2 text-sm font-semibold">Excerpt<textarea name="excerpt" rows={2} maxLength={500} defaultValue={blog?.excerpt ?? ""} className={`${fieldClass} py-3`} /><span className="text-xs font-normal text-[#718196]">Optional summary, up to 500 characters.</span></label>
       <label className="grid gap-2 text-sm font-semibold">Content<textarea name="content" required rows={9} maxLength={20000} defaultValue={blog?.content} className={`${fieldClass} py-3`} /></label>
-      <div className="grid gap-5 md:grid-cols-2"><label className="grid gap-2 text-sm font-semibold">Publication date<input name="publishedAt" type="datetime-local" required defaultValue={formatDateTimeInput(blog?.publishedAt)} className={fieldClass} /></label><label className="grid gap-2 text-sm font-semibold">Status<select name="status" defaultValue={blog?.status ?? "DRAFT"} className={fieldClass}>{blogStatuses.map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}</select></label></div>
+      <div className="grid gap-5 md:grid-cols-2"><label className="grid gap-2 text-sm font-semibold">Publication date<input name="publishedAt" type="date" required defaultValue={publicationDate} className={fieldClass} /></label><label className="grid gap-2 text-sm font-semibold">Status<select name="status" defaultValue={blog?.status ?? "DRAFT"} className={fieldClass}>{blogStatuses.map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}</select></label></div>
       <label className="grid gap-2 text-sm font-semibold">Media records<textarea name="media" rows={4} defaultValue={mediaToText(blog)} placeholder="https://example.com/image.jpg | Alt text | image/jpeg | 240000" className={`${fieldClass} py-3 font-mono text-sm`} /><span className="text-xs font-normal leading-5 text-[#718196]">One record per line: URL | alt text | MIME type | size in bytes. Existing validation permits JPEG, PNG, WebP, GIF and PDF files up to 10 MB, with no more than 10 records.</span></label>
       <div className="flex flex-wrap items-center gap-3"><SubmitButton className="min-h-11 bg-[#1f78b4] px-6 hover:bg-[#155f91]">{submitLabel}</SubmitButton><Link href="/admin/blog" className="rounded-md px-4 py-2 text-sm font-semibold text-[#52657c] hover:bg-[#edf3f8]">Cancel</Link></div>
     </form>
