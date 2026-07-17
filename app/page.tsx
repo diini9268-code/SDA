@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
-import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
 import { createPageMetadata } from "@/lib/site/metadata";
@@ -56,27 +55,18 @@ const principles: Array<{
 ];
 
 async function getHomeData() {
-  const [archiveResult, blogResult, leadershipResult] =
-    await Promise.allSettled([
-      prismaArchiveRepository.listPublic(),
-      prismaBlogRepository.listPublic(),
-      prismaLeadershipRepository.listPublic(),
-    ]);
+  const [blogResult, leadershipResult] = await Promise.allSettled([
+    prismaBlogRepository.listPublic(),
+    prismaLeadershipRepository.listPublic(),
+  ]);
 
-  const archive =
-    archiveResult.status === "fulfilled" ? archiveResult.value : [];
   const blog = blogResult.status === "fulfilled" ? blogResult.value : [];
   const leadership =
     leadershipResult.status === "fulfilled" ? leadershipResult.value : [];
   return {
-    archiveCount: archiveResult.status === "fulfilled" ? archive.length : null,
     blog: blog.slice(0, 3),
-    blogCount: blogResult.status === "fulfilled" ? blog.length : null,
     leadership: leadership.slice(0, 4),
-    leadershipCount:
-      leadershipResult.status === "fulfilled" ? leadership.length : null,
     availability: {
-      archive: archiveResult.status === "fulfilled",
       blog: blogResult.status === "fulfilled",
       leadership: leadershipResult.status === "fulfilled",
     },
@@ -106,12 +96,6 @@ function EmptyState({ children }: { children: React.ReactNode }) {
 
 export default async function Home() {
   const data = await getHomeData();
-  const statistics = [
-    { value: data.blogCount, label: "Published Articles" },
-    { value: "2024", label: "Founded" },
-    { value: data.leadershipCount, label: "Leadership Profiles" },
-    { value: data.archiveCount, label: "Archive Records" },
-  ];
 
   return (
     <div className="home-shell min-w-0 bg-white text-[#0a294d]">
@@ -127,7 +111,7 @@ export default async function Home() {
         joinHref="/membership"
       />
       <main id="main-content" tabIndex={-1}>
-        <section className="relative min-h-[760px] overflow-hidden bg-[#0a294d] text-white xl:min-h-[680px] 2xl:min-h-[720px]">
+        <section className="relative min-h-[700px] overflow-hidden bg-[#0a294d] text-white xl:min-h-[600px] 2xl:min-h-[630px]">
           <OptimizedFillImage
             src="/official/sda-official-venue-group.jpg"
             alt="Somali Diplomacy Association members gathered at an official venue"
@@ -138,8 +122,8 @@ export default async function Home() {
           <div className="absolute inset-0 bg-[#061b34]/45" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,24,48,0.90)_0%,rgba(4,24,48,0.58)_50%,rgba(4,24,48,0.28)_100%)]" />
 
-          <div className="relative mx-auto grid min-h-[760px] w-full min-w-0 max-w-[1600px] items-center gap-11 px-5 pb-20 pt-32 sm:pt-36 md:px-10 xl:min-h-[680px] xl:grid-cols-[minmax(0,1.04fr)_minmax(0,1fr)] xl:gap-10 xl:px-10 xl:pb-12 xl:pt-[100px] 2xl:min-h-[720px]">
-            <div className="home-fade-up min-w-0 xl:max-w-[760px] xl:translate-y-8">
+          <div className="relative mx-auto flex min-h-[700px] w-full min-w-0 max-w-[1600px] items-center justify-center px-5 pb-16 pt-28 text-center sm:pt-32 md:px-10 xl:min-h-[600px] xl:px-10 xl:pb-10 xl:pt-[88px] 2xl:min-h-[630px]">
+            <div className="home-fade-up min-w-0 max-w-[820px]">
               <p className="max-w-full text-[11px] font-bold uppercase tracking-[0.2em] text-[#2cb6f6] sm:text-[14px] sm:tracking-[0.32em]">
                 Diplomacy / Leadership / Unity
               </p>
@@ -151,11 +135,11 @@ export default async function Home() {
                 <span className="block text-[#28b1f2]">Diplomatic</span>
                 <span className="block">Future</span>
               </h1>
-              <p className="mt-8 max-w-[600px] text-[18px] leading-8 text-[#d7e0e8] sm:text-[21px] sm:leading-10 xl:mt-6 xl:max-w-[570px] xl:text-[19px] xl:leading-8">
+              <p className="mx-auto mt-8 max-w-[600px] text-[18px] leading-8 text-[#d7e0e8] sm:text-[21px] sm:leading-10 xl:mt-6 xl:max-w-[570px] xl:text-[19px] xl:leading-8">
                 The Somali Diplomacy Association empowers Somali youth through
                 diplomatic education, leadership development, and international engagement.
               </p>
-              <div className="mt-10 flex flex-wrap items-start gap-4 sm:gap-5 xl:mt-9">
+              <div className="mt-10 flex flex-wrap items-start justify-center gap-4 sm:gap-5 xl:mt-9">
                 <Link
                   href="/membership"
                   className="group inline-flex h-14 items-center gap-3 rounded-md bg-[#1778b8] px-7 text-[17px] font-semibold text-white shadow-lg transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-xl motion-reduce:transform-none sm:px-8 sm:text-lg"
@@ -174,22 +158,6 @@ export default async function Home() {
                 </Link>
               </div>
             </div>
-
-            <dl className="home-fade-up home-fade-up-delay grid min-w-0 grid-cols-2 gap-3 sm:gap-5 xl:translate-y-10 xl:gap-4">
-              {statistics.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="flex min-h-[132px] min-w-0 flex-col rounded-[18px] border border-white/25 bg-[#dce9f5]/15 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_12px_35px_rgba(0,0,0,0.18)] backdrop-blur-md sm:min-h-[145px] sm:p-6 xl:min-h-[128px] xl:p-6"
-                >
-                  <dt className="order-2 mt-3 text-[15px] leading-5 text-[#d5dce4] sm:mt-4 sm:text-[17px] xl:mt-3 xl:text-[16px]">
-                    {stat.label}
-                  </dt>
-                  <dd className="order-1 font-serif text-[36px] font-bold leading-none text-[#2cb6f6] sm:text-[42px] xl:text-[38px]">
-                    {stat.value ?? <span aria-label="Unavailable">--</span>}
-                  </dd>
-                </div>
-              ))}
-            </dl>
           </div>
         </section>
 
