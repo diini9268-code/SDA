@@ -22,7 +22,7 @@ export function BrandLogo({
       <span
         className={`relative size-[54px] shrink-0 overflow-hidden rounded-lg transition-colors sm:size-[58px] xl:size-[52px] ${inverse ? "bg-white" : "bg-white ring-1 ring-[#d7e2e9]"}`}
       >
-        <Image src="/official/sda-logo.png" alt="" width={180} height={180} className="absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-1/2 scale-[0.8]" />
+        <Image src="/official/sda-logo.png" alt="" width={180} height={180} className="absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-[40%] scale-[0.8]" />
       </span>
       <span
         className={`min-w-0 font-serif text-[18px] font-bold leading-[1.05] transition-colors xl:text-[17px] ${
@@ -72,7 +72,7 @@ export function HomeHeader({
       }`}
     >
       <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between gap-4 px-5 sm:h-[90px] md:px-10 xl:h-[78px] xl:gap-7 xl:px-10">
-        <Link href="/" aria-label="SDA home" className="inline-flex shrink-0 items-center self-center rounded-lg">
+        <Link href="/" aria-label="SDA home" className="shrink-0 rounded-lg">
           <BrandLogo compactOnMobile inverse={!scrolled && overlay} />
         </Link>
 
