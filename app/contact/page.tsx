@@ -144,7 +144,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         </section>
 
         <section className="px-5 py-20 md:px-10 xl:px-12 xl:py-24">
-          <div className="mx-auto grid max-w-[1780px] gap-8 lg:grid-cols-[minmax(270px,0.7fr)_minmax(0,1.5fr)] xl:gap-14">
+          <div className="mx-auto grid max-w-[1600px] gap-8 lg:grid-cols-[minmax(270px,0.7fr)_minmax(0,1.5fr)] xl:gap-14">
             <aside aria-labelledby="contact-process-heading" className="space-y-5">
               <div className="mb-8">
                 <p className="text-sm font-bold uppercase tracking-[0.28em] text-[#0874b9]">What happens next</p>
@@ -206,7 +206,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
       </main>
 
       <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
+        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
           <div>
             <BrandLogo inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">Empowering Somali youth through training, dialogue, research, and international engagement.</p>
@@ -227,7 +227,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             </a>
           </div>
         </div>
-        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
           <p>&copy; 2026 Somali Diplomacy Association. All rights reserved.</p>
           <span>Contact details are provided by the sender.</span>
         </div>

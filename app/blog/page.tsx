@@ -251,7 +251,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
         {featured && !hasFilters ? (
           <section className="py-20 lg:py-24">
-            <article className="group mx-auto grid max-w-[1780px] items-center gap-10 px-5 md:px-10 lg:grid-cols-2 xl:gap-16 xl:px-12">
+            <article className="group mx-auto grid max-w-[1600px] items-center gap-10 px-5 md:px-10 lg:grid-cols-2 xl:gap-16 xl:px-12">
               <Link
                 href={`/blog/${featured.slug}`}
                 className="relative block min-h-[360px] overflow-hidden rounded-[20px] bg-[#e7f1f8] sm:min-h-[480px]"
@@ -297,7 +297,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         ) : null}
 
         <section className="bg-[#f4f7fb] py-16 lg:py-20">
-          <div className="mx-auto max-w-[1780px] px-5 md:px-10 xl:px-12">
+          <div className="mx-auto max-w-[1600px] px-5 md:px-10 xl:px-12">
             <nav
               className="flex gap-3 overflow-x-auto pb-2"
               aria-label="Blog categories"
@@ -378,7 +378,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       </main>
 
       <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12">
+        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12">
           <div>
             <BrandLogo inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">
@@ -430,7 +430,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             </Link>
           </div>
         </div>
-        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
           <p>
             &copy; 2026 Somali Diplomacy Association. All rights reserved.
           </p>

@@ -103,7 +103,7 @@ export default async function LeadershipPage() {
         </section>
 
         <section aria-labelledby="directory-heading" className="px-5 py-20 sm:py-24 md:px-10 xl:px-12">
-          <div className="mx-auto max-w-[1780px]">
+          <div className="mx-auto max-w-[1600px]">
             <div className="flex flex-col gap-5 text-center sm:items-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
                 Published Profiles
@@ -161,7 +161,7 @@ export default async function LeadershipPage() {
       </main>
 
       <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="mx-auto grid max-w-[1780px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
+        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
           <div>
             <BrandLogo inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">
@@ -192,7 +192,7 @@ export default async function LeadershipPage() {
             </Link>
           </div>
         </div>
-        <div className="mx-auto flex max-w-[1780px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 border-t border-white/10 px-5 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10 xl:px-12">
           <p>&copy; 2026 Somali Diplomacy Association. All rights reserved.</p>
           <Link href="/contact" className="transition-colors hover:text-white">Privacy and terms inquiries</Link>
         </div>
