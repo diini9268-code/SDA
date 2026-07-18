@@ -77,10 +77,10 @@ function StatCard({
   tone: string;
 }) {
   return (
-    <Link href={href} className="group min-h-[190px] rounded-[8px] border border-[#dfe5eb] bg-white p-6 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-[#9abbd2] hover:shadow-md motion-reduce:transform-none">
-      <span className={`flex size-12 items-center justify-center rounded-[8px] ${tone}`}><Icon className="size-6" aria-hidden="true" /></span>
-      <p className="mt-6 text-[34px] font-bold leading-none text-[#0a294d]">{value}</p>
-      <p className="mt-3 text-[15px] font-medium text-[#52657c]">{label}</p>
+    <Link href={href} className="group min-h-[165px] rounded-[8px] border border-[#dfe5eb] bg-white p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-[#9abbd2] hover:shadow-md motion-reduce:transform-none">
+      <span className={`flex size-11 items-center justify-center rounded-[8px] ${tone}`}><Icon className="size-5" aria-hidden="true" /></span>
+      <p className="mt-5 text-[30px] font-bold leading-none text-[#0a294d]">{value}</p>
+      <p className="mt-2.5 text-[14px] font-medium text-[#52657c]">{label}</p>
       <p className="mt-1 text-xs text-[#718196]">{detail}</p>
     </Link>
   );
@@ -136,14 +136,14 @@ export default async function AdminPage() {
   const adminName = getAdminDisplayName(session?.fullName);
 
   return (
-    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
+    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[240px_minmax(0,1fr)]">
       <aside className="bg-[#0a294d] text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
-        <div className="flex min-h-[104px] items-center border-b border-white/10 px-5">
+        <div className="flex min-h-[88px] items-center border-b border-white/10 px-4">
           <AdminBrand />
         </div>
-        <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-4 py-4 lg:flex-1 lg:flex-col lg:overflow-y-auto">
+        <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-3 py-3 lg:flex-1 lg:flex-col lg:overflow-y-auto">
           {navItems.map(({ href, label, icon: Icon }) => (
-            <Link key={href} href={href} aria-current={href === "/admin" ? "page" : undefined} className={`flex min-h-12 shrink-0 items-center gap-3 rounded-[8px] px-4 text-[15px] font-medium transition-colors ${href === "/admin" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}>
+            <Link key={href} href={href} aria-current={href === "/admin" ? "page" : undefined} className={`flex min-h-11 shrink-0 items-center gap-3 rounded-[8px] px-3 text-[14px] font-medium transition-colors ${href === "/admin" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}>
               <Icon className="size-5" aria-hidden="true" />{label}
               {href === "/admin/membership" && pendingApplications.length ? <span className="ml-auto rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-[#0a294d]">{pendingApplications.length}</span> : null}
               {href === "/admin/contact" && unreadMessages.length ? <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadMessages.length}</span> : null}
@@ -158,13 +158,13 @@ export default async function AdminPage() {
 
       <div className="min-w-0">
         <header className="border-b border-[#dfe5eb] bg-white">
-          <div className="mx-auto flex min-h-[104px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8 xl:px-10 2xl:px-12">
-            <div><h1 className="text-[22px] font-bold">Dashboard Home</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Diplomacy Association CMS</p></div>
-            <div className="flex items-center gap-3"><Link href="/" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View public site</Link><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div>
+          <div className="mx-auto flex min-h-[88px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8 xl:px-8 2xl:px-10">
+            <div><h1 className="text-[20px] font-bold">Dashboard Home</h1><p className="mt-1 text-[14px] text-[#52657c]">Somali Diplomacy Association CMS</p></div>
+            <div className="flex items-center gap-3"><Link href="/" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View public site</Link><span className="flex size-10 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div>
           </div>
         </header>
 
-        <div className="mx-auto grid w-full max-w-[1600px] gap-8 p-5 sm:p-8 xl:p-10 2xl:p-12">
+        <div className="mx-auto grid w-full max-w-[1600px] gap-7 p-5 sm:p-8 xl:p-8 2xl:p-10">
           <section aria-labelledby="dashboard-metrics" className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
             <h2 id="dashboard-metrics" className="sr-only">Dashboard metrics</h2>
             <StatCard label="Leadership Profiles" value={activeLeadership.length} detail={`${leadership.length} total profiles`} href="/admin/leadership" icon={UsersRound} tone="bg-sky-50 text-sky-600" />
@@ -174,27 +174,27 @@ export default async function AdminPage() {
             <StatCard label="Unread Messages" value={unreadMessages.length} detail={`${contactMessages.length} total messages`} href="/admin/contact" icon={MessageSquare} tone="bg-red-50 text-red-600" />
           </section>
 
-          <section className="grid gap-7 xl:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
-            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-6 sm:p-8">
-              <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-[24px] font-bold">Blog by Category</h2><p className="mt-1 text-sm text-[#718196]">Published and draft posts from the current database</p></div><Link href="/admin/blog" className="text-sm font-semibold text-[#1f78b4] hover:underline">Manage blog</Link></div>
-              {blogCategories.length ? <div className="mt-8 grid gap-5">{blogCategories.map((item) => <div key={item.category} className="grid grid-cols-[minmax(90px,150px)_1fr_32px] items-center gap-3"><span className="truncate text-sm font-medium text-[#52657c]">{item.category}</span><span className="h-9 overflow-hidden rounded-[5px] bg-[#edf3f8]"><span className="block h-full rounded-[5px] bg-[#2378ad]" style={{ width: `${Math.max(8, (item.count / maxCategoryCount) * 100)}%` }} /></span><span className="text-right text-sm font-bold">{item.count}</span></div>)}</div> : <p className="mt-8 rounded-[8px] border border-dashed border-[#cfd9e2] px-5 py-8 text-center text-sm text-[#718196]">Blog categories will appear after posts are created.</p>}
+          <section className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-[21px] font-bold">Blog by Category</h2><p className="mt-1 text-sm text-[#718196]">Published and draft posts from the current database</p></div><Link href="/admin/blog" className="text-sm font-semibold text-[#1f78b4] hover:underline">Manage blog</Link></div>
+              {blogCategories.length ? <div className="mt-6 grid gap-4">{blogCategories.map((item) => <div key={item.category} className="grid grid-cols-[minmax(90px,150px)_1fr_32px] items-center gap-3"><span className="truncate text-sm font-medium text-[#52657c]">{item.category}</span><span className="h-8 overflow-hidden rounded-[5px] bg-[#edf3f8]"><span className="block h-full rounded-[5px] bg-[#2378ad]" style={{ width: `${Math.max(8, (item.count / maxCategoryCount) * 100)}%` }} /></span><span className="text-right text-sm font-bold">{item.count}</span></div>)}</div> : <p className="mt-6 rounded-[8px] border border-dashed border-[#cfd9e2] px-5 py-7 text-center text-sm text-[#718196]">Blog categories will appear after posts are created.</p>}
             </div>
 
-            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-6 sm:p-8">
-              <h2 className="text-[24px] font-bold">Application Status</h2>
-              <div className="mx-auto mt-8 flex size-48 items-center justify-center rounded-full" style={{ background: donutBackground }}><div className="flex size-28 flex-col items-center justify-center rounded-full bg-white"><span className="text-3xl font-bold">{applicationTotal}</span><span className="text-xs text-[#718196]">Total</span></div></div>
-              <dl className="mt-8 grid gap-3">{applicationStatuses.map((item) => <div key={item.status} className="flex items-center justify-between"><dt className="flex items-center gap-2 text-sm text-[#52657c]"><span className="size-3 rounded-full" style={{ backgroundColor: statusColors[item.status] }} />{item.status[0]}{item.status.slice(1).toLowerCase()}</dt><dd className="text-sm font-bold">{item.count}</dd></div>)}</dl>
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-6">
+              <h2 className="text-[21px] font-bold">Application Status</h2>
+              <div className="mx-auto mt-6 flex size-44 items-center justify-center rounded-full" style={{ background: donutBackground }}><div className="flex size-24 flex-col items-center justify-center rounded-full bg-white"><span className="text-2xl font-bold">{applicationTotal}</span><span className="text-xs text-[#718196]">Total</span></div></div>
+              <dl className="mt-6 grid gap-3">{applicationStatuses.map((item) => <div key={item.status} className="flex items-center justify-between"><dt className="flex items-center gap-2 text-sm text-[#52657c]"><span className="size-3 rounded-full" style={{ backgroundColor: statusColors[item.status] }} />{item.status[0]}{item.status.slice(1).toLowerCase()}</dt><dd className="text-sm font-bold">{item.count}</dd></div>)}</dl>
             </div>
           </section>
 
-          <section className="grid gap-7 xl:grid-cols-2">
-            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-6 sm:p-8">
-              <div className="flex items-center justify-between"><h2 className="text-[24px] font-bold">Recent Applications</h2><Link href="/admin/membership" className="text-sm font-semibold text-[#1f78b4] hover:underline">View all</Link></div>
+          <section className="grid gap-6 xl:grid-cols-2">
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-6">
+              <div className="flex items-center justify-between"><h2 className="text-[21px] font-bold">Recent Applications</h2><Link href="/admin/membership" className="text-sm font-semibold text-[#1f78b4] hover:underline">View all</Link></div>
               <div className="mt-6 divide-y divide-[#e6ebef]">{recentApplications.length ? recentApplications.map((item) => <div key={item.id} className="flex items-center gap-3 py-4"><span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#e7f1f8] text-sm font-bold text-[#1f78b4]">{initials(item.fullName)}</span><div className="min-w-0 flex-1"><p className="truncate font-semibold">{item.fullName}</p><p className="truncate text-sm text-[#718196]">{item.areaOfInterest || "Membership application"}</p></div><span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[item.status] ?? "bg-slate-100 text-slate-600"}`}>{item.status[0]}{item.status.slice(1).toLowerCase()}</span></div>) : <p className="py-8 text-center text-sm text-[#718196]">No membership applications yet.</p>}</div>
             </div>
 
-            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-6 sm:p-8">
-              <div className="flex items-center justify-between"><h2 className="text-[24px] font-bold">Recent Messages</h2><Link href="/admin/contact" className="text-sm font-semibold text-[#1f78b4] hover:underline">View all</Link></div>
+            <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-5 sm:p-6">
+              <div className="flex items-center justify-between"><h2 className="text-[21px] font-bold">Recent Messages</h2><Link href="/admin/contact" className="text-sm font-semibold text-[#1f78b4] hover:underline">View all</Link></div>
               <div className="mt-6 divide-y divide-[#e6ebef]">{recentMessages.length ? recentMessages.map((item) => <div key={item.id} className="flex items-center gap-3 py-4"><span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#e9eff7] text-sm font-bold">{initials(item.fullName || "Message")}</span><div className="min-w-0 flex-1"><p className="truncate font-semibold">{item.fullName || "Website visitor"}</p><p className="truncate text-sm text-[#718196]">{item.subject}</p></div><div className="text-right"><p className="text-xs text-[#718196]">{formatDate(item.createdAt)}</p>{item.status === "UNREAD" ? <span className="mt-2 ml-auto block size-2.5 rounded-full bg-[#1f78b4]" aria-label="Unread" /> : null}</div></div>) : <p className="py-8 text-center text-sm text-[#718196]">No contact messages yet.</p>}</div>
             </div>
           </section>

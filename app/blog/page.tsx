@@ -138,22 +138,22 @@ function PostImage({
 
 function BlogCard({ post }: { post: BlogRecord }) {
   return (
-    <article className="group flex min-h-[520px] flex-col overflow-hidden rounded-[18px] border border-[#dbe3ea] bg-white transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-[#abc7d8] hover:shadow-xl motion-reduce:transform-none">
+    <article className="group flex min-h-[520px] flex-col overflow-hidden rounded-[18px] border border-[#dbe3ea] bg-white transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-[#abc7d8] hover:shadow-xl motion-reduce:transform-none xl:min-h-[460px]">
       <Link
         href={`/blog/${post.slug}`}
-        className="relative block h-[260px] overflow-hidden bg-[#e7f1f8]"
+        className="relative block h-[260px] overflow-hidden bg-[#e7f1f8] xl:h-[225px]"
         aria-label={`Read ${post.title}`}
       >
         <PostImage post={post} />
       </Link>
-      <div className="flex flex-1 flex-col p-7">
+      <div className="flex flex-1 flex-col p-7 xl:p-6">
         <div className="flex flex-wrap items-center gap-3 text-sm text-[#52657c]">
           <span className="rounded-full bg-[#e7f1f8] px-3 py-1 text-[#0874b9]">
             {post.category}
           </span>
           <span>{readingTime(post)} min read</span>
         </div>
-        <h2 className="mt-5 font-serif text-[25px] font-bold leading-[1.35] text-[#071f3c]">
+        <h2 className="mt-5 font-serif text-[25px] font-bold leading-[1.35] text-[#071f3c] xl:text-[22px]">
           <Link
             href={`/blog/${post.slug}`}
             className="rounded-sm hover:text-[#0874b9]"
@@ -161,7 +161,7 @@ function BlogCard({ post }: { post: BlogRecord }) {
             {post.title}
           </Link>
         </h2>
-        <p className="mt-4 line-clamp-3 text-[16px] leading-7 text-[#52657c]">
+        <p className="mt-4 line-clamp-3 text-[16px] leading-7 text-[#52657c] xl:text-[15px]">
           {excerptFor(post)}
         </p>
         <div className="mt-auto flex items-center justify-between gap-4 pt-7 text-sm text-[#52657c]">
@@ -220,11 +220,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       />
 
       <main id="main-content" className="pt-20 sm:pt-[90px]">
-        <section className="bg-[#0a294d] px-5 py-20 text-center text-white sm:py-24 md:px-10 lg:py-28">
+        <section className="bg-[#0a294d] px-5 py-20 text-center text-white sm:py-24 md:px-10 lg:py-22">
           <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#29b6f6]">
             Insights &amp; News
           </p>
-          <h1 className="mt-7 font-serif text-[48px] font-bold leading-none sm:text-[62px] lg:text-[70px]">
+          <h1 className="mt-7 font-serif text-[48px] font-bold leading-none sm:text-[62px] lg:text-[62px]">
             The SDA Blog
           </h1>
           <p className="mx-auto mt-7 max-w-[850px] text-lg leading-8 text-[#c3cfda] sm:text-xl">
@@ -250,11 +250,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         </section>
 
         {featured && !hasFilters ? (
-          <section className="py-20 lg:py-24">
+          <section className="py-20 lg:py-18">
             <article className="group mx-auto grid max-w-[1600px] items-center gap-10 px-5 md:px-10 lg:grid-cols-2 xl:gap-16 xl:px-12">
               <Link
                 href={`/blog/${featured.slug}`}
-                className="relative block min-h-[360px] overflow-hidden rounded-[20px] bg-[#e7f1f8] sm:min-h-[480px]"
+                className="relative block min-h-[360px] overflow-hidden rounded-[20px] bg-[#e7f1f8] sm:min-h-[480px] xl:min-h-[420px]"
                 aria-label={`Read ${featured.title}`}
               >
                 <PostImage post={featured} featured />
@@ -268,7 +268,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                     Latest
                   </span>
                 </div>
-                <h2 className="mt-6 max-w-[760px] font-serif text-[38px] font-bold leading-[1.25] text-[#071f3c] sm:text-[46px]">
+                <h2 className="mt-6 max-w-[760px] font-serif text-[38px] font-bold leading-[1.25] text-[#071f3c] sm:text-[46px] xl:text-[40px]">
                   {featured.title}
                 </h2>
                 <p className="mt-7 max-w-[760px] text-lg leading-8 text-[#52657c]">
@@ -296,7 +296,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
           </section>
         ) : null}
 
-        <section className="bg-[#f4f7fb] py-16 lg:py-20">
+        <section className="bg-[#f4f7fb] py-16 lg:py-18">
           <div className="mx-auto max-w-[1600px] px-5 md:px-10 xl:px-12">
             <nav
               className="flex gap-3 overflow-x-auto pb-2"
@@ -378,7 +378,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       </main>
 
       <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12">
+        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12 xl:py-14">
           <div>
             <BrandLogo inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">

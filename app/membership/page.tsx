@@ -126,11 +126,11 @@ export default async function MembershipPage({
       />
 
       <main id="main-content" className="pt-20 sm:pt-[90px]">
-        <section className="bg-[#0a294d] px-5 py-24 text-center text-white md:px-10 lg:py-32">
+        <section className="bg-[#0a294d] px-5 py-24 text-center text-white md:px-10 lg:py-22">
           <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#29b6f6]">
             Membership
           </p>
-          <h1 className="mt-7 font-serif text-[48px] font-bold leading-none sm:text-[62px] lg:text-[70px]">
+          <h1 className="mt-7 font-serif text-[48px] font-bold leading-none sm:text-[62px] lg:text-[62px]">
             Join the SDA Community
           </h1>
           <p className="mx-auto mt-8 max-w-[860px] text-lg leading-8 text-[#c3cfda] sm:text-xl">
@@ -150,7 +150,7 @@ export default async function MembershipPage({
           </a>
         </section>
 
-        <section className="py-20 lg:py-28">
+        <section className="py-20 lg:py-22">
           <div className="mx-auto max-w-[1600px] px-5 md:px-10 xl:px-12">
             <div className="text-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
@@ -187,14 +187,14 @@ export default async function MembershipPage({
                   <Link
                     key={item.title}
                     href={item.href}
-                    className="flex min-h-[220px] gap-6 rounded-[18px] border border-[#dbe3ea] bg-white p-8 transition-[transform,box-shadow,border-color] hover:-translate-y-1 hover:border-[#abc7d8] hover:shadow-xl motion-reduce:transform-none"
+                    className="flex min-h-[220px] gap-6 rounded-[18px] border border-[#dbe3ea] bg-white p-8 transition-[transform,box-shadow,border-color] hover:-translate-y-1 hover:border-[#abc7d8] hover:shadow-xl motion-reduce:transform-none xl:min-h-[190px] xl:p-6"
                   >
                     {content}
                   </Link>
                 ) : (
                   <article
                     key={item.title}
-                    className="flex min-h-[220px] gap-6 rounded-[18px] border border-[#dbe3ea] bg-white p-8"
+                    className="flex min-h-[220px] gap-6 rounded-[18px] border border-[#dbe3ea] bg-white p-8 xl:min-h-[190px] xl:p-6"
                   >
                     {content}
                   </article>
@@ -206,7 +206,7 @@ export default async function MembershipPage({
 
         <section
           id="application"
-          className="scroll-mt-24 bg-[#f4f7fb] py-20 lg:py-28"
+          className="scroll-mt-24 bg-[#f4f7fb] py-20 lg:py-22"
         >
           <div className="mx-auto max-w-[980px] px-5 md:px-10">
             <div className="text-center">
@@ -310,7 +310,7 @@ export default async function MembershipPage({
           </div>
         </section>
 
-        <section className="bg-[#f4f7fb] pb-24 lg:pb-28">
+        <section className="bg-[#f4f7fb] pb-24 lg:pb-22">
           <div className="mx-auto max-w-[1080px] px-5 md:px-10">
             <div className="text-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
@@ -344,7 +344,7 @@ export default async function MembershipPage({
       </main>
 
       <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
+        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12 xl:py-14">
           <div>
             <BrandLogo inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">

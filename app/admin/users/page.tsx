@@ -355,21 +355,21 @@ export default async function AdminUsersPage({
   };
 
   return (
-    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
+    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[240px_minmax(0,1fr)]">
       <aside className="bg-[#0a294d] text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
-        <div className="flex min-h-[104px] items-center border-b border-white/10 px-5">
+        <div className="flex min-h-[88px] items-center border-b border-white/10 px-4">
           <AdminBrand />
         </div>
         <nav
           aria-label="Administrator navigation"
-          className="flex gap-1 overflow-x-auto px-4 py-4 lg:flex-1 lg:flex-col lg:overflow-y-auto"
+          className="flex gap-1 overflow-x-auto px-3 py-3 lg:flex-1 lg:flex-col lg:overflow-y-auto"
         >
           {navItems.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
               aria-current={href === "/admin/users" ? "page" : undefined}
-              className={`flex min-h-12 shrink-0 items-center gap-3 rounded-[8px] px-4 text-[15px] font-medium transition-colors ${
+              className={`flex min-h-11 shrink-0 items-center gap-3 rounded-[8px] px-3 text-[14px] font-medium transition-colors ${
                 href === "/admin/users"
                   ? "bg-[#174e73] text-white"
                   : "text-white/60 hover:bg-white/10 hover:text-white"
@@ -406,16 +406,16 @@ export default async function AdminUsersPage({
 
       <div className="min-w-0">
         <header className="border-b border-[#dfe5eb] bg-white">
-          <div className="mx-auto flex min-h-[104px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8 xl:px-10 2xl:px-12">
+          <div className="mx-auto flex min-h-[88px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8 xl:px-8 2xl:px-10">
             <div>
-              <h1 className="text-[22px] font-bold">Users</h1>
-              <p className="mt-1 text-[15px] text-[#52657c]">
+              <h1 className="text-[20px] font-bold">Users</h1>
+              <p className="mt-1 text-[14px] text-[#52657c]">
                 Somali Diplomacy Association CMS
               </p>
             </div>
             <div className="flex items-center gap-3">
               <span
-                className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white"
+                className="flex size-10 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white"
                 aria-label={`Signed in as ${adminName}`}
               >
                 {initials(adminName)}
@@ -427,7 +427,7 @@ export default async function AdminUsersPage({
           </div>
         </header>
 
-        <div className="mx-auto grid w-full max-w-[1600px] gap-7 p-5 sm:p-8 xl:p-10 2xl:p-12">
+        <div className="mx-auto grid w-full max-w-[1600px] gap-6 p-5 sm:p-8 xl:p-8 2xl:p-10">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold">Administrator accounts</h2>

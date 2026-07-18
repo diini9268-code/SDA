@@ -133,24 +133,24 @@ export default async function ContactAdminPage({ searchParams }: ContactAdminPag
   const adminName = getAdminDisplayName(session?.fullName);
 
   return (
-    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
+    <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[240px_minmax(0,1fr)]">
       <aside className="bg-[#0a294d] text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
-        <div className="flex min-h-[104px] items-center border-b border-white/10 px-5"><AdminBrand /></div>
-        <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-4 py-4 lg:flex-1 lg:flex-col lg:overflow-y-auto">
-          {navItems.map(({ href, label, icon: Icon }) => <Link key={href} href={href} aria-current={href === "/admin/contact" ? "page" : undefined} className={`flex min-h-12 shrink-0 items-center gap-3 rounded-[8px] px-4 text-[15px] font-medium transition-colors ${href === "/admin/contact" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}><Icon className="size-5" aria-hidden="true" />{label}{href === "/admin/membership" && pendingCount ? <span className="ml-auto rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-[#0a294d]">{pendingCount}</span> : null}{href === "/admin/contact" && unreadCount ? <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadCount}</span> : null}</Link>)}
+        <div className="flex min-h-[88px] items-center border-b border-white/10 px-4"><AdminBrand /></div>
+        <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-3 py-3 lg:flex-1 lg:flex-col lg:overflow-y-auto">
+          {navItems.map(({ href, label, icon: Icon }) => <Link key={href} href={href} aria-current={href === "/admin/contact" ? "page" : undefined} className={`flex min-h-11 shrink-0 items-center gap-3 rounded-[8px] px-3 text-[14px] font-medium transition-colors ${href === "/admin/contact" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}><Icon className="size-5" aria-hidden="true" />{label}{href === "/admin/membership" && pendingCount ? <span className="ml-auto rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-[#0a294d]">{pendingCount}</span> : null}{href === "/admin/contact" && unreadCount ? <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadCount}</span> : null}</Link>)}
         </nav>
         <div className="hidden border-t border-white/10 p-4 lg:block"><div className="mb-3 flex items-center gap-3 px-3"><span className="flex size-10 items-center justify-center rounded-full bg-[#1f82c1] font-bold">{initials(adminName)}</span><div className="min-w-0"><p className="truncate text-sm font-semibold">{adminName}</p><p className="truncate text-xs text-white/45">{session?.email}</p></div></div><LogoutButton /></div>
       </aside>
 
       <div className="min-w-0">
         <header className="border-b border-[#dfe5eb] bg-white">
-          <div className="mx-auto flex min-h-[104px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8 xl:px-10 2xl:px-12">
-            <div><h1 className="text-[22px] font-bold">Messages</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Diplomacy Association CMS</p></div>
-            <div className="flex items-center gap-3"><Link href="/contact" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View contact page</Link><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div>
+          <div className="mx-auto flex min-h-[88px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8 xl:px-8 2xl:px-10">
+            <div><h1 className="text-[20px] font-bold">Messages</h1><p className="mt-1 text-[14px] text-[#52657c]">Somali Diplomacy Association CMS</p></div>
+            <div className="flex items-center gap-3"><Link href="/contact" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View contact page</Link><span className="flex size-10 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div>
           </div>
         </header>
 
-        <div className="mx-auto w-full max-w-[1600px] p-5 sm:p-8 xl:p-10 2xl:p-12">
+        <div className="mx-auto w-full max-w-[1600px] p-5 sm:p-8 xl:p-8 2xl:p-10">
           <StatusMessage error={firstParam(params.error)} success={firstParam(params.success)} />
           <section className={`overflow-hidden rounded-[8px] border border-[#dfe5eb] bg-white ${firstParam(params.error) || firstParam(params.success) ? "mt-5" : ""}`} aria-labelledby="contact-messages-title">
             <div className="flex min-h-[100px] items-center justify-between gap-4 px-5 sm:px-8">

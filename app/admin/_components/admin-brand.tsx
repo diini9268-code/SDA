@@ -18,8 +18,8 @@ export function getAdminDisplayName(value?: string | null) {
 
 export function AdminBrand() {
   return (
-    <div className="flex min-w-0 items-center gap-3">
-      <span className="relative size-12 shrink-0 overflow-hidden rounded-[8px] bg-white">
+    <div className="flex min-w-0 items-center gap-2.5">
+      <span className="relative size-10 shrink-0 overflow-hidden rounded-[8px] bg-white">
         <Image
           src="/official/sda-logo.png"
           alt=""
@@ -29,8 +29,8 @@ export function AdminBrand() {
         />
       </span>
       <div className="min-w-0">
-        <p className="truncate text-lg font-bold">SDA Admin</p>
-        <p className="text-sm text-[#27b3f4]">Administrator</p>
+        <p className="truncate text-[16px] font-bold">SDA Admin</p>
+        <p className="text-[13px] text-[#27b3f4]">Administrator</p>
       </div>
     </div>
   );

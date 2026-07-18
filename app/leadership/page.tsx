@@ -87,28 +87,28 @@ export default async function LeadershipPage() {
       />
 
       <main id="main-content" className="pt-20 sm:pt-[90px]">
-        <section className="flex min-h-[500px] items-center justify-center bg-[#0a294d] px-5 py-24 text-center text-white sm:min-h-[590px] md:px-10">
+        <section className="flex min-h-[500px] items-center justify-center bg-[#0a294d] px-5 py-24 text-center text-white sm:min-h-[590px] md:px-10 lg:min-h-[510px] lg:py-18">
           <div className="mx-auto max-w-4xl">
             <p className="text-sm font-bold uppercase tracking-[0.32em] text-[#2ab3f3] sm:text-base">
               Leadership
             </p>
-            <h1 className="mt-7 font-serif text-[46px] font-bold leading-[1.05] sm:text-[64px] lg:text-[74px]">
+            <h1 className="mt-7 font-serif text-[46px] font-bold leading-[1.05] sm:text-[64px] lg:text-[62px]">
               Our Leadership
             </h1>
-            <p className="mx-auto mt-7 max-w-3xl text-[18px] leading-8 text-[#becbd7] sm:text-[23px] sm:leading-10">
+            <p className="mx-auto mt-7 max-w-3xl text-[18px] leading-8 text-[#becbd7] sm:text-[23px] sm:leading-10 lg:text-[19px] lg:leading-8">
               Meet the people guiding SDA&apos;s work in diplomacy, research,
               international cooperation, and youth leadership.
             </p>
           </div>
         </section>
 
-        <section aria-labelledby="directory-heading" className="px-5 py-20 sm:py-24 md:px-10 xl:px-12">
+        <section aria-labelledby="directory-heading" className="px-5 py-20 sm:py-24 md:px-10 xl:px-12 xl:py-18">
           <div className="mx-auto max-w-[1600px]">
             <div className="flex flex-col gap-5 text-center sm:items-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
                 Published Profiles
               </p>
-              <h2 id="directory-heading" className="font-serif text-[38px] font-bold leading-tight sm:text-[52px]">
+              <h2 id="directory-heading" className="font-serif text-[38px] font-bold leading-tight sm:text-[52px] xl:text-[46px]">
                 The People Guiding SDA
               </h2>
               <p className="max-w-2xl text-[17px] leading-8 text-[#52657c]">
@@ -138,7 +138,7 @@ export default async function LeadershipPage() {
           </div>
         </section>
 
-        <section className="bg-white px-5 py-20 text-center md:px-10">
+        <section className="bg-white px-5 py-20 text-center md:px-10 xl:py-16">
           <div className="mx-auto max-w-3xl">
             <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
               Connect
@@ -161,7 +161,7 @@ export default async function LeadershipPage() {
       </main>
 
       <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12">
+        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12 xl:py-14">
           <div>
             <BrandLogo inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">

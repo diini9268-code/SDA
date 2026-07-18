@@ -141,7 +141,7 @@ export default async function AboutPage() {
       />
 
       <main id="main-content" className="pt-20 sm:pt-[90px]">
-        <section className="relative isolate flex min-h-[520px] items-center overflow-hidden bg-[#0a294d] text-white lg:min-h-[610px]">
+        <section className="relative isolate flex min-h-[520px] items-center overflow-hidden bg-[#0a294d] text-white lg:min-h-[540px]">
           <OptimizedFillImage
             src="/official/sda-italian-embassy-engagement.jpg"
             alt="SDA representatives during an international engagement"
@@ -150,27 +150,27 @@ export default async function AboutPage() {
             priority
           />
           <div className="absolute inset-0 bg-[#071f3c]/78" />
-          <div className="relative mx-auto w-full max-w-[1600px] px-5 py-24 text-center md:px-10 xl:px-12">
+          <div className="relative mx-auto w-full max-w-[1600px] px-5 py-24 text-center md:px-10 xl:px-12 xl:py-18">
             <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#29b6f6]">
               Our Story
             </p>
-            <h1 className="mt-7 font-serif text-[52px] font-bold leading-none sm:text-[66px] lg:text-[80px]">
+            <h1 className="mt-7 font-serif text-[52px] font-bold leading-none sm:text-[66px] lg:text-[68px]">
               About SDA
             </h1>
-            <p className="mx-auto mt-9 max-w-[980px] text-lg leading-8 text-white/78 sm:text-xl lg:text-[25px] lg:leading-10">
+            <p className="mx-auto mt-9 max-w-[980px] text-lg leading-8 text-white/78 sm:text-xl lg:text-[20px] lg:leading-8">
               A youth-led platform building practical pathways into diplomacy,
               leadership, research, and international engagement.
             </p>
           </div>
         </section>
 
-        <section className="py-20 lg:py-28">
+        <section className="py-20 lg:py-22">
           <div className="mx-auto grid max-w-[1600px] items-center gap-12 px-5 md:px-10 lg:grid-cols-[1fr_1.05fr] xl:gap-20 xl:px-12">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
                 Our Purpose
               </p>
-              <h2 className="mt-6 max-w-3xl font-serif text-[40px] font-bold leading-tight sm:text-[50px] lg:text-[56px]">
+              <h2 className="mt-6 max-w-3xl font-serif text-[40px] font-bold leading-tight sm:text-[50px] lg:text-[48px]">
                 From Purpose to Action
               </h2>
               <div className="mt-8 max-w-[760px] space-y-6 text-[17px] leading-8 text-[#52657c] sm:text-lg">
@@ -204,7 +204,7 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        <section className="bg-[#f4f7fb] py-20 lg:py-28">
+        <section className="bg-[#f4f7fb] py-20 lg:py-22">
           <div className="mx-auto max-w-[1600px] px-5 md:px-10 xl:px-12">
             <div className="text-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
@@ -220,7 +220,7 @@ export default async function AboutPage() {
                 return (
                   <article
                     key={value.title}
-                    className="min-h-[250px] rounded-[18px] border border-[#dbe3ea] bg-white p-8 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-[#a8c7da] hover:shadow-xl motion-reduce:transform-none sm:p-10"
+                    className="min-h-[250px] rounded-[18px] border border-[#dbe3ea] bg-white p-8 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-[#a8c7da] hover:shadow-xl motion-reduce:transform-none sm:p-10 xl:min-h-[225px] xl:p-8"
                   >
                     <div className="flex size-14 items-center justify-center rounded-[16px] bg-[#e7f1f8] text-[#0874b9]">
                       <Icon
@@ -242,7 +242,7 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        <section className="bg-[#0a294d] py-20 text-white lg:py-28">
+        <section className="bg-[#0a294d] py-20 text-white lg:py-22">
           <div className="mx-auto max-w-[1300px] px-5 md:px-10">
             <div className="text-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#29b6f6]">
@@ -281,7 +281,7 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        <section className="py-20 lg:py-28">
+        <section className="py-20 lg:py-22">
           <div className="mx-auto max-w-[1600px] px-5 md:px-10 xl:px-12">
             <div className="text-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
@@ -321,7 +321,7 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        <section className="bg-[#f4f7fb] py-20 lg:py-28">
+        <section className="bg-[#f4f7fb] py-20 lg:py-22">
           <div className="mx-auto max-w-[1080px] px-5 md:px-10">
             <div className="text-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
@@ -355,7 +355,7 @@ export default async function AboutPage() {
       </main>
 
       <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12">
+        <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12 xl:py-14">
           <div>
             <BrandLogo inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">
