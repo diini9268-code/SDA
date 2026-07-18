@@ -405,27 +405,29 @@ export default async function AdminUsersPage({
       </aside>
 
       <div className="min-w-0">
-        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8 xl:px-10 2xl:px-12">
-          <div>
-            <h1 className="text-[22px] font-bold">Users</h1>
-            <p className="mt-1 text-[15px] text-[#52657c]">
-              Somali Diplomacy Association CMS
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <span
-              className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white"
-              aria-label={`Signed in as ${adminName}`}
-            >
-              {initials(adminName)}
-            </span>
-            <span className="lg:hidden">
-              <LogoutButton compact />
-            </span>
+        <header className="border-b border-[#dfe5eb] bg-white">
+          <div className="mx-auto flex min-h-[104px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8 xl:px-10 2xl:px-12">
+            <div>
+              <h1 className="text-[22px] font-bold">Users</h1>
+              <p className="mt-1 text-[15px] text-[#52657c]">
+                Somali Diplomacy Association CMS
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span
+                className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white"
+                aria-label={`Signed in as ${adminName}`}
+              >
+                {initials(adminName)}
+              </span>
+              <span className="lg:hidden">
+                <LogoutButton compact />
+              </span>
+            </div>
           </div>
         </header>
 
-        <div className="grid gap-7 p-5 sm:p-8 xl:p-10 2xl:p-12">
+        <div className="mx-auto grid w-full max-w-[1600px] gap-7 p-5 sm:p-8 xl:p-10 2xl:p-12">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold">Administrator accounts</h2>

@@ -157,12 +157,14 @@ export default async function AdminPage() {
       </aside>
 
       <div className="min-w-0">
-        <header className="flex min-h-[104px] items-center justify-between border-b border-[#dfe5eb] bg-white px-5 sm:px-8 xl:px-10 2xl:px-12">
-          <div><h1 className="text-[22px] font-bold">Dashboard Home</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Diplomacy Association CMS</p></div>
-          <div className="flex items-center gap-3"><Link href="/" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View public site</Link><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div>
+        <header className="border-b border-[#dfe5eb] bg-white">
+          <div className="mx-auto flex min-h-[104px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8 xl:px-10 2xl:px-12">
+            <div><h1 className="text-[22px] font-bold">Dashboard Home</h1><p className="mt-1 text-[15px] text-[#52657c]">Somali Diplomacy Association CMS</p></div>
+            <div className="flex items-center gap-3"><Link href="/" className="hidden rounded-md border border-[#d5dee6] px-4 py-2 text-sm font-semibold text-[#52657c] transition-colors hover:border-[#1f78b4] hover:text-[#1f78b4] sm:block">View public site</Link><span className="flex size-11 items-center justify-center rounded-full bg-[#0a294d] text-sm font-bold text-white" aria-label={`Signed in as ${adminName}`}>{initials(adminName)}</span><span className="lg:hidden"><LogoutButton compact /></span></div>
+          </div>
         </header>
 
-        <div className="grid gap-8 p-5 sm:p-8 xl:p-10 2xl:p-12">
+        <div className="mx-auto grid w-full max-w-[1600px] gap-8 p-5 sm:p-8 xl:p-10 2xl:p-12">
           <section aria-labelledby="dashboard-metrics" className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
             <h2 id="dashboard-metrics" className="sr-only">Dashboard metrics</h2>
             <StatCard label="Leadership Profiles" value={activeLeadership.length} detail={`${leadership.length} total profiles`} href="/admin/leadership" icon={UsersRound} tone="bg-sky-50 text-sky-600" />
