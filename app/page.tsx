@@ -54,6 +54,17 @@ const principles: Array<{
   },
 ];
 
+const trustedPartners = [
+  "United Nations (UN Kenya / UN Youth)",
+  "AIESEC",
+  "Save the Children",
+  "International Association for Political Science Students",
+  "World Youth Forum (WYF)",
+  "Best Diplomat",
+  "Global Peace Chain",
+  "Afro Arab Youth Council",
+];
+
 async function getHomeData() {
   const [blogResult, leadershipResult] = await Promise.allSettled([
     prismaBlogRepository.listPublic(),
@@ -406,6 +417,30 @@ export default async function Home() {
                 </Link>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section
+          aria-labelledby="trusted-partners-heading"
+          className="bg-white py-16 xl:py-14"
+        >
+          <div className="mx-auto max-w-[1600px] px-5 text-center md:px-10 xl:px-10">
+            <h2
+              id="trusted-partners-heading"
+              className="text-xs font-semibold uppercase tracking-[0.3em] text-[#52657c]"
+            >
+              Trusted Partners &amp; Supporters
+            </h2>
+            <ul className="mt-10 grid items-center gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-8">
+              {trustedPartners.map((partner) => (
+                <li
+                  key={partner}
+                  className="text-[16px] leading-6 text-[#8a9aaf]"
+                >
+                  {partner}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       </main>
