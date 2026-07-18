@@ -21,11 +21,12 @@ export function AdminBrand() {
     <div className="flex min-w-0 items-center gap-2.5">
       <span className="relative size-10 shrink-0 overflow-hidden rounded-[8px] bg-white">
         <Image
-          src="/official/sda-logo.png"
+          src="/official/sda-emblem.png"
           alt=""
-          width={180}
-          height={180}
-          className="absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-[40%] scale-[0.8]"
+          width={1200}
+          height={1200}
+          sizes="40px"
+          className="h-full w-full object-contain"
         />
       </span>
       <div className="min-w-0">
