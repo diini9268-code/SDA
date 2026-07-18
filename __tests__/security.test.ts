@@ -42,9 +42,6 @@ describe("security hardening", () => {
     vi.stubEnv("REQUIRE_PRODUCTION_ENV_VALIDATION", "true");
     vi.stubEnv("DATABASE_URL", "not-a-url");
     vi.stubEnv("JWT_SECRET", "replace-with-a-long-random-secret");
-    vi.stubEnv("SUPABASE_URL", "https://example.supabase.co");
-    vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "sb_secret_test");
-    vi.stubEnv("SUPABASE_STORAGE_BUCKET", "blog-media");
 
     expect(() => validateProductionEnvironment()).toThrow(
       "DATABASE_URL must be a valid URL in production.",
@@ -56,6 +53,23 @@ describe("security hardening", () => {
     );
 
     vi.stubEnv("JWT_SECRET", "0123456789abcdef0123456789abcdef");
+    expect(() => validateProductionEnvironment()).not.toThrow();
+
+    vi.unstubAllEnvs();
+  });
+
+  it("does not take the site offline when optional media storage is absent", () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("REQUIRE_PRODUCTION_ENV_VALIDATION", "true");
+    vi.stubEnv(
+      "DATABASE_URL",
+      "postgresql://user:pass@example.com:5432/database",
+    );
+    vi.stubEnv("JWT_SECRET", "0123456789abcdef0123456789abcdef");
+    vi.stubEnv("SUPABASE_URL", "");
+    vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "");
+    vi.stubEnv("SUPABASE_STORAGE_BUCKET", "");
+
     expect(() => validateProductionEnvironment()).not.toThrow();
 
     vi.unstubAllEnvs();
