@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import { createBlogPost } from "@/lib/blog/blog-service";
+import { createBlogPostWithUploads } from "@/lib/blog/blog-media-workflow";
 
 async function readJson(request: Request): Promise<unknown | null> {
   try {
@@ -45,7 +46,13 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = await createBlogPost(body, prismaBlogRepository);
+  const usesManagedUploads =
+    typeof body === "object" &&
+    body !== null &&
+    "uploads" in body;
+  const result = usesManagedUploads
+    ? await createBlogPostWithUploads(body, prismaBlogRepository)
+    : await createBlogPost(body, prismaBlogRepository);
 
   if (!result.ok) {
     return NextResponse.json(
@@ -54,5 +61,11 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ blog: result.data }, { status: 201 });
+  return NextResponse.json(
+    {
+      blog: result.data,
+      ...("warnings" in result ? { warnings: result.warnings } : {}),
+    },
+    { status: 201 },
+  );
 }

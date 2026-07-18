@@ -17,30 +17,26 @@ import {
 } from "lucide-react";
 import {
   IconDeleteButton,
-  SubmitButton,
 } from "@/app/admin/_components/form-controls";
 import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
 import {
-  createBlogAction,
   deleteBlogAction,
-  updateBlogAction,
 } from "@/app/admin/blog/actions";
+import {
+  BlogForm,
+  type BlogFormInitialData,
+} from "@/app/admin/blog/blog-form";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import type { BlogRecord } from "@/lib/blog/blog-service";
-import {
-  formatPublicationDateInput,
-  type BlogStatusValue,
-} from "@/lib/blog/validation";
+import { formatPublicationDateInput, type BlogStatusValue } from "@/lib/blog/validation";
 import { prismaContactRepository } from "@/lib/contact/contact-repository";
 import { prismaMembershipRepository } from "@/lib/membership/membership-repository";
 
 type BlogAdminPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
-
-const blogStatuses: BlogStatusValue[] = ["DRAFT", "PUBLISHED", "ARCHIVED"];
 
 const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/admin", label: "Dashboard Home", icon: LayoutDashboard },
@@ -75,32 +71,28 @@ function statusLabel(status: BlogStatusValue): string {
   return status[0] + status.slice(1).toLowerCase();
 }
 
-function mediaToText(blog?: BlogRecord): string {
-  if (!blog) return "";
-  return blog.media.map((media) => [media.url, media.altText ?? "", media.mimeType, media.sizeBytes?.toString() ?? ""].join(" | ")).join("\n");
-}
-
 function StatusMessage({ error, success }: { error: string | null; success: string | null }) {
   if (!error && !success) return null;
   return <div className={`rounded-[8px] border px-4 py-3 text-sm ${error ? "border-red-200 bg-red-50 text-red-800" : "border-emerald-200 bg-emerald-50 text-emerald-800"}`} role="status">{error ?? success}</div>;
 }
 
-function BlogForm({ action, blog, submitLabel }: { action: (formData: FormData) => void; blog?: BlogRecord; submitLabel: string }) {
-  const fieldClass = "min-h-12 rounded-[8px] border border-[#ced9e3] bg-[#f6f9fc] px-4 text-[15px] text-[#0a294d] outline-none transition focus:border-[#1f78b4] focus:ring-2 focus:ring-[#1f78b4]/15";
-  const publicationDate = formatPublicationDateInput(
-    blog?.publishedAt ?? new Date(),
-  );
-
-  return (
-    <form action={action} className="grid gap-5">
-      <div className="grid gap-5 md:grid-cols-[minmax(0,2fr)_minmax(180px,1fr)]"><label className="grid gap-2 text-sm font-semibold">Post title<input name="title" required maxLength={220} defaultValue={blog?.title} className={fieldClass} /></label><label className="grid gap-2 text-sm font-semibold">Category<input name="category" required maxLength={120} defaultValue={blog?.category} className={fieldClass} /></label></div>
-      <label className="grid gap-2 text-sm font-semibold">Excerpt<textarea name="excerpt" rows={2} maxLength={500} defaultValue={blog?.excerpt ?? ""} className={`${fieldClass} py-3`} /><span className="text-xs font-normal text-[#718196]">Optional summary, up to 500 characters.</span></label>
-      <label className="grid gap-2 text-sm font-semibold">Content<textarea name="content" required rows={9} maxLength={20000} defaultValue={blog?.content} className={`${fieldClass} py-3`} /></label>
-      <div className="grid gap-5 md:grid-cols-2"><label className="grid gap-2 text-sm font-semibold">Publication date<input name="publishedAt" type="date" required defaultValue={publicationDate} className={fieldClass} /></label><label className="grid gap-2 text-sm font-semibold">Status<select name="status" defaultValue={blog?.status ?? "DRAFT"} className={fieldClass}>{blogStatuses.map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}</select></label></div>
-      <label className="grid gap-2 text-sm font-semibold">Media records<textarea name="media" rows={4} defaultValue={mediaToText(blog)} placeholder="https://example.com/image.jpg | Alt text | image/jpeg | 240000" className={`${fieldClass} py-3 font-mono text-sm`} /><span className="text-xs font-normal leading-5 text-[#718196]">One record per line: URL | alt text | MIME type | size in bytes. Existing validation permits JPEG, PNG, WebP, GIF and PDF files up to 10 MB, with no more than 10 records.</span></label>
-      <div className="flex flex-wrap items-center gap-3"><SubmitButton className="min-h-11 bg-[#1f78b4] px-6 hover:bg-[#155f91]">{submitLabel}</SubmitButton><Link href="/admin/blog" className="rounded-md px-4 py-2 text-sm font-semibold text-[#52657c] hover:bg-[#edf3f8]">Cancel</Link></div>
-    </form>
-  );
+function toBlogFormInitialData(blog: BlogRecord): BlogFormInitialData {
+  return {
+    id: blog.id,
+    title: blog.title,
+    category: blog.category,
+    excerpt: blog.excerpt ?? "",
+    content: blog.content,
+    publishedAt: formatPublicationDateInput(blog.publishedAt),
+    status: blog.status,
+    media: blog.media.map((media) => ({
+      id: media.id,
+      url: media.url,
+      altText: media.altText ?? "",
+      mimeType: media.mimeType,
+      sizeBytes: media.sizeBytes,
+    })),
+  };
 }
 
 function BlogActions({ post }: { post: BlogRecord }) {
@@ -137,7 +129,7 @@ export default async function BlogAdminPage({ searchParams }: BlogAdminPageProps
           <div className="flex flex-wrap items-center justify-between gap-4"><div><h2 className="text-2xl font-bold">Blog posts</h2><p className="mt-1 text-sm text-[#718196]">{posts.length} posts stored in the database</p></div><Link href={showForm ? "/admin/blog" : "/admin/blog?create=1#blog-form"} className="inline-flex min-h-12 items-center gap-2 rounded-[8px] bg-[#1f78b4] px-5 font-semibold text-white shadow-sm transition hover:bg-[#155f91] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f78b4]">{showForm ? <X className="size-5" /> : <Plus className="size-5" />}{showForm ? "Close form" : "Add new"}</Link></div>
           <StatusMessage error={firstParam(params.error) ?? (editId && !editingPost ? "Blog post not found." : null)} success={firstParam(params.success)} />
 
-          {showForm ? <section id="blog-form" className="scroll-mt-6 rounded-[8px] border border-[#dfe5eb] bg-white p-5 shadow-sm sm:p-7" aria-labelledby="blog-form-title"><h2 id="blog-form-title" className="text-xl font-bold">{editingPost ? `Edit ${editingPost.title}` : "Add blog post"}</h2><p className="mt-1 text-sm text-[#718196]">The slug and media ordering are handled by the existing backend.</p><div className="mt-6"><BlogForm action={editingPost ? updateBlogAction.bind(null, editingPost.id) : createBlogAction} blog={editingPost} submitLabel={editingPost ? "Save changes" : "Create blog post"} /></div></section> : null}
+          {showForm ? <section id="blog-form" className="scroll-mt-6 rounded-[8px] border border-[#dfe5eb] bg-white p-5 shadow-sm sm:p-7" aria-labelledby="blog-form-title"><h2 id="blog-form-title" className="text-xl font-bold">{editingPost ? `Edit ${editingPost.title}` : "Add blog post"}</h2><p className="mt-1 text-sm text-[#718196]">Upload media directly from your computer. The existing backend handles the slug, ordering, and blog relationship.</p><div className="mt-6"><BlogForm initialData={editingPost ? toBlogFormInitialData(editingPost) : undefined} /></div></section> : null}
 
           <section className="overflow-hidden rounded-[8px] border border-[#dfe5eb] bg-white" aria-labelledby="posts-table-title">
             <h2 id="posts-table-title" className="sr-only">Stored blog posts</h2>

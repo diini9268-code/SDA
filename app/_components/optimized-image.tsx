@@ -3,6 +3,15 @@ import Image from "next/image";
 const optimizedImageHosts = new Set([
   "images.unsplash.com",
   "lh3.googleusercontent.com",
+  (() => {
+    try {
+      return process.env.SUPABASE_URL
+        ? new URL(process.env.SUPABASE_URL).hostname
+        : "";
+    } catch {
+      return "";
+    }
+  })(),
 ]);
 
 function canOptimizeImage(src: string): boolean {

@@ -44,6 +44,13 @@ export const prismaBlogRepository: BlogRepository = {
     });
   },
 
+  async findById(id: string): Promise<BlogRecord | null> {
+    return getPrismaClient().blog.findUnique({
+      where: { id },
+      include: includeMedia,
+    });
+  },
+
   async findPublicBySlug(slug: string): Promise<BlogRecord | null> {
     return getPrismaClient().blog.findFirst({
       where: {

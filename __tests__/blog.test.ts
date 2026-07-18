@@ -41,6 +41,9 @@ function createRepository(): BlogRepository & {
     async listAll() {
       return this.posts;
     },
+    async findById(id) {
+      return this.posts.find((post) => post.id === id) ?? null;
+    },
     async findPublicBySlug(slug) {
       return (
         this.posts.find(

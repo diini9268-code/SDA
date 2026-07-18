@@ -42,6 +42,9 @@ describe("security hardening", () => {
     vi.stubEnv("REQUIRE_PRODUCTION_ENV_VALIDATION", "true");
     vi.stubEnv("DATABASE_URL", "not-a-url");
     vi.stubEnv("JWT_SECRET", "replace-with-a-long-random-secret");
+    vi.stubEnv("SUPABASE_URL", "https://example.supabase.co");
+    vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "sb_secret_test");
+    vi.stubEnv("SUPABASE_STORAGE_BUCKET", "blog-media");
 
     expect(() => validateProductionEnvironment()).toThrow(
       "DATABASE_URL must be a valid URL in production.",

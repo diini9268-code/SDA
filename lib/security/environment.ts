@@ -34,6 +34,9 @@ export function validateProductionEnvironment(): void {
   }
 
   requireUrlEnv("DATABASE_URL");
+  requireUrlEnv("SUPABASE_URL");
+  requireEnv("SUPABASE_SERVICE_ROLE_KEY");
+  requireEnv("SUPABASE_STORAGE_BUCKET");
 
   const jwtSecret = requireEnv("JWT_SECRET");
 

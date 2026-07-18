@@ -5,6 +5,10 @@ import {
   deleteBlogPost,
   updateBlogPost,
 } from "@/lib/blog/blog-service";
+import {
+  deleteStoredBlogMedia,
+  updateBlogPostWithUploads,
+} from "@/lib/blog/blog-media-workflow";
 
 type RouteContext = {
   params: Promise<{
@@ -40,7 +44,13 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   const { id } = await context.params;
-  const result = await updateBlogPost(id, body, prismaBlogRepository);
+  const usesManagedUploads =
+    typeof body === "object" &&
+    body !== null &&
+    ("uploads" in body || "retainedMedia" in body);
+  const result = usesManagedUploads
+    ? await updateBlogPostWithUploads(id, body, prismaBlogRepository)
+    : await updateBlogPost(id, body, prismaBlogRepository);
 
   if (!result.ok) {
     return NextResponse.json(
@@ -49,7 +59,10 @@ export async function PATCH(request: Request, context: RouteContext) {
     );
   }
 
-  return NextResponse.json({ blog: result.data });
+  return NextResponse.json({
+    blog: result.data,
+    ...("warnings" in result ? { warnings: result.warnings } : {}),
+  });
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
@@ -63,6 +76,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
   }
 
   const { id } = await context.params;
+  const blog = await prismaBlogRepository.findById(id);
   const result = await deleteBlogPost(id, prismaBlogRepository);
 
   if (!result.ok) {
@@ -70,6 +84,10 @@ export async function DELETE(_request: Request, context: RouteContext) {
       { error: result.error },
       { status: result.status },
     );
+  }
+
+  if (blog) {
+    await deleteStoredBlogMedia(blog);
   }
 
   return new Response(null, { status: 204 });

@@ -9,6 +9,7 @@ import {
   deleteBlogPost,
   updateBlogPost,
 } from "@/lib/blog/blog-service";
+import { deleteStoredBlogMedia } from "@/lib/blog/blog-media-workflow";
 import type { BlogStatusValue } from "@/lib/blog/validation";
 
 const blogStatuses: BlogStatusValue[] = ["DRAFT", "PUBLISHED", "ARCHIVED"];
@@ -106,10 +107,15 @@ export async function updateBlogAction(id: string, formData: FormData) {
 export async function deleteBlogAction(id: string) {
   await requireActionAdmin();
 
+  const blog = await prismaBlogRepository.findById(id);
   const result = await deleteBlogPost(id, prismaBlogRepository);
 
   if (!result.ok) {
     redirectWithStatus(result.error, "error");
+  }
+
+  if (blog) {
+    await deleteStoredBlogMedia(blog);
   }
 
   revalidatePath("/admin");

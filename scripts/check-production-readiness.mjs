@@ -37,6 +37,9 @@ const requiredVariables = [
   "DIRECT_URL",
   "JWT_SECRET",
   "NEXT_PUBLIC_APP_URL",
+  "SUPABASE_URL",
+  "SUPABASE_SERVICE_ROLE_KEY",
+  "SUPABASE_STORAGE_BUCKET",
 ];
 
 const placeholderValues = new Set([
@@ -78,7 +81,7 @@ for (const variable of requiredVariables) {
   }
 
   if (
-    ["DATABASE_URL", "DIRECT_URL", "NEXT_PUBLIC_APP_URL"].includes(variable) &&
+    ["DATABASE_URL", "DIRECT_URL", "NEXT_PUBLIC_APP_URL", "SUPABASE_URL"].includes(variable) &&
     !isValidUrl(value)
   ) {
     fail(`${variable} must be a valid URL.`);

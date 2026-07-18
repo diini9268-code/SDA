@@ -3,6 +3,27 @@ import { validateProductionEnvironment } from "./lib/security/environment";
 
 validateProductionEnvironment();
 
+function getSupabaseImagePattern() {
+  const value = process.env.SUPABASE_URL?.trim();
+
+  if (!value) {
+    return null;
+  }
+
+  try {
+    const url = new URL(value);
+    return {
+      protocol: "https" as const,
+      hostname: url.hostname,
+      pathname: "/storage/v1/object/public/**",
+    };
+  } catch {
+    return null;
+  }
+}
+
+const supabaseImagePattern = getSupabaseImagePattern();
+
 const securityHeaders = [
   {
     key: "X-DNS-Prefetch-Control",
@@ -62,6 +83,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
       },
+      ...(supabaseImagePattern ? [supabaseImagePattern] : []),
     ],
   },
   async headers() {

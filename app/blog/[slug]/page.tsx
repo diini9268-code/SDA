@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { FileText } from "lucide-react";
 import { notFound } from "next/navigation";
 import { PublicPageShell } from "@/app/_components/public-shell";
+import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import { createPageMetadata } from "@/lib/site/metadata";
 
@@ -77,22 +79,50 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             ) : null}
           </header>
 
-          {post.media.length > 0 ? (
-            <section className="mt-8 grid gap-3">
-              {post.media.map((media) => (
-                <a
-                  key={media.id}
-                  href={media.url}
-                  className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700 hover:border-slate-400"
-                >
-                  <span className="font-semibold text-slate-950">
-                    {media.altText ?? "Blog media"}
-                  </span>
-                  <span className="ml-2 text-slate-500">{media.mimeType}</span>
-                </a>
-              ))}
-            </section>
-          ) : null}
+          <section className="mt-8 grid gap-4" aria-label="Post media">
+            {post.media.length > 0 ? (
+              post.media.map((media) =>
+                media.mimeType.startsWith("image/") ? (
+                  <figure
+                    key={media.id}
+                    className="overflow-hidden rounded-[12px] border border-slate-200 bg-slate-100"
+                  >
+                    <div className="relative aspect-[16/9]">
+                      <OptimizedFillImage
+                        src={media.url}
+                        alt={media.altText ?? post.title}
+                        className="size-full object-cover"
+                        sizes="(min-width: 768px) 768px, 100vw"
+                      />
+                    </div>
+                    {media.altText ? (
+                      <figcaption className="px-4 py-3 text-sm text-slate-600">
+                        {media.altText}
+                      </figcaption>
+                    ) : null}
+                  </figure>
+                ) : (
+                  <a
+                    key={media.id}
+                    href={media.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex min-h-16 items-center gap-3 rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700 hover:border-slate-400"
+                  >
+                    <FileText className="size-6 text-slate-500" aria-hidden="true" />
+                    <span className="font-semibold text-slate-950">
+                      {media.altText ?? "Open attached PDF"}
+                    </span>
+                  </a>
+                ),
+              )
+            ) : (
+              <div className="flex min-h-40 items-center justify-center rounded-[12px] bg-slate-100 text-slate-500">
+                <FileText className="size-10" aria-hidden="true" />
+                <span className="sr-only">No media published for this post.</span>
+              </div>
+            )}
+          </section>
 
           <div className="mt-8 whitespace-pre-wrap text-base leading-8 text-slate-800">
             {post.content}

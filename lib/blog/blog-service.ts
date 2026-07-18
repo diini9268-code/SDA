@@ -34,6 +34,7 @@ export type BlogRecord = {
 export type BlogRepository = {
   listPublic(): Promise<BlogRecord[]>;
   listAll(): Promise<BlogRecord[]>;
+  findById(id: string): Promise<BlogRecord | null>;
   findPublicBySlug(slug: string): Promise<BlogRecord | null>;
   create(data: BlogCreateData): Promise<BlogRecord>;
   update(id: string, data: BlogUpdateData): Promise<BlogRecord | null>;
