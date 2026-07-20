@@ -14,12 +14,8 @@ import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
 import type { ArchiveRecord } from "@/lib/archive/archive-service";
+import { getSiteCmsContent } from "@/lib/site/cms-content";
 import { createPageMetadata } from "@/lib/site/metadata";
-import {
-  membershipRequirements,
-  officialMission,
-  publicNavigation,
-} from "@/lib/site/official-content";
 
 export const dynamic = "force-dynamic";
 
@@ -30,9 +26,7 @@ export const metadata = createPageMetadata({
   path: "/about",
 });
 
-const navigationItems = publicNavigation;
-
-const values = [
+const valuePresentation = [
   {
     icon: ShieldCheck,
     title: "Respect",
@@ -71,24 +65,6 @@ const values = [
   },
 ];
 
-const faqs = [
-  {
-    question: "Who can apply for membership?",
-    answer:
-      membershipRequirements.join(" "),
-  },
-  {
-    question: "Where can I see SDA's previous work?",
-    answer:
-      "The public Archive contains organizational activities and images published through the existing SDA administration workflow.",
-  },
-  {
-    question: "How can I contact the organization?",
-    answer:
-      "Use the Contact page to send a message directly to the SDA administration team.",
-  },
-];
-
 async function getAboutData(): Promise<{
   archive: ArchiveRecord[];
   archiveAvailable: boolean;
@@ -109,13 +85,58 @@ function getYear(date: Date): string {
 
 export default async function AboutPage() {
   const data = await getAboutData();
-  const publishedGallery = data.archive.flatMap((entry) =>
-    entry.images.map((src, index) => ({
-      src,
-      alt: index === 0 ? entry.title : `${entry.title}, image ${index + 1}`,
-      id: `${entry.id}-${index}`,
-    })),
-  );
+  const cms = await getSiteCmsContent();
+  const pageContent = cms.about.content;
+  const globalContent = cms.global.content;
+  const displayedValues = (
+    globalContent.valueDetails ??
+    globalContent.values?.map((title) => ({ title, description: "" })) ??
+    []
+  ).map((value, index) => ({
+    ...value,
+    icon:
+      valuePresentation.find((item) => item.title === value.title)?.icon ??
+      valuePresentation[index % valuePresentation.length]?.icon ??
+      ShieldCheck,
+  }));
+  const brand = {
+    organizationName: globalContent.organizationName,
+    motto: globalContent.motto,
+    logoUrl: cms.global.media.hero?.url,
+  };
+  const faqs = [
+    {
+      question: "Who can apply for membership?",
+      answer: (globalContent.membershipRequirements ?? []).join(" "),
+    },
+    {
+      question: "Where can I see SDA's previous work?",
+      answer:
+        "Published activities and official images appear in the About gallery.",
+    },
+    {
+      question: "How can I contact the organization?",
+      answer:
+        "Use the Contact page to send a message directly to the SDA administration team.",
+    },
+  ];
+  const publishedGallery = data.archive.flatMap((entry) => {
+    const uploaded = (entry.media ?? []).map(({ asset }, index) => ({
+      src: asset.url,
+      alt: asset.altText || (index === 0 ? entry.title : `${entry.title}, image ${index + 1}`),
+      id: asset.id,
+    }));
+    const uploadedUrls = new Set(uploaded.map(({ src }) => src));
+    const legacy = entry.images
+      .filter((src) => !uploadedUrls.has(src))
+      .map((src, index) => ({
+        src,
+        alt: index === 0 ? entry.title : `${entry.title}, image ${index + 1}`,
+        id: `${entry.id}-legacy-${index}`,
+      }));
+
+    return [...uploaded, ...legacy];
+  });
   const gallery = [
     { src: "/official/sda-official-venue-group.jpg", alt: "SDA members gathered at an official venue", id: "official-group" },
     { src: "/official/sda-diplomacy-workshop.jpg", alt: "SDA diplomacy workshop", id: "official-workshop" },
@@ -133,7 +154,8 @@ export default async function AboutPage() {
         Skip to main content
       </a>
       <HomeHeader
-        items={navigationItems}
+        brand={brand}
+        items={cms.navigation}
         activeHref="/about"
         overlay={false}
         secondaryItem={{ href: "/login", label: "Login" }}
@@ -143,7 +165,7 @@ export default async function AboutPage() {
       <main id="main-content" className="pt-20 sm:pt-[90px]">
         <section className="relative isolate flex min-h-[520px] items-center overflow-hidden bg-[#0a294d] text-white lg:min-h-[540px]">
           <OptimizedFillImage
-            src="/official/sda-italian-embassy-engagement.jpg"
+            src={cms.about.media.hero?.url ?? "/official/sda-italian-embassy-engagement.jpg"}
             alt="SDA representatives during an international engagement"
             className="h-full w-full object-cover"
             sizes="100vw"
@@ -152,14 +174,13 @@ export default async function AboutPage() {
           <div className="absolute inset-0 bg-[#071f3c]/78" />
           <div className="relative mx-auto w-full max-w-[1600px] px-5 py-24 text-center md:px-10 xl:px-12 xl:py-18">
             <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#29b6f6]">
-              Our Story
+              {pageContent.eyebrow}
             </p>
             <h1 className="mt-7 font-serif text-[52px] font-bold leading-none sm:text-[66px] lg:text-[68px]">
-              About SDA
+              {pageContent.title}
             </h1>
             <p className="mx-auto mt-9 max-w-[980px] text-lg leading-8 text-white/78 sm:text-xl lg:text-[20px] lg:leading-8">
-              A youth-led platform building practical pathways into diplomacy,
-              leadership, research, and international engagement.
+              {pageContent.description}
             </p>
           </div>
         </section>
@@ -179,7 +200,7 @@ export default async function AboutPage() {
                   committed to diplomacy, leadership, unity, and academic excellence.
                 </p>
                 <p>
-                  {officialMission}
+                  {globalContent.mission}
                 </p>
                 <p>
                   The Association brings together students, young professionals,
@@ -189,13 +210,13 @@ export default async function AboutPage() {
             </div>
             <div className="relative min-h-[390px] overflow-hidden rounded-[20px] bg-[#eaf1f7] shadow-[0_20px_50px_rgba(10,41,77,0.14)] sm:min-h-[520px]">
               <OptimizedFillImage
-                src="/official/sda-diplomacy-workshop.jpg"
+                src={cms.about.media.feature?.url ?? "/official/sda-diplomacy-workshop.jpg"}
                 alt="SDA diplomacy workshop in session"
                 className="h-full w-full object-cover"
                 sizes="(min-width: 1024px) 50vw, 100vw"
               />
               <div className="absolute bottom-0 left-0 bg-[#1778b8] px-7 py-5 text-white sm:px-10 sm:py-7">
-                <p className="font-serif text-3xl font-bold">February 2024</p>
+                <p className="font-serif text-3xl font-bold">{globalContent.founded}</p>
                 <p className="mt-1 text-sm text-white/80 sm:text-base">
                   Official founding date
                 </p>
@@ -215,7 +236,7 @@ export default async function AboutPage() {
               </h2>
             </div>
             <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {values.map((value) => {
+              {displayedValues.map((value) => {
                 const Icon = value.icon;
                 return (
                   <article
@@ -232,9 +253,11 @@ export default async function AboutPage() {
                     <h3 className="mt-7 text-2xl font-bold text-[#071f3c]">
                       {value.title}
                     </h3>
-                    <p className="mt-3 text-[17px] leading-8 text-[#52657c]">
-                      {value.description}
-                    </p>
+                    {value.description ? (
+                      <p className="mt-3 text-[17px] leading-8 text-[#52657c]">
+                        {value.description}
+                      </p>
+                    ) : null}
                   </article>
                 );
               })}
@@ -357,7 +380,7 @@ export default async function AboutPage() {
       <footer className="bg-[#0a294d] text-[#c3cfda]">
         <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12 xl:py-14">
           <div>
-            <BrandLogo inverse />
+            <BrandLogo brand={brand} inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">
               Empowering Somali youth through training, dialogue, research, and
               international engagement.
@@ -368,7 +391,7 @@ export default async function AboutPage() {
               Quick Links
             </h2>
             <ul className="mt-7 space-y-4">
-              {navigationItems.map((item) => (
+              {cms.navigation.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
@@ -387,7 +410,7 @@ export default async function AboutPage() {
             <ul className="mt-7 space-y-4">
               <li><Link href="/about" className="transition-colors hover:text-white">About SDA</Link></li>
               <li><Link href="/leadership" className="transition-colors hover:text-white">Leadership</Link></li>
-              <li><Link href="/archive" className="transition-colors hover:text-white">Archive</Link></li>
+              <li><Link href="/blog" className="transition-colors hover:text-white">News and insights</Link></li>
               <li><Link href="/blog" className="transition-colors hover:text-white">Blog</Link></li>
             </ul>
           </div>

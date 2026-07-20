@@ -49,6 +49,8 @@ type AdminUsersPageProps = {
 
 const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/admin", label: "Dashboard Home", icon: LayoutDashboard },
+  { href: "/admin/content", label: "Website Content", icon: LayoutDashboard },
+  { href: "/admin/gallery", label: "Activity Gallery", icon: LayoutDashboard },
   { href: "/admin/leadership", label: "Leadership", icon: UsersRound },
   { href: "/admin/programs", label: "Programs", icon: Target },
   { href: "/admin/blog", label: "Blog", icon: BookOpenText },

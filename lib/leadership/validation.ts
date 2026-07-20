@@ -3,6 +3,7 @@ export type LeadershipCreateData = {
   position: string;
   biography: string;
   photo: string | null;
+  photoAssetId: string | null;
   displayOrder: number;
   isActive: boolean;
 };
@@ -67,6 +68,20 @@ function readOptionalPhoto(source: Record<string, unknown>): string | null {
   return trimmedValue;
 }
 
+function readOptionalAssetId(
+  source: Record<string, unknown>,
+  field: string,
+): string | null {
+  const value = source[field];
+  if (value == null || value === "") return null;
+  return typeof value === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      value,
+    )
+    ? value
+    : null;
+}
+
 function readDisplayOrder(source: Record<string, unknown>): number {
   const value = source.displayOrder;
 
@@ -110,6 +125,7 @@ export function parseLeadershipCreateInput(
       position,
       biography,
       photo,
+      photoAssetId: readOptionalAssetId(value, "photoAssetId"),
       displayOrder: readDisplayOrder(value),
       isActive: readIsActive(value),
     },
@@ -158,6 +174,14 @@ export function parseLeadershipUpdateInput(
       return { ok: false, error: "Invalid photo." };
     }
     data.photo = photo;
+  }
+
+  if ("photoAssetId" in value) {
+    const photoAssetId = readOptionalAssetId(value, "photoAssetId");
+    if (photoAssetId === null && value.photoAssetId) {
+      return { ok: false, error: "Invalid photoAssetId." };
+    }
+    data.photoAssetId = photoAssetId;
   }
 
   if ("displayOrder" in value) {

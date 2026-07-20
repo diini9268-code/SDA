@@ -13,12 +13,14 @@ export const prismaProgramRepository: ProgramRepository = {
           in: ["SCHEDULED", "PUBLISHED"],
         },
       },
+      include: { coverAsset: true },
       orderBy: [{ eventDate: "asc" }, { title: "asc" }],
     });
   },
 
   async listAll(): Promise<ProgramRecord[]> {
     return getPrismaClient().program.findMany({
+      include: { coverAsset: true },
       orderBy: [{ eventDate: "desc" }, { title: "asc" }],
     });
   },
@@ -31,11 +33,15 @@ export const prismaProgramRepository: ProgramRepository = {
           in: ["SCHEDULED", "PUBLISHED"],
         },
       },
+      include: { coverAsset: true },
     });
   },
 
   async create(data): Promise<ProgramRecord> {
-    return getPrismaClient().program.create({ data });
+    return getPrismaClient().program.create({
+      data,
+      include: { coverAsset: true },
+    });
   },
 
   async update(id, data): Promise<ProgramRecord | null> {
@@ -43,6 +49,7 @@ export const prismaProgramRepository: ProgramRepository = {
       return await getPrismaClient().program.update({
         where: { id },
         data,
+        include: { coverAsset: true },
       });
     } catch (error) {
       if (isMissingRecordError(error)) {

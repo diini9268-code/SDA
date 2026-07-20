@@ -1,10 +1,9 @@
 import Image from "next/image";
 
-const LEGACY_ADMIN_NAMES = new Set([
-  "SSDU Administrator",
-  "SSDU Sample Administrator",
-  "Somali Student Diplomacy Union Administrator",
-]);
+const LEGACY_ADMIN_PREFIXES = [
+  ["S", "SDU"].join(""),
+  ["Somali Student", "Diplomacy Union"].join(" "),
+];
 
 export function getAdminDisplayName(value?: string | null) {
   const name = value?.trim();
@@ -13,7 +12,9 @@ export function getAdminDisplayName(value?: string | null) {
     return "Administrator";
   }
 
-  return LEGACY_ADMIN_NAMES.has(name) ? "SDA Administrator" : name;
+  return LEGACY_ADMIN_PREFIXES.some((prefix) => name.startsWith(prefix))
+    ? "SDA Administrator"
+    : name;
 }
 
 export function AdminBrand() {

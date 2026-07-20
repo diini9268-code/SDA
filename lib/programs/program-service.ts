@@ -17,6 +17,15 @@ export type ProgramRecord = {
   eventDate: Date;
   location: string;
   status: ProgramStatusValue;
+  coverAssetId?: string | null;
+  coverAsset?: {
+    id: string;
+    url: string;
+    originalName: string;
+    altText: string | null;
+    mimeType: string;
+    sizeBytes: number;
+  } | null;
   createdAt: Date;
   updatedAt: Date;
 };

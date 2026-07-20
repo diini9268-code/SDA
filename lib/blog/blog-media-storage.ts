@@ -12,8 +12,10 @@ import {
 } from "@/lib/blog/media-file-validation";
 
 const PENDING_PREFIX = "pending/";
-const STORED_PREFIX = "blog/";
+const STORED_PREFIXES = ["blog/", "leadership/", "archive/", "program/", "site/"] as const;
 const STALE_PENDING_AGE_MS = 24 * 60 * 60 * 1000;
+
+export type MediaDestination = "blog" | "leadership" | "archive" | "program" | "site";
 
 export type SignedBlogMediaUpload = {
   path: string;
@@ -89,7 +91,8 @@ function isPendingPath(path: string): boolean {
 
 function isOwnedPath(path: string): boolean {
   return (
-    (path.startsWith(PENDING_PREFIX) || path.startsWith(STORED_PREFIX)) &&
+    (path.startsWith(PENDING_PREFIX) ||
+      STORED_PREFIXES.some((prefix) => path.startsWith(prefix))) &&
     !path.includes("..") &&
     !path.includes("\\")
   );
@@ -198,11 +201,12 @@ export async function createSignedBlogMediaUpload(input: {
   };
 }
 
-export async function finalizeBlogMediaUpload(input: {
+export async function finalizeMediaUpload(input: {
   path: string;
   name: string;
   type: string;
   size: number;
+  destination: MediaDestination;
 }): Promise<FinalizedBlogMedia> {
   const validated = validateUploadMetadata(input);
 
@@ -267,7 +271,7 @@ export async function finalizeBlogMediaUpload(input: {
     );
   }
 
-  const finalPath = `${STORED_PREFIX}${crypto.randomUUID()}-${sanitizeFileName(validated.data.name)}`;
+  const finalPath = `${input.destination}/${crypto.randomUUID()}-${sanitizeFileName(validated.data.name)}`;
   const { error: moveError } = await storage.move(input.path, finalPath);
 
   if (moveError) {
@@ -283,6 +287,12 @@ export async function finalizeBlogMediaUpload(input: {
     mimeType: actualMetadata.data.type,
     sizeBytes: actualMetadata.data.size,
   };
+}
+
+export async function finalizeBlogMediaUpload(
+  input: Omit<Parameters<typeof finalizeMediaUpload>[0], "destination">,
+): Promise<FinalizedBlogMedia> {
+  return finalizeMediaUpload({ ...input, destination: "blog" });
 }
 
 export async function deleteBlogMediaPaths(paths: string[]): Promise<void> {

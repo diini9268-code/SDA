@@ -13,14 +13,9 @@ import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
+import { getSiteCmsContent } from "@/lib/site/cms-content";
 import { createPageMetadata } from "@/lib/site/metadata";
-import {
-  leadershipProfiles,
-  officialMission,
-  officialValues,
-  publicNavigation,
-  strategicObjectives,
-} from "@/lib/site/official-content";
+import { leadershipProfiles } from "@/lib/site/official-content";
 
 export const dynamic = "force-dynamic";
 
@@ -30,45 +25,17 @@ export const metadata = createPageMetadata({
   path: "/",
 });
 
-const navigationItems = publicNavigation;
-
-const principles: Array<{
-  title: string;
-  description: string;
-  icon: LucideIcon;
-}> = [
-  {
-    title: "Our Mission",
-    description: officialMission,
-    icon: Target,
-  },
-  {
-    title: "Our Objectives",
-    description: strategicObjectives.slice(0, 2).join(" "),
-    icon: Globe2,
-  },
-  {
-    title: "Our Values",
-    description: officialValues.join(", ") + ".",
-    icon: HeartHandshake,
-  },
-];
-
-const trustedPartners = [
-  "United Nations (UN Kenya / UN Youth)",
-  "AIESEC",
-  "Save the Children",
-  "International Association for Political Science Students",
-  "World Youth Forum (WYF)",
-  "Best Diplomat",
-  "Global Peace Chain",
-  "Afro Arab Youth Council",
-];
-
 async function getHomeData() {
-  const [blogResult, leadershipResult] = await Promise.allSettled([
-    prismaBlogRepository.listPublic(),
-    prismaLeadershipRepository.listPublic(),
+  const [blogResult, leadershipResult, cms] = await Promise.all([
+    Promise.resolve(prismaBlogRepository.listPublic()).then(
+      (value) => ({ status: "fulfilled" as const, value }),
+      (reason) => ({ status: "rejected" as const, reason }),
+    ),
+    Promise.resolve(prismaLeadershipRepository.listPublic()).then(
+      (value) => ({ status: "fulfilled" as const, value }),
+      (reason) => ({ status: "rejected" as const, reason }),
+    ),
+    getSiteCmsContent(),
   ]);
 
   const blog = blogResult.status === "fulfilled" ? blogResult.value : [];
@@ -81,6 +48,7 @@ async function getHomeData() {
       blog: blogResult.status === "fulfilled",
       leadership: leadershipResult.status === "fulfilled",
     },
+    cms,
   };
 }
 
@@ -107,6 +75,45 @@ function EmptyState({ children }: { children: React.ReactNode }) {
 
 export default async function Home() {
   const data = await getHomeData();
+  const navigationItems = data.cms.navigation;
+  const globalContent = data.cms.global.content;
+  const homeContent = data.cms.home.content;
+  const principles: Array<{
+    title: string;
+    description: string;
+    icon: LucideIcon;
+  }> = [
+    {
+      title: "Our Mission",
+      description: globalContent.mission ?? "",
+      icon: Target,
+    },
+    {
+      title: "Our Objectives",
+      description: (globalContent.objectives ?? []).slice(0, 2).join(" "),
+      icon: Globe2,
+    },
+    {
+      title: "Our Values",
+      description: `${(globalContent.values ?? []).join(", ")}.`,
+      icon: HeartHandshake,
+    },
+  ];
+  const heroTitle = homeContent.title ?? "Shaping Somalia's Diplomatic Future";
+  const diplomaticIndex = heroTitle.toLowerCase().indexOf("diplomatic");
+  const heroBefore =
+    diplomaticIndex >= 0
+      ? heroTitle.slice(0, diplomaticIndex).trim()
+      : heroTitle;
+  const heroAfter =
+    diplomaticIndex >= 0
+      ? heroTitle.slice(diplomaticIndex + "diplomatic".length).trim()
+      : "";
+  const brand = {
+    organizationName: globalContent.organizationName,
+    motto: globalContent.motto,
+    logoUrl: data.cms.global.media.hero?.url,
+  };
 
   return (
     <div className="home-shell min-w-0 bg-white text-[#0a294d]">
@@ -117,6 +124,7 @@ export default async function Home() {
         Skip to main content
       </a>
       <HomeHeader
+        brand={brand}
         items={navigationItems}
         secondaryItem={{ href: "/login", label: "Login" }}
         joinHref="/membership"
@@ -124,7 +132,7 @@ export default async function Home() {
       <main id="main-content" tabIndex={-1}>
         <section className="relative min-h-[760px] overflow-hidden bg-[#0a294d] text-white xl:min-h-[610px] 2xl:min-h-[640px]">
           <OptimizedFillImage
-            src="/official/sda-official-venue-group.jpg"
+            src={data.cms.home.media.hero?.url ?? "/official/sda-official-venue-group.jpg"}
             alt="Somali Diplomacy Association members gathered at an official venue"
             className="h-full w-full object-cover"
             sizes="100vw"
@@ -136,26 +144,27 @@ export default async function Home() {
           <div className="relative mx-auto grid min-h-[760px] w-full min-w-0 max-w-[1600px] items-center gap-11 px-5 pb-20 pt-32 sm:pt-36 md:px-10 xl:min-h-[610px] xl:grid-cols-[minmax(0,1.04fr)_minmax(0,1fr)] xl:gap-10 xl:px-10 xl:pb-10 xl:pt-[82px] 2xl:min-h-[640px]">
             <div className="home-fade-up min-w-0 xl:max-w-[760px] xl:translate-y-8">
               <p className="max-w-full text-[11px] font-bold uppercase tracking-[0.2em] text-[#2cb6f6] sm:text-[14px] sm:tracking-[0.32em]">
-                Diplomacy / Leadership / Unity
+                {homeContent.eyebrow}
               </p>
               <h1
                 aria-label="Shaping Somalia's Diplomatic Future"
                 className="mt-7 font-serif text-[44px] font-bold leading-[0.98] tracking-normal sm:text-[58px] md:text-[68px] xl:mt-5 xl:text-[54px] xl:leading-[1.06] 2xl:text-[58px]"
               >
-                <span className="block">Shaping Somalia&apos;s</span>
-                <span className="block text-[#28b1f2]">Diplomatic</span>
-                <span className="block">Future</span>
+                <span className="block">{heroBefore}</span>
+                {diplomaticIndex >= 0 ? (
+                  <span className="block text-[#28b1f2]">Diplomatic</span>
+                ) : null}
+                {heroAfter ? <span className="block">{heroAfter}</span> : null}
               </h1>
               <p className="mt-8 max-w-[600px] text-[18px] leading-8 text-[#d7e0e8] sm:text-[21px] sm:leading-10 xl:mt-5 xl:max-w-[570px] xl:text-[17px] xl:leading-7">
-                The Somali Diplomacy Association empowers Somali youth through
-                diplomatic education, leadership development, and international engagement.
+                {homeContent.description}
               </p>
               <div className="mt-10 flex flex-wrap items-start gap-4 sm:gap-5 xl:mt-7">
                 <Link
                   href="/membership"
                   className="group inline-flex h-14 items-center gap-3 rounded-md bg-[#1778b8] px-7 text-[17px] font-semibold text-white shadow-lg transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-xl motion-reduce:transform-none sm:px-8 sm:text-lg"
                 >
-                  Join SDA
+                  {homeContent.primaryLabel ?? "Join SDA"}
                   <ArrowRight
                     className="size-5 transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
                     aria-hidden="true"
@@ -165,7 +174,7 @@ export default async function Home() {
                   href="/about"
                   className="inline-flex h-14 items-center rounded-md border-2 border-[#8fc9eb] px-7 text-[17px] font-semibold text-white transition-colors hover:bg-white/10 sm:px-8 sm:text-lg"
                 >
-                  Learn More
+                  {homeContent.secondaryLabel ?? "Learn More"}
                 </Link>
               </div>
             </div>
@@ -379,7 +388,7 @@ export default async function Home() {
           className="relative min-h-[580px] scroll-mt-20 overflow-hidden bg-[#126da8] text-white sm:scroll-mt-[90px] xl:min-h-[450px]"
         >
           <OptimizedFillImage
-            src="/official/sda-workshop-provided.jpg"
+            src={data.cms.home.media.feature?.url ?? "/official/sda-workshop-provided.jpg"}
             alt="SDA diplomacy workshop participants"
             className="h-full w-full object-cover"
             sizes="100vw"
@@ -432,12 +441,40 @@ export default async function Home() {
               Trusted Partners &amp; Supporters
             </h2>
             <ul className="mt-10 grid items-center gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-8">
-              {trustedPartners.map((partner) => (
+              {data.cms.partners.map((partner) => (
                 <li
-                  key={partner}
-                  className="text-[16px] leading-6 text-[#8a9aaf]"
+                  key={partner.name}
+                  className="flex min-h-20 items-center justify-center text-[16px] leading-6 text-[#8a9aaf]"
                 >
-                  {partner}
+                  {partner.website ? (
+                    <a href={partner.website} className="group grid justify-items-center gap-3 transition-colors hover:text-[#0874b9]">
+                      {partner.logoAsset ? (
+                        <span className="relative block h-10 w-28">
+                          <OptimizedFillImage
+                            src={partner.logoAsset.url}
+                            alt={`${partner.name} logo`}
+                            className="h-full w-full object-contain grayscale transition group-hover:grayscale-0"
+                            sizes="112px"
+                          />
+                        </span>
+                      ) : null}
+                      <span>{partner.name}</span>
+                    </a>
+                  ) : (
+                    <span className="grid justify-items-center gap-3">
+                      {partner.logoAsset ? (
+                        <span className="relative block h-10 w-28">
+                          <OptimizedFillImage
+                            src={partner.logoAsset.url}
+                            alt={`${partner.name} logo`}
+                            className="h-full w-full object-contain grayscale"
+                            sizes="112px"
+                          />
+                        </span>
+                      ) : null}
+                      <span>{partner.name}</span>
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -448,10 +485,9 @@ export default async function Home() {
       <footer className="bg-[#0a294d] text-[#c3cfda]">
         <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:gap-10 xl:px-10 xl:py-14">
           <div>
-            <BrandLogo inverse />
+            <BrandLogo brand={brand} inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">
-              Empowering the next generation of Somali diplomats through
-              training, dialogue, research, and international engagement.
+              {globalContent.mission}
             </p>
           </div>
 
@@ -480,7 +516,7 @@ export default async function Home() {
             <ul className="mt-7 space-y-4">
               <li><Link href="/about" className="rounded-sm transition-colors hover:text-white">About SDA</Link></li>
               <li><Link href="/leadership" className="rounded-sm transition-colors hover:text-white">Leadership</Link></li>
-              <li><Link href="/archive" className="rounded-sm transition-colors hover:text-white">Archive</Link></li>
+              <li><Link href="/blog" className="rounded-sm transition-colors hover:text-white">News and insights</Link></li>
               <li><Link href="/blog" className="rounded-sm transition-colors hover:text-white">Blog</Link></li>
             </ul>
           </div>

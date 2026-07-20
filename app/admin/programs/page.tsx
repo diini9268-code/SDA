@@ -20,6 +20,7 @@ import {
   SubmitButton,
 } from "@/app/admin/_components/form-controls";
 import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
+import { DirectMediaUpload } from "@/app/admin/_components/direct-media-upload";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
 import {
   createProgramAction,
@@ -47,6 +48,8 @@ const programStatuses: ProgramStatusValue[] = [
 
 const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/admin", label: "Dashboard Home", icon: LayoutDashboard },
+  { href: "/admin/content", label: "Website Content", icon: LayoutDashboard },
+  { href: "/admin/gallery", label: "Activity Gallery", icon: LayoutDashboard },
   { href: "/admin/leadership", label: "Leadership", icon: UsersRound },
   { href: "/admin/programs", label: "Programs", icon: Target },
   { href: "/admin/blog", label: "Blog", icon: BookOpenText },
@@ -103,6 +106,13 @@ function ProgramForm({ action, program, submitLabel }: { action: (formData: Form
         <label className="grid gap-2 text-sm font-semibold">Location<input name="location" required maxLength={220} defaultValue={program?.location} className={fieldClass} /></label>
         <label className="grid gap-2 text-sm font-semibold">Status<select name="status" defaultValue={program?.status ?? "DRAFT"} className={fieldClass}>{programStatuses.map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}</select></label>
       </div>
+      <DirectMediaUpload
+        destination="program"
+        assetName="coverAssetId"
+        urlName="coverImageUrl"
+        label="Program cover image"
+        initialAsset={program?.coverAsset}
+      />
       <div className="flex flex-wrap items-center gap-3"><SubmitButton className="min-h-11 bg-[#1f78b4] px-6 hover:bg-[#155f91]">{submitLabel}</SubmitButton><Link href="/admin/programs" className="rounded-md px-4 py-2 text-sm font-semibold text-[#52657c] hover:bg-[#edf3f8]">Cancel</Link></div>
     </form>
   );

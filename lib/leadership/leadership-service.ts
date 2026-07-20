@@ -14,6 +14,15 @@ export type LeadershipProfile = {
   position: string;
   biography: string;
   photo: string | null;
+  photoAssetId?: string | null;
+  photoAsset?: {
+    id: string;
+    url: string;
+    originalName: string;
+    altText: string | null;
+    mimeType: string;
+    sizeBytes: number;
+  } | null;
   displayOrder: number;
   isActive: boolean;
   createdAt: Date;

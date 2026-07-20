@@ -35,6 +35,7 @@ function getProgramPayload(formData: FormData) {
     status: programStatuses.includes(status as ProgramStatusValue)
       ? status
       : "DRAFT",
+    coverAssetId: getText(formData, "coverAssetId"),
   };
 }
 

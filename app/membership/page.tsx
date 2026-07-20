@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { submitMembershipApplicationAction } from "@/app/membership/actions";
+import { getSiteCmsContent } from "@/lib/site/cms-content";
 import { createPageMetadata } from "@/lib/site/metadata";
-import { publicNavigation } from "@/lib/site/official-content";
 
 export const metadata = createPageMetadata({
   title: "Membership",
@@ -26,8 +26,6 @@ export const metadata = createPageMetadata({
 type MembershipPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
-
-const navigationItems = publicNavigation;
 
 const opportunities = [
   {
@@ -108,6 +106,14 @@ export default async function MembershipPage({
   const params = (await searchParams) ?? {};
   const success = firstParam(params.success);
   const error = firstParam(params.error);
+  const cms = await getSiteCmsContent();
+  const pageContent = cms.membership.content;
+  const globalContent = cms.global.content;
+  const brand = {
+    organizationName: globalContent.organizationName,
+    motto: globalContent.motto,
+    logoUrl: cms.global.media.hero?.url,
+  };
 
   return (
     <div className="min-w-0 bg-white text-[#0a294d]">
@@ -118,7 +124,8 @@ export default async function MembershipPage({
         Skip to main content
       </a>
       <HomeHeader
-        items={navigationItems}
+        brand={brand}
+        items={cms.navigation}
         activeHref="/membership"
         overlay={false}
         secondaryItem={{ href: "/login", label: "Login" }}
@@ -128,21 +135,19 @@ export default async function MembershipPage({
       <main id="main-content" className="pt-20 sm:pt-[90px]">
         <section className="bg-[#0a294d] px-5 py-24 text-center text-white md:px-10 lg:py-22">
           <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#29b6f6]">
-            Membership
+            {pageContent.eyebrow}
           </p>
           <h1 className="mt-7 font-serif text-[48px] font-bold leading-none sm:text-[62px] lg:text-[62px]">
-            Join the SDA Community
+            {pageContent.title}
           </h1>
           <p className="mx-auto mt-8 max-w-[860px] text-lg leading-8 text-[#c3cfda] sm:text-xl">
-            Submit your information for administrative review and explore
-            SDA&apos;s diplomatic education, leadership development, research,
-            and international engagement activities.
+            {pageContent.description}
           </p>
           <a
             href="#application"
             className="group mt-10 inline-flex h-14 items-center gap-3 rounded-[8px] bg-[#1778b8] px-8 text-lg font-semibold text-white shadow-lg transition-[background-color,transform,box-shadow] hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-xl motion-reduce:transform-none"
           >
-            Apply Now
+            {pageContent.primaryLabel ?? "Apply Now"}
             <ArrowRight
               className="size-5 transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
               aria-hidden="true"
@@ -346,7 +351,7 @@ export default async function MembershipPage({
       <footer className="bg-[#0a294d] text-[#c3cfda]">
         <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12 xl:py-14">
           <div>
-            <BrandLogo inverse />
+            <BrandLogo brand={brand} inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">
               Empowering Somali youth through training, dialogue, research, and
               international engagement.
@@ -357,7 +362,7 @@ export default async function MembershipPage({
               Quick Links
             </h2>
             <ul className="mt-7 grid grid-cols-2 gap-4">
-              {navigationItems.map((item) => (
+              {cms.navigation.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}

@@ -15,6 +15,18 @@ export type ArchiveRecord = {
   summary: string;
   activityDate: Date;
   images: string[];
+  mediaAssetIds?: string[];
+  media?: Array<{
+    id: string;
+    asset: {
+      id: string;
+      url: string;
+      originalName: string;
+      altText: string | null;
+      mimeType: string;
+      sizeBytes: number;
+    };
+  }>;
   createdAt: Date;
   updatedAt: Date;
 };

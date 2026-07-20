@@ -21,6 +21,7 @@ function getLeadershipPayload(formData: FormData) {
     position: getText(formData, "position"),
     biography: getText(formData, "biography"),
     photo: getText(formData, "photo"),
+    photoAssetId: getText(formData, "photoAssetId"),
     displayOrder: Number(getText(formData, "displayOrder")),
     isActive: formData.get("isActive") === "on",
   };

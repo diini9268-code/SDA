@@ -10,8 +10,8 @@ import {
 import { SubmitButton } from "@/app/admin/_components/form-controls";
 import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { submitContactMessageAction } from "@/app/contact/actions";
+import { getSiteCmsContent } from "@/lib/site/cms-content";
 import { createPageMetadata } from "@/lib/site/metadata";
-import { publicNavigation } from "@/lib/site/official-content";
 
 export const metadata = createPageMetadata({
   title: "Contact",
@@ -23,8 +23,6 @@ export const metadata = createPageMetadata({
 type ContactPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
-
-const navigationItems = publicNavigation;
 
 const workflowFacts = [
   {
@@ -113,6 +111,14 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
   const params = (await searchParams) ?? {};
   const error = firstParam(params.error);
   const success = firstParam(params.success);
+  const cms = await getSiteCmsContent();
+  const pageContent = cms.contact.content;
+  const globalContent = cms.global.content;
+  const brand = {
+    organizationName: globalContent.organizationName,
+    motto: globalContent.motto,
+    logoUrl: cms.global.media.hero?.url,
+  };
 
   return (
     <div className="min-h-screen bg-[#f3f7fa] text-[#071f3c]">
@@ -120,7 +126,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         Skip to main content
       </a>
       <HomeHeader
-        items={navigationItems}
+        brand={brand}
+        items={cms.navigation}
         activeHref="/contact"
         overlay={false}
         secondaryItem={{ href: "/login", label: "Login" }}
@@ -131,14 +138,13 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         <section className="flex min-h-[500px] items-center justify-center bg-[#0a294d] px-5 py-24 text-center text-white sm:min-h-[590px] md:px-10 lg:min-h-[510px] lg:py-18">
           <div className="mx-auto max-w-4xl">
             <p className="text-sm font-bold uppercase tracking-[0.32em] text-[#2ab3f3] sm:text-base">
-              Get in touch
+              {pageContent.eyebrow}
             </p>
             <h1 className="mt-7 font-serif text-[48px] font-bold leading-[1.05] sm:text-[66px] lg:text-[64px]">
-              Contact Us
+              {pageContent.title}
             </h1>
             <p className="mx-auto mt-7 max-w-3xl text-[18px] leading-8 text-[#becbd7] sm:text-[23px] sm:leading-10 lg:text-[19px] lg:leading-8">
-              Send a question about membership, activities, partnerships, or
-              SDA activities through the official contact workflow.
+              {pageContent.description}
             </p>
           </div>
         </section>
@@ -208,13 +214,13 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
       <footer className="bg-[#0a294d] text-[#c3cfda]">
         <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-3 xl:px-12 xl:py-14">
           <div>
-            <BrandLogo inverse />
+            <BrandLogo brand={brand} inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">Empowering Somali youth through training, dialogue, research, and international engagement.</p>
           </div>
           <div>
             <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">Quick Links</h2>
             <ul className="mt-7 grid grid-cols-2 gap-4">
-              {navigationItems.map((item) => (
+              {cms.navigation.map((item) => (
                 <li key={item.href}><Link href={item.href} className="transition-colors hover:text-white">{item.label}</Link></li>
               ))}
             </ul>

@@ -12,6 +12,7 @@ export type ProgramCreateData = {
   eventDate: Date;
   location: string;
   status: ProgramStatusValue;
+  coverAssetId: string | null;
 };
 
 export type ProgramUpdateData = Partial<ProgramCreateData>;
@@ -92,6 +93,21 @@ function readStatus(source: Record<string, unknown>): ProgramStatusValue {
   return "DRAFT";
 }
 
+function readOptionalUuid(
+  source: Record<string, unknown>,
+  field: string,
+): string | null | undefined {
+  const value = source[field];
+  if (value == null || value === "") return null;
+  if (typeof value !== "string") return undefined;
+  const normalized = value.trim();
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    normalized,
+  )
+    ? normalized
+    : undefined;
+}
+
 export function parseProgramCreateInput(
   value: unknown,
 ): ValidationResult<ProgramCreateData> {
@@ -106,8 +122,15 @@ export function parseProgramCreateInput(
   const description = readRequiredString(value, "description", 5000);
   const location = readRequiredString(value, "location", 220);
   const eventDate = readEventDate(value);
+  const coverAssetId = readOptionalUuid(value, "coverAssetId");
 
-  if (!title || !description || !location || !eventDate) {
+  if (
+    !title ||
+    !description ||
+    !location ||
+    !eventDate ||
+    coverAssetId === undefined
+  ) {
     return {
       ok: false,
       error: "Program requires valid title, description, eventDate, and location fields.",
@@ -123,6 +146,7 @@ export function parseProgramCreateInput(
       eventDate,
       location,
       status: readStatus(value),
+      coverAssetId,
     },
   };
 }
@@ -180,6 +204,14 @@ export function parseProgramUpdateInput(
       return { ok: false, error: "Invalid status." };
     }
     data.status = value.status as ProgramStatusValue;
+  }
+
+  if ("coverAssetId" in value) {
+    const coverAssetId = readOptionalUuid(value, "coverAssetId");
+    if (coverAssetId === undefined) {
+      return { ok: false, error: "Invalid cover image." };
+    }
+    data.coverAssetId = coverAssetId;
   }
 
   if (Object.keys(data).length === 0) {

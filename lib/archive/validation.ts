@@ -4,6 +4,7 @@ export type ArchiveCreateData = {
   summary: string;
   activityDate: Date;
   images: string[];
+  mediaAssetIds: string[];
 };
 
 export type ArchiveUpdateData = Partial<ArchiveCreateData>;
@@ -100,6 +101,34 @@ function readImages(source: Record<string, unknown>): string[] | null {
   return Array.from(new Set(images));
 }
 
+function readMediaAssetIds(source: Record<string, unknown>): string[] | null {
+  const raw = source.mediaAssetIds;
+  const values =
+    raw == null
+      ? []
+      : Array.isArray(raw)
+        ? raw
+        : typeof raw === "string"
+          ? [raw]
+          : null;
+  if (!values) return null;
+  const ids = values
+    .map((value) => (typeof value === "string" ? value.trim() : ""))
+    .filter(Boolean);
+  if (
+    ids.length > 20 ||
+    ids.some(
+      (id) =>
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          id,
+        ),
+    )
+  ) {
+    return null;
+  }
+  return Array.from(new Set(ids));
+}
+
 export function parseArchiveCreateInput(
   value: unknown,
 ): ValidationResult<ArchiveCreateData> {
@@ -114,11 +143,19 @@ export function parseArchiveCreateInput(
   const summary = readRequiredString(value, "summary", 5000);
   const activityDate = readActivityDate(value);
   const images = readImages(value);
+  const mediaAssetIds = readMediaAssetIds(value);
 
-  if (!title || !summary || !activityDate || images === null) {
+  if (
+    !title ||
+    !summary ||
+    !activityDate ||
+    images === null ||
+    mediaAssetIds === null
+  ) {
     return {
       ok: false,
-      error: "Archive requires valid title, summary, activityDate, and image URL fields.",
+      error:
+        "Gallery activity requires a valid title, summary, activity date, and media.",
     };
   }
 
@@ -130,6 +167,7 @@ export function parseArchiveCreateInput(
       summary,
       activityDate,
       images,
+      mediaAssetIds,
     },
   };
 }
@@ -174,9 +212,17 @@ export function parseArchiveUpdateInput(
   if ("images" in value) {
     const images = readImages(value);
     if (images === null) {
-      return { ok: false, error: "Invalid image URLs." };
+      return { ok: false, error: "Invalid legacy gallery images." };
     }
     data.images = images;
+  }
+
+  if ("mediaAssetIds" in value) {
+    const mediaAssetIds = readMediaAssetIds(value);
+    if (mediaAssetIds === null) {
+      return { ok: false, error: "Invalid uploaded media." };
+    }
+    data.mediaAssetIds = mediaAssetIds;
   }
 
   if (Object.keys(data).length === 0) {

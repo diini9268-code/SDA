@@ -33,10 +33,20 @@ function loadDotEnv() {
 
 loadDotEnv();
 
-const migrationDatabaseUrl =
-  process.env.DIRECT_URL ??
-  process.env.DATABASE_URL ??
-  "postgresql://USER:PASSWORD@localhost:5432/sda?schema=public";
+function supportsSessionMigrations(value: string | undefined): value is string {
+  if (!value) return false;
+
+  try {
+    return new URL(value).port !== "6543";
+  } catch {
+    return false;
+  }
+}
+
+const migrationDatabaseUrl = supportsSessionMigrations(process.env.DIRECT_URL)
+  ? process.env.DIRECT_URL
+  : (process.env.DATABASE_URL ??
+    "postgresql://USER:PASSWORD@localhost:5432/sda?schema=public");
 const shadowDatabaseUrl = process.env.SHADOW_DATABASE_URL;
 
 export default defineConfig({

@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
+import { getSiteCmsContent } from "@/lib/site/cms-content";
 
 const navigationItems = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Research" },
-  { href: "/archive", label: "Archive" },
   { href: "/membership", label: "Membership" },
 ];
 
@@ -139,18 +140,66 @@ export function PublicFooter() {
   );
 }
 
-export function PublicPageShell({
+export async function PublicPageShell({
   activeHref,
   children,
 }: {
   activeHref?: string;
   children: React.ReactNode;
 }) {
+  const cms = await getSiteCmsContent();
+  const brand = {
+    organizationName: cms.global.content.organizationName,
+    motto: cms.global.content.motto,
+    logoUrl: cms.global.media.hero?.url,
+  };
+
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-[#191c1d]">
-      <PublicHeader activeHref={activeHref} />
-      {children}
-      <PublicFooter />
+      <HomeHeader
+        activeHref={activeHref}
+        brand={brand}
+        items={cms.navigation}
+        overlay={false}
+        secondaryItem={{ href: "/login", label: "Login" }}
+        joinHref="/membership"
+      />
+      <div className="pt-20 sm:pt-[90px]">{children}</div>
+      <footer className="mt-auto bg-[#0a294d] text-[#c3cfda]">
+        <div className="mx-auto grid max-w-[1600px] gap-10 px-6 py-14 md:grid-cols-3 md:px-10 xl:px-12">
+          <div>
+            <BrandLogo brand={brand} inverse />
+            <p className="mt-6 max-w-sm text-sm leading-7">
+              {cms.global.content.mission}
+            </p>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.25em] text-[#28b1f2]">
+              Quick links
+            </h2>
+            <ul className="mt-6 grid gap-3 text-sm">
+              {cms.navigation.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="hover:text-white">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-[0.25em] text-[#28b1f2]">
+              Contact
+            </h2>
+            <p className="mt-6 text-sm leading-7">
+              {cms.global.content.location}
+            </p>
+            <Link href="/contact" className="mt-4 inline-flex text-sm font-semibold text-white hover:text-[#28b1f2]">
+              Contact SDA
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

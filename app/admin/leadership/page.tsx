@@ -20,6 +20,7 @@ import {
 } from "@/app/admin/_components/form-controls";
 import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
+import { DirectMediaUpload } from "@/app/admin/_components/direct-media-upload";
 import {
   createLeadershipAction,
   deleteLeadershipAction,
@@ -37,6 +38,8 @@ type LeadershipAdminPageProps = {
 
 const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/admin", label: "Dashboard Home", icon: LayoutDashboard },
+  { href: "/admin/content", label: "Website Content", icon: LayoutDashboard },
+  { href: "/admin/gallery", label: "Activity Gallery", icon: LayoutDashboard },
   { href: "/admin/leadership", label: "Leadership", icon: UsersRound },
   { href: "/admin/programs", label: "Programs", icon: Target },
   { href: "/admin/blog", label: "Blog", icon: BookOpenText },
@@ -74,10 +77,15 @@ function LeadershipForm({ action, profile, submitLabel }: { action: (formData: F
         <label className="grid gap-2 text-sm font-semibold">Role<input name="position" required maxLength={160} defaultValue={profile?.position} className={fieldClass} /></label>
       </div>
       <label className="grid gap-2 text-sm font-semibold">Biography<textarea name="biography" required rows={4} maxLength={5000} defaultValue={profile?.biography} className={`${fieldClass} py-3`} /></label>
-      <div className="grid gap-5 md:grid-cols-[1fr_9rem]">
-        <label className="grid gap-2 text-sm font-semibold">Photo URL<input name="photo" type="url" maxLength={2048} placeholder="https://..." defaultValue={profile?.photo ?? ""} className={fieldClass} /></label>
-        <label className="grid gap-2 text-sm font-semibold">Display order<input name="displayOrder" type="number" min={0} defaultValue={profile?.displayOrder ?? 0} className={fieldClass} /></label>
-      </div>
+      <DirectMediaUpload
+        destination="leadership"
+        assetName="photoAssetId"
+        urlName="photo"
+        label="Profile photo"
+        initialAsset={profile?.photoAsset}
+        initialUrl={profile?.photo}
+      />
+      <label className="grid max-w-36 gap-2 text-sm font-semibold">Display order<input name="displayOrder" type="number" min={0} defaultValue={profile?.displayOrder ?? 0} className={fieldClass} /></label>
       <label className="flex items-center gap-3 text-sm font-semibold"><input name="isActive" type="checkbox" defaultChecked={profile?.isActive ?? true} className="size-4 accent-[#1f78b4]" />Visible on the public leadership page</label>
       <div className="flex flex-wrap items-center gap-3">
         <SubmitButton className="min-h-11 bg-[#1f78b4] px-6 hover:bg-[#155f91]">{submitLabel}</SubmitButton>

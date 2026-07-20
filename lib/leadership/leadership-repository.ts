@@ -9,18 +9,23 @@ export const prismaLeadershipRepository: LeadershipRepository = {
   async listPublic(): Promise<LeadershipProfile[]> {
     return getPrismaClient().leadership.findMany({
       where: { isActive: true },
+      include: { photoAsset: true },
       orderBy: [{ displayOrder: "asc" }, { fullName: "asc" }],
     });
   },
 
   async listAll(): Promise<LeadershipProfile[]> {
     return getPrismaClient().leadership.findMany({
+      include: { photoAsset: true },
       orderBy: [{ displayOrder: "asc" }, { fullName: "asc" }],
     });
   },
 
   async create(data): Promise<LeadershipProfile> {
-    return getPrismaClient().leadership.create({ data });
+    return getPrismaClient().leadership.create({
+      data,
+      include: { photoAsset: true },
+    });
   },
 
   async update(id, data): Promise<LeadershipProfile | null> {
@@ -28,6 +33,7 @@ export const prismaLeadershipRepository: LeadershipRepository = {
       return await getPrismaClient().leadership.update({
         where: { id },
         data,
+        include: { photoAsset: true },
       });
     } catch (error) {
       if (isMissingRecordError(error)) {

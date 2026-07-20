@@ -10,10 +10,18 @@ type NavigationItem = {
   label: string;
 };
 
+export type PublicBrand = {
+  organizationName?: string;
+  motto?: string;
+  logoUrl?: string;
+};
+
 export function BrandLogo({
+  brand,
   compactOnMobile = false,
   inverse = false,
 }: {
+  brand?: PublicBrand;
   compactOnMobile?: boolean;
   inverse?: boolean;
 }) {
@@ -23,10 +31,11 @@ export function BrandLogo({
         className={`relative size-[54px] shrink-0 overflow-hidden rounded-lg transition-colors sm:size-[58px] xl:size-[46px] ${inverse ? "bg-white" : "bg-white ring-1 ring-[#d7e2e9]"}`}
       >
         <Image
-          src="/official/sda-emblem.png"
+          src={brand?.logoUrl ?? "/official/sda-emblem.png"}
           alt=""
           width={1200}
           height={1200}
+          unoptimized={Boolean(brand?.logoUrl?.startsWith("http"))}
           sizes="(min-width: 1280px) 46px, 58px"
           className="h-full w-full object-contain"
         />
@@ -36,11 +45,16 @@ export function BrandLogo({
           inverse ? "text-white" : "text-[#0a294d]"
         } ${compactOnMobile ? "hidden sm:block" : "block"}`}
       >
-        Somali Diplomacy
-        <br />
-        Association
+        {(brand?.organizationName ?? "Somali Diplomacy Association")
+          .split(" ")
+          .map((part, index, parts) => (
+            <span key={`${part}-${index}`}>
+              {part}
+              {index === Math.max(0, parts.length - 2) ? <br /> : " "}
+            </span>
+          ))}
         <span className="mt-1 block font-sans text-[10px] font-bold tracking-[0.28em] text-[#27a9ec] xl:text-[9px]">
-          DIPLOMACY / LEADERSHIP / UNITY
+          {brand?.motto ?? "DIPLOMACY / LEADERSHIP / UNITY"}
         </span>
       </span>
     </span>
@@ -48,12 +62,14 @@ export function BrandLogo({
 }
 
 export function HomeHeader({
+  brand,
   items,
   activeHref = "/",
   overlay = true,
   secondaryItem = { href: "/login", label: "Login" },
   joinHref = "/membership",
 }: {
+  brand?: PublicBrand;
   items: NavigationItem[];
   activeHref?: string;
   overlay?: boolean;
@@ -80,7 +96,7 @@ export function HomeHeader({
     >
       <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between gap-4 px-5 sm:h-[90px] md:px-10 xl:h-[72px] xl:gap-7 xl:px-10">
         <Link href="/" aria-label="SDA home" className="shrink-0 rounded-lg">
-          <BrandLogo compactOnMobile inverse={!scrolled && overlay} />
+          <BrandLogo brand={brand} compactOnMobile inverse={!scrolled && overlay} />
         </Link>
 
         <nav

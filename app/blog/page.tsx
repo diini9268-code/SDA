@@ -4,8 +4,8 @@ import { BrandLogo, HomeHeader } from "@/app/_components/home-header";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import type { BlogRecord } from "@/lib/blog/blog-service";
+import { getSiteCmsContent } from "@/lib/site/cms-content";
 import { createPageMetadata } from "@/lib/site/metadata";
-import { publicNavigation } from "@/lib/site/official-content";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +19,6 @@ export const metadata = createPageMetadata({
 type BlogPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
-
-const navigationItems = publicNavigation;
 
 const PAGE_SIZE = 12;
 
@@ -185,7 +183,15 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const query = firstParam(params.q);
   const category = firstParam(params.category);
   const requestedPage = Number.parseInt(firstParam(params.page), 10);
-  const data = await getBlogData();
+  const [data, cms] = await Promise.all([getBlogData(), getSiteCmsContent()]);
+  const navigationItems = cms.navigation;
+  const blogContent = cms.blog.content;
+  const globalContent = cms.global.content;
+  const brand = {
+    organizationName: globalContent.organizationName,
+    motto: globalContent.motto,
+    logoUrl: cms.global.media.hero?.url,
+  };
   const categories = Array.from(
     new Set(data.posts.map((post) => post.category)),
   ).sort();
@@ -212,6 +218,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         Skip to main content
       </a>
       <HomeHeader
+        brand={brand}
         items={navigationItems}
         activeHref="/blog"
         overlay={false}
@@ -222,13 +229,13 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       <main id="main-content" className="pt-20 sm:pt-[90px]">
         <section className="bg-[#0a294d] px-5 py-20 text-center text-white sm:py-24 md:px-10 lg:py-22">
           <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#29b6f6]">
-            Insights &amp; News
+            {blogContent.eyebrow}
           </p>
           <h1 className="mt-7 font-serif text-[48px] font-bold leading-none sm:text-[62px] lg:text-[62px]">
-            The SDA Blog
+            {blogContent.title}
           </h1>
           <p className="mx-auto mt-7 max-w-[850px] text-lg leading-8 text-[#c3cfda] sm:text-xl">
-            Published analysis, news, and perspectives from the SDA community.
+            {blogContent.description}
           </p>
           <form action="/blog" className="relative mx-auto mt-11 max-w-[680px]">
             <label htmlFor="blog-search" className="sr-only">
@@ -380,7 +387,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       <footer className="bg-[#0a294d] text-[#c3cfda]">
         <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:grid-cols-4 xl:px-12 xl:py-14">
           <div>
-            <BrandLogo inverse />
+            <BrandLogo brand={brand} inverse />
             <p className="mt-7 max-w-sm text-[16px] leading-7">
               Empowering Somali youth through training, dialogue, research, and
               international engagement.
@@ -410,7 +417,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             <ul className="mt-7 space-y-4">
               <li><Link href="/about" className="transition-colors hover:text-white">About SDA</Link></li>
               <li><Link href="/leadership" className="transition-colors hover:text-white">Leadership</Link></li>
-              <li><Link href="/archive" className="transition-colors hover:text-white">Archive</Link></li>
+              <li><Link href="/blog" className="transition-colors hover:text-white">News and insights</Link></li>
               <li><Link href="/membership" className="transition-colors hover:text-white">Membership</Link></li>
             </ul>
           </div>

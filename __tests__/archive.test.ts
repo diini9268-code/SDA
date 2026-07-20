@@ -133,7 +133,7 @@ describe("archive management", () => {
     expect(repository.entries).toHaveLength(0);
   });
 
-  it("rejects invalid image URLs", async () => {
+  it("rejects invalid legacy gallery images", async () => {
     const repository = createRepository();
     const result = await createArchiveEntry(
       {
@@ -149,7 +149,7 @@ describe("archive management", () => {
       ok: false,
       status: 400,
       error:
-        "Archive requires valid title, summary, activityDate, and image URL fields.",
+        "Gallery activity requires a valid title, summary, activity date, and media.",
     });
   });
 
