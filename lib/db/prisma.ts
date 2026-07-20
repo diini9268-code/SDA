@@ -15,11 +15,23 @@ function getDatabaseUrl(): string {
   return databaseUrl;
 }
 
+export function getDatabasePoolConfig() {
+  return {
+    connectionString: getDatabaseUrl(),
+    // Vercel creates multiple isolated runtimes. Keeping one connection per
+    // runtime prevents a single request from exhausting Supabase's session
+    // pool while Prisma queues concurrent queries safely.
+    max: 1,
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 10_000,
+    maxLifetimeSeconds: 60,
+    allowExitOnIdle: true,
+  };
+}
+
 export function getPrismaClient(): PrismaClient {
   if (!globalForPrisma.prisma) {
-    const adapter = new PrismaPg({
-      connectionString: getDatabaseUrl(),
-    });
+    const adapter = new PrismaPg(getDatabasePoolConfig());
 
     globalForPrisma.prisma = new PrismaClient({ adapter });
   }
