@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { authorizeAdminRequest } from "@/lib/auth/authorization";
+import { authorizeAuthenticatedRequest } from "@/lib/auth/authorization";
+import { hasPermission } from "@/lib/auth/permissions";
 
 function isAdminApi(pathname: string): boolean {
   return pathname === "/api/admin" || pathname.startsWith("/api/admin/");
@@ -12,10 +13,28 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const authorization = authorizeAdminRequest(request.headers.get("cookie"));
+  const authorization = authorizeAuthenticatedRequest(request.headers.get("cookie"));
 
   if (authorization.authorized) {
-    return NextResponse.next();
+    const isBlogArea =
+      pathname === "/admin/blog" ||
+      pathname.startsWith("/admin/blog/") ||
+      pathname === "/api/admin/blog" ||
+      pathname.startsWith("/api/admin/blog/");
+    const permitted = isBlogArea
+      ? hasPermission(authorization.session.role, "blog.access")
+      : hasPermission(authorization.session.role, "admin.access");
+
+    if (permitted) return NextResponse.next();
+
+    if (isAdminApi(pathname)) {
+      return NextResponse.json({ error: "Insufficient permission." }, { status: 403 });
+    }
+
+    const bloggerUrl = request.nextUrl.clone();
+    bloggerUrl.pathname = "/admin/blog";
+    bloggerUrl.search = "";
+    return NextResponse.redirect(bloggerUrl);
   }
 
   if (isAdminApi(pathname)) {

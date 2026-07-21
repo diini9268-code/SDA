@@ -10,7 +10,7 @@ import {
   updateGalleryItemAction,
 } from "@/app/admin/gallery/actions";
 import { OptimizedFillImage } from "@/app/_components/optimized-image";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireAdminPageSession } from "@/lib/auth/require-admin";
 import { prismaArchiveRepository } from "@/lib/archive/archive-repository";
 import type { ArchiveRecord } from "@/lib/archive/archive-service";
 
@@ -77,7 +77,7 @@ function GalleryForm({
 }
 
 export default async function GalleryAdminPage({ searchParams }: Props) {
-  const session = await requireAdminSession();
+  const session = await requireAdminPageSession();
   const params = (await searchParams) ?? {};
   const items = await prismaArchiveRepository.listAll();
   const editId = first(params.edit);

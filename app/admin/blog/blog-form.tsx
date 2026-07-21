@@ -167,8 +167,10 @@ function MediaPreview({
 
 export function BlogForm({
   initialData,
+  canPublish = true,
 }: {
   initialData?: BlogFormInitialData;
+  canPublish?: boolean;
 }) {
   const router = useRouter();
   const inputId = useId();
@@ -471,20 +473,28 @@ export function BlogForm({
             className={fieldClass}
           />
         </label>
-        <label className="grid gap-2 text-sm font-semibold">
-          Status
-          <select
-            name="status"
-            defaultValue={initialData?.status ?? "DRAFT"}
-            className={fieldClass}
-          >
-            {statuses.map((status) => (
-              <option key={status} value={status}>
-                {statusLabel(status)}
-              </option>
-            ))}
-          </select>
-        </label>
+        {canPublish ? (
+          <label className="grid gap-2 text-sm font-semibold">
+            Status
+            <select
+              name="status"
+              defaultValue={initialData?.status ?? "DRAFT"}
+              className={fieldClass}
+            >
+              {statuses.map((status) => (
+                <option key={status} value={status}>
+                  {statusLabel(status)}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <label className="grid gap-2 text-sm font-semibold">
+            Status
+            <input value="Draft — awaiting administrator review" disabled className={fieldClass} />
+            <input name="status" type="hidden" value="DRAFT" />
+          </label>
+        )}
       </div>
 
       <fieldset className="grid gap-4">

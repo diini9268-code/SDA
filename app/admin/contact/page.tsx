@@ -17,7 +17,7 @@ import { SubmitButton } from "@/app/admin/_components/form-controls";
 import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
 import { updateContactStatusAction } from "@/app/admin/contact/actions";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireAdminPageSession } from "@/lib/auth/require-admin";
 import { prismaContactRepository } from "@/lib/contact/contact-repository";
 import type { ContactMessageRecord } from "@/lib/contact/contact-service";
 import { prismaMembershipRepository } from "@/lib/membership/membership-repository";
@@ -124,7 +124,7 @@ function MessageRow({ message }: { message: ContactMessageRecord }) {
 }
 
 export default async function ContactAdminPage({ searchParams }: ContactAdminPageProps) {
-  const session = await requireAdminSession();
+  const session = await requireAdminPageSession();
   const params = (await searchParams) ?? {};
   const [messages, applications] = await Promise.all([
     prismaContactRepository.listAll(),

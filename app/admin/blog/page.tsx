@@ -27,9 +27,10 @@ import {
   BlogForm,
   type BlogFormInitialData,
 } from "@/app/admin/blog/blog-form";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireBlogPageSession } from "@/lib/auth/require-admin";
+import { hasPermission } from "@/lib/auth/permissions";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
-import type { BlogRecord } from "@/lib/blog/blog-service";
+import { listBlogPostsForActor, type BlogRecord } from "@/lib/blog/blog-service";
 import { formatPublicationDateInput, type BlogStatusValue } from "@/lib/blog/validation";
 import { prismaContactRepository } from "@/lib/contact/contact-repository";
 import { prismaMembershipRepository } from "@/lib/membership/membership-repository";
@@ -97,30 +98,46 @@ function toBlogFormInitialData(blog: BlogRecord): BlogFormInitialData {
   };
 }
 
-function BlogActions({ post }: { post: BlogRecord }) {
-  return <div className="flex items-center gap-1"><Link href={`/admin/blog?edit=${encodeURIComponent(post.id)}#blog-form`} className="flex size-10 items-center justify-center rounded-md text-[#62758d] transition-colors hover:bg-[#e7f1f8] hover:text-[#1f78b4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f78b4]" aria-label={`Edit ${post.title}`} title="Edit blog post"><Pencil className="size-[18px]" aria-hidden="true" /></Link><form action={deleteBlogAction.bind(null, post.id)}><IconDeleteButton confirmation={`Delete ${post.title}?`} subject="blog post" /></form></div>;
+function BlogActions({ post }: { post: BlogRecord & { canDelete?: boolean; canEdit?: boolean } }) {
+  return <div className="flex items-center gap-1">{post.canEdit ? <Link href={`/admin/blog?edit=${encodeURIComponent(post.id)}#blog-form`} className="flex size-10 items-center justify-center rounded-md text-[#62758d] transition-colors hover:bg-[#e7f1f8] hover:text-[#1f78b4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f78b4]" aria-label={`Edit ${post.title}`} title="Edit blog post"><Pencil className="size-[18px]" aria-hidden="true" /></Link> : null}{post.canDelete ? <form action={deleteBlogAction.bind(null, post.id)}><IconDeleteButton confirmation={`Delete ${post.title}?`} subject="blog post" /></form> : null}</div>;
 }
 
 export default async function BlogAdminPage({ searchParams }: BlogAdminPageProps) {
-  const session = await requireAdminSession();
+  const session = await requireBlogPageSession();
   const params = (await searchParams) ?? {};
-  const [posts, applications, messages] = await Promise.all([
-    prismaBlogRepository.listAll(),
-    prismaMembershipRepository.listAll(),
-    prismaContactRepository.listAll(),
-  ]);
+  const isAdmin = hasPermission(session.role, "admin.access");
+  const accessiblePosts = await listBlogPostsForActor(
+    { id: session.sub, role: session.role },
+    prismaBlogRepository,
+  );
+  const posts = accessiblePosts.map((post) => ({
+    ...post,
+    canDelete: isAdmin,
+    canEdit: isAdmin || post.status === "DRAFT",
+  }));
+  const [applications, messages] = isAdmin
+    ? await Promise.all([
+        prismaMembershipRepository.listAll(),
+        prismaContactRepository.listAll(),
+      ])
+    : [[], []];
   const pendingCount = applications.filter((item) => item.status === "PENDING").length;
   const unreadCount = messages.filter((item) => item.status === "UNREAD").length;
   const editId = firstParam(params.edit);
-  const editingPost = editId ? posts.find((post) => post.id === editId) : undefined;
+  const editingPost = editId
+    ? posts.find((post) => post.id === editId && post.canEdit)
+    : undefined;
   const showForm = firstParam(params.create) === "1" || Boolean(editingPost);
-  const adminName = getAdminDisplayName(session?.fullName);
+  const adminName = getAdminDisplayName(session.fullName);
+  const visibleNavItems = isAdmin
+    ? navItems
+    : navItems.filter((item) => item.href === "/admin/blog");
 
   return (
     <main className="min-h-svh bg-[#f3f6fa] text-[#0a294d] lg:grid lg:grid-cols-[240px_minmax(0,1fr)]">
       <aside className="bg-[#0a294d] text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
         <div className="flex min-h-[88px] items-center border-b border-white/10 px-4"><AdminBrand /></div>
-        <nav aria-label="Administrator navigation" className="flex gap-1 overflow-x-auto px-3 py-3 lg:flex-1 lg:flex-col lg:overflow-y-auto">{navItems.map(({ href, label, icon: Icon }) => <Link key={href} href={href} aria-current={href === "/admin/blog" ? "page" : undefined} className={`flex min-h-11 shrink-0 items-center gap-3 rounded-[8px] px-3 text-[14px] font-medium transition-colors ${href === "/admin/blog" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}><Icon className="size-5" aria-hidden="true" />{label}{href === "/admin/membership" && pendingCount ? <span className="ml-auto rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-[#0a294d]">{pendingCount}</span> : null}{href === "/admin/contact" && unreadCount ? <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadCount}</span> : null}</Link>)}</nav>
+        <nav aria-label="CMS navigation" className="flex gap-1 overflow-x-auto px-3 py-3 lg:flex-1 lg:flex-col lg:overflow-y-auto">{visibleNavItems.map(({ href, label, icon: Icon }) => <Link key={href} href={href} aria-current={href === "/admin/blog" ? "page" : undefined} className={`flex min-h-11 shrink-0 items-center gap-3 rounded-[8px] px-3 text-[14px] font-medium transition-colors ${href === "/admin/blog" ? "bg-[#174e73] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"}`}><Icon className="size-5" aria-hidden="true" />{label}{href === "/admin/membership" && pendingCount ? <span className="ml-auto rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-[#0a294d]">{pendingCount}</span> : null}{href === "/admin/contact" && unreadCount ? <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadCount}</span> : null}</Link>)}</nav>
         <div className="hidden border-t border-white/10 p-4 lg:block"><div className="mb-3 flex items-center gap-3 px-3"><span className="flex size-10 items-center justify-center rounded-full bg-[#1f82c1] font-bold">{initials(adminName)}</span><div className="min-w-0"><p className="truncate text-sm font-semibold">{adminName}</p><p className="truncate text-xs text-white/45">{session?.email}</p></div></div><LogoutButton /></div>
       </aside>
 
@@ -131,7 +148,7 @@ export default async function BlogAdminPage({ searchParams }: BlogAdminPageProps
           <div className="flex flex-wrap items-center justify-between gap-4"><div><h2 className="text-2xl font-bold">Blog posts</h2><p className="mt-1 text-sm text-[#718196]">{posts.length} posts stored in the database</p></div><Link href={showForm ? "/admin/blog" : "/admin/blog?create=1#blog-form"} className="inline-flex min-h-12 items-center gap-2 rounded-[8px] bg-[#1f78b4] px-5 font-semibold text-white shadow-sm transition hover:bg-[#155f91] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f78b4]">{showForm ? <X className="size-5" /> : <Plus className="size-5" />}{showForm ? "Close form" : "Add new"}</Link></div>
           <StatusMessage error={firstParam(params.error) ?? (editId && !editingPost ? "Blog post not found." : null)} success={firstParam(params.success)} />
 
-          {showForm ? <section id="blog-form" className="scroll-mt-6 rounded-[8px] border border-[#dfe5eb] bg-white p-5 shadow-sm sm:p-7" aria-labelledby="blog-form-title"><h2 id="blog-form-title" className="text-xl font-bold">{editingPost ? `Edit ${editingPost.title}` : "Add blog post"}</h2><p className="mt-1 text-sm text-[#718196]">Upload media directly from your computer. The existing backend handles the slug, ordering, and blog relationship.</p><div className="mt-6"><BlogForm initialData={editingPost ? toBlogFormInitialData(editingPost) : undefined} /></div></section> : null}
+          {showForm ? <section id="blog-form" className="scroll-mt-6 rounded-[8px] border border-[#dfe5eb] bg-white p-5 shadow-sm sm:p-7" aria-labelledby="blog-form-title"><h2 id="blog-form-title" className="text-xl font-bold">{editingPost ? `Edit ${editingPost.title}` : "Add blog post"}</h2><p className="mt-1 text-sm text-[#718196]">{isAdmin ? "Upload media directly from your computer. The existing backend handles the slug, ordering, and blog relationship." : "Write and save your post as a draft. An administrator will review and publish it."}</p><div className="mt-6"><BlogForm initialData={editingPost ? toBlogFormInitialData(editingPost) : undefined} canPublish={isAdmin} /></div></section> : null}
 
           <section className="overflow-hidden rounded-[8px] border border-[#dfe5eb] bg-white" aria-labelledby="posts-table-title">
             <h2 id="posts-table-title" className="sr-only">Stored blog posts</h2>

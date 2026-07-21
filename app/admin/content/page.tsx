@@ -13,7 +13,7 @@ import {
   savePartnerLogoAction,
   saveWebsiteContentAction,
 } from "@/app/admin/content/actions";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireAdminPageSession } from "@/lib/auth/require-admin";
 import {
   getSiteCmsContent,
   type CmsSection,
@@ -129,7 +129,7 @@ function SectionCard({
 }
 
 export default async function WebsiteContentPage({ searchParams }: PageProps) {
-  const session = await requireAdminSession();
+  const session = await requireAdminPageSession();
   const content = await getSiteCmsContent();
   const params = (await searchParams) ?? {};
   const adminName = getAdminDisplayName(session?.fullName);

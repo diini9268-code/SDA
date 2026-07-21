@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireBlogSession } from "@/lib/auth/require-admin";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import {
   createBlogPost,
@@ -63,17 +63,23 @@ function redirectWithStatus(message: string, status: "success" | "error") {
 }
 
 async function requireActionAdmin() {
-  const session = await requireAdminSession();
+  const session = await requireBlogSession();
 
   if (!session) {
-    redirect("/admin");
+    redirect("/admin/login");
   }
+
+  return session;
 }
 
 export async function createBlogAction(formData: FormData) {
-  await requireActionAdmin();
+  const session = await requireActionAdmin();
 
-  const result = await createBlogPost(getBlogPayload(formData), prismaBlogRepository);
+  const result = await createBlogPost(
+    getBlogPayload(formData),
+    { id: session.sub, role: session.role },
+    prismaBlogRepository,
+  );
 
   if (!result.ok) {
     redirectWithStatus(result.error, "error");
@@ -86,11 +92,12 @@ export async function createBlogAction(formData: FormData) {
 }
 
 export async function updateBlogAction(id: string, formData: FormData) {
-  await requireActionAdmin();
+  const session = await requireActionAdmin();
 
   const result = await updateBlogPost(
     id,
     getBlogPayload(formData),
+    { id: session.sub, role: session.role },
     prismaBlogRepository,
   );
 
@@ -105,10 +112,14 @@ export async function updateBlogAction(id: string, formData: FormData) {
 }
 
 export async function deleteBlogAction(id: string) {
-  await requireActionAdmin();
+  const session = await requireActionAdmin();
 
   const blog = await prismaBlogRepository.findById(id);
-  const result = await deleteBlogPost(id, prismaBlogRepository);
+  const result = await deleteBlogPost(
+    id,
+    { id: session.sub, role: session.role },
+    prismaBlogRepository,
+  );
 
   if (!result.ok) {
     redirectWithStatus(result.error, "error");

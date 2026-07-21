@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireBlogSession } from "@/lib/auth/require-admin";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import {
   deleteBlogPost,
@@ -25,7 +25,7 @@ async function readJson(request: Request): Promise<unknown | null> {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  const session = await requireAdminSession();
+  const session = await requireBlogSession();
 
   if (!session) {
     return NextResponse.json(
@@ -49,8 +49,18 @@ export async function PATCH(request: Request, context: RouteContext) {
     body !== null &&
     ("uploads" in body || "retainedMedia" in body);
   const result = usesManagedUploads
-    ? await updateBlogPostWithUploads(id, body, prismaBlogRepository)
-    : await updateBlogPost(id, body, prismaBlogRepository);
+    ? await updateBlogPostWithUploads(
+        id,
+        body,
+        { id: session.sub, role: session.role },
+        prismaBlogRepository,
+      )
+    : await updateBlogPost(
+        id,
+        body,
+        { id: session.sub, role: session.role },
+        prismaBlogRepository,
+      );
 
   if (!result.ok) {
     return NextResponse.json(
@@ -66,7 +76,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
-  const session = await requireAdminSession();
+  const session = await requireBlogSession();
 
   if (!session) {
     return NextResponse.json(
@@ -77,7 +87,11 @@ export async function DELETE(_request: Request, context: RouteContext) {
 
   const { id } = await context.params;
   const blog = await prismaBlogRepository.findById(id);
-  const result = await deleteBlogPost(id, prismaBlogRepository);
+  const result = await deleteBlogPost(
+    id,
+    { id: session.sub, role: session.role },
+    prismaBlogRepository,
+  );
 
   if (!result.ok) {
     return NextResponse.json(

@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireAdminPageSession } from "@/lib/auth/require-admin";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
 import { prismaContactRepository } from "@/lib/contact/contact-repository";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
@@ -89,7 +89,7 @@ function StatCard({
 }
 
 export default async function AdminPage() {
-  const session = await requireAdminSession();
+  const session = await requireAdminPageSession();
   const [blog, contactMessages, leadership, membershipApplications, programs] = await Promise.all([
     prismaBlogRepository.listAll(),
     prismaContactRepository.listAll(),

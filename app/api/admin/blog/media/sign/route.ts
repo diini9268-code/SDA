@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireBlogSession } from "@/lib/auth/require-admin";
 import { createSignedBlogMediaUpload } from "@/lib/blog/blog-media-storage";
 
 export async function POST(request: Request) {
-  if (!(await requireAdminSession())) {
+  const session = await requireBlogSession();
+  if (!session) {
     return NextResponse.json(
       { error: "Administrator authentication required." },
       { status: 401 },
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
       name: body.name as string,
       type: body.type as string,
       size: body.size as number,
+      createdById: session.sub,
     });
     return NextResponse.json(upload, { status: 201 });
   } catch (error) {

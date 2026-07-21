@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireAdminPageSession } from "@/lib/auth/require-admin";
 import { prismaReportsRepository } from "@/lib/reports/report-repository";
 import { getReportsSnapshot } from "@/lib/reports/report-service";
 import type { CategoryCount, StatusCount } from "@/lib/reports/report-service";
@@ -123,7 +123,7 @@ function CategoryBreakdown({ items }: { items: CategoryCount[] }) {
 }
 
 export default async function AdminReportsPage() {
-  const session = await requireAdminSession();
+  const session = await requireAdminPageSession();
   const snapshot = await getReportsSnapshot(prismaReportsRepository);
   const pendingCount = countStatus(snapshot.membership.byStatus, "PENDING");
   const unreadCount = countStatus(snapshot.contact.byStatus, "UNREAD");

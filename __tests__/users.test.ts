@@ -20,6 +20,7 @@ function user(overrides: Partial<AdminUserSummary> = {}): AdminUserSummary {
     fullName: "SDA Administrator",
     email: "admin@example.com",
     role: "ADMIN",
+    isActive: true,
     createdAt: now,
     updatedAt: now,
     ...overrides,
@@ -33,13 +34,14 @@ function repository(
     listAdmins: vi.fn(async () => ({
       users: [user()],
       total: 1,
+      adminTotal: 1,
       page: 1,
       pageSize: 10,
       totalPages: 1,
     })),
     findAdminById: vi.fn(async () => user()),
     createAdmin: vi.fn(async (data) =>
-      user({ fullName: data.fullName, email: data.email }),
+      user({ fullName: data.fullName, email: data.email, role: data.role }),
     ),
     updateAdmin: vi.fn(async (_id, data) =>
       user({ fullName: data.fullName, email: data.email }),
@@ -110,7 +112,25 @@ describe("administrator user management", () => {
     expect(unsupportedRole).toMatchObject({
       ok: false,
       status: 400,
-      error: "The current user model only supports administrator accounts.",
+      error: "Select a valid user role.",
+    });
+  });
+
+  it("creates a Blogger account", async () => {
+    const result = await createAdminUser(
+      {
+        fullName: "SDA Writer",
+        email: "writer@example.com",
+        password: "SecurePassword123",
+        confirmPassword: "SecurePassword123",
+        role: "BLOGGER",
+      },
+      repository(),
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      data: { email: "writer@example.com", role: "BLOGGER" },
     });
   });
 
@@ -127,6 +147,7 @@ describe("administrator user management", () => {
         email: "admin@example.com",
         password: "SecurePassword123",
         confirmPassword: "SecurePassword123",
+        role: "ADMIN",
       },
       store,
     );
@@ -134,7 +155,7 @@ describe("administrator user management", () => {
     expect(result).toMatchObject({
       ok: false,
       status: 409,
-      error: "An administrator account with this email already exists.",
+      error: "A user account with this email already exists.",
     });
   });
 
@@ -154,6 +175,7 @@ describe("administrator user management", () => {
         email: "UPDATED@EXAMPLE.COM",
         role: "ADMIN",
       },
+      "actor-admin-id",
       store,
     );
     const reset = await resetAdminUserPassword(

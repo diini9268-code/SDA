@@ -1,20 +1,12 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import {
   getExpiredSessionCookieOptions,
   SESSION_COOKIE_NAME,
 } from "@/lib/auth/cookies";
-import { verifySessionToken } from "@/lib/auth/session";
+import { requireAuthenticatedSession } from "@/lib/auth/require-admin";
 
 export async function GET() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-
-  if (!token) {
-    return NextResponse.json({ user: null }, { status: 401 });
-  }
-
-  const session = verifySessionToken(token);
+  const session = await requireAuthenticatedSession();
 
   if (!session) {
     const response = NextResponse.json({ user: null }, { status: 401 });

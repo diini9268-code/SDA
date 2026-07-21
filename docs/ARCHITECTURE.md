@@ -256,8 +256,10 @@ Exact route names may change during implementation, but the API should preserve 
 
 - Visitors can browse all public website pages, blog posts, programs, leadership information, and archived content.
 - Visitors can submit membership applications and contact messages.
-- Administrators can manage website content, blog posts and blog-owned media, programs, leadership profiles, archive records, and membership applications.
-- Administrative functions are restricted to authenticated users with the appropriate role.
+- Administrators can manage users, website content, all blog posts and blog-owned media, programs, leadership profiles, archive records, membership applications, messages, and reports.
+- Bloggers can create and edit only their own blog drafts and related pending media. They cannot publish or delete posts.
+- The Proxy performs optimistic cookie-based route filtering. Pages, Route Handlers, Server Actions, and domain services perform authoritative database-backed permission and ownership checks.
+- Existing administrator accounts remain administrators during the role migration, and the last active administrator cannot be deleted or demoted.
 
 ---
 

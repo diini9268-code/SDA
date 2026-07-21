@@ -10,6 +10,7 @@ import { formatPublicationDateInput } from "@/lib/blog/validation";
 
 const now = new Date("2026-07-07T00:00:00.000Z");
 const publishedAt = new Date("2026-08-10T15:00:00.000Z");
+const adminActor = { id: "admin-user-id", role: "ADMIN" as const };
 
 function createBlogRecord(overrides: Partial<BlogRecord> = {}): BlogRecord {
   const id = "7f4603b4-0a92-4072-95e6-f93844b438d0";
@@ -22,6 +23,7 @@ function createBlogRecord(overrides: Partial<BlogRecord> = {}): BlogRecord {
     excerpt: "A short update from SDA.",
     content: "A complete blog post about SDA activities.",
     status: "PUBLISHED",
+    authorId: adminActor.id,
     publishedAt,
     createdAt: now,
     updatedAt: now,
@@ -40,6 +42,9 @@ function createRepository(): BlogRepository & {
     },
     async listAll() {
       return this.posts;
+    },
+    async listByAuthor(authorId) {
+      return this.posts.filter((post) => post.authorId === authorId);
     },
     async findById(id) {
       return this.posts.find((post) => post.id === id) ?? null;
@@ -113,6 +118,7 @@ describe("blog management", () => {
         status: "DRAFT",
         publishedAt: "2026-07-17",
       },
+      adminActor,
       repository,
     );
 
@@ -144,6 +150,7 @@ describe("blog management", () => {
           },
         ],
       },
+      adminActor,
       repository,
     );
 
@@ -176,6 +183,7 @@ describe("blog management", () => {
         status: "PUBLISHED",
         publishedAt: "2026-07-17",
       },
+      adminActor,
       repository,
     );
 
@@ -205,6 +213,7 @@ describe("blog management", () => {
           },
         ],
       },
+      adminActor,
       repository,
     );
 
@@ -225,6 +234,70 @@ describe("blog management", () => {
     expect(repository.posts[0]?.publishedAt).toEqual(publishedAt);
   });
 
+  it("forces Blogger submissions to drafts owned by that Blogger", async () => {
+    const repository = createRepository();
+    const blogger = { id: "blogger-user-id", role: "BLOGGER" as const };
+
+    const result = await createBlogPost(
+      {
+        title: "Blogger field notes",
+        category: "Updates",
+        content: "A Blogger-authored post.",
+        status: "PUBLISHED",
+        publishedAt: "2026-07-17",
+      },
+      blogger,
+      repository,
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      data: { status: "DRAFT", authorId: blogger.id },
+    });
+  });
+
+  it("prevents Bloggers from editing another author's post", async () => {
+    const repository = createRepository();
+    repository.posts.push(createBlogRecord({ authorId: "another-user-id" }));
+
+    const result = await updateBlogPost(
+      "7f4603b4-0a92-4072-95e6-f93844b438d0",
+      { title: "Unauthorized edit" },
+      { id: "blogger-user-id", role: "BLOGGER" },
+      repository,
+    );
+
+    expect(result).toMatchObject({ ok: false, status: 403 });
+  });
+
+  it("prevents Bloggers from changing their own published post", async () => {
+    const repository = createRepository();
+    repository.posts.push(createBlogRecord({ authorId: "blogger-user-id" }));
+
+    const result = await updateBlogPost(
+      "7f4603b4-0a92-4072-95e6-f93844b438d0",
+      { title: "Published edit" },
+      { id: "blogger-user-id", role: "BLOGGER" },
+      repository,
+    );
+
+    expect(result).toMatchObject({ ok: false, status: 403 });
+  });
+
+  it("prevents Bloggers from deleting posts", async () => {
+    const repository = createRepository();
+    repository.posts.push(createBlogRecord({ authorId: "blogger-user-id" }));
+
+    const result = await deleteBlogPost(
+      "7f4603b4-0a92-4072-95e6-f93844b438d0",
+      { id: "blogger-user-id", role: "BLOGGER" },
+      repository,
+    );
+
+    expect(result).toMatchObject({ ok: false, status: 403 });
+    expect(repository.posts).toHaveLength(1);
+  });
+
   it("rejects an empty publication date because the database field is required", async () => {
     const repository = createRepository();
     const result = await createBlogPost(
@@ -235,6 +308,7 @@ describe("blog management", () => {
         status: "DRAFT",
         publishedAt: "",
       },
+      adminActor,
       repository,
     );
 
@@ -252,6 +326,7 @@ describe("blog management", () => {
 
     const result = await deleteBlogPost(
       "7f4603b4-0a92-4072-95e6-f93844b438d0",
+      adminActor,
       repository,
     );
 
@@ -277,6 +352,7 @@ describe("blog management", () => {
           },
         ],
       },
+      adminActor,
       repository,
     );
 
@@ -301,6 +377,7 @@ describe("blog management", () => {
         content: "A complete blog post.",
         publishedAt: "2026-08-10T15:00:00.000Z",
       },
+      adminActor,
       repository,
     );
 

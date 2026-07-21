@@ -34,7 +34,7 @@ import {
   resetAdminUserPasswordAction,
   updateAdminUserAction,
 } from "@/app/admin/users/actions";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireAdminPageSession } from "@/lib/auth/require-admin";
 import {
   type AdminUserSort,
   type AdminUserSummary,
@@ -85,6 +85,10 @@ function initials(value: string): string {
 
 function formatDate(value: Date): string {
   return new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(value);
+}
+
+function roleLabel(role: AdminUserSummary["role"]): string {
+  return role === "ADMIN" ? "Administrator" : "Blogger";
 }
 
 function StatusMessage({
@@ -150,8 +154,14 @@ function IdentityFields({ user }: { user?: AdminUserSummary }) {
       </label>
       <label className="grid gap-2 text-sm font-semibold">
         Role
-        <input value="Administrator" disabled className={fieldClass} />
-        <input name="role" type="hidden" value="ADMIN" />
+        <select
+          name="role"
+          defaultValue={user?.role ?? "BLOGGER"}
+          className={fieldClass}
+        >
+          <option value="BLOGGER">Blogger</option>
+          <option value="ADMIN">Administrator</option>
+        </select>
       </label>
     </div>
   );
@@ -236,14 +246,16 @@ function UserForm({
 function RowActions({
   user,
   currentAdminId,
-  total,
+  adminCount,
 }: {
   user: AdminUserSummary;
   currentAdminId: string;
-  total: number;
+  adminCount: number;
 }) {
   const displayName = getAdminDisplayName(user.fullName);
-  const deletionDisabled = user.id === currentAdminId || total <= 1;
+  const deletionDisabled =
+    user.id === currentAdminId ||
+    (user.role === "ADMIN" && adminCount <= 1);
 
   return (
     <div className="flex items-center gap-1">
@@ -287,7 +299,7 @@ function RowActions({
         <form action={deleteAdminUserAction.bind(null, user.id)}>
           <IconDeleteButton
             confirmation={`Delete ${displayName}? This action cannot be undone.`}
-            subject="administrator account"
+            subject="user account"
           />
         </form>
       )}
@@ -298,7 +310,7 @@ function RowActions({
 export default async function AdminUsersPage({
   searchParams,
 }: AdminUsersPageProps) {
-  const session = await requireAdminSession();
+  const session = await requireAdminPageSession();
   const params = (await searchParams) ?? {};
   const query = firstParam(params.q)?.trim() ?? "";
   const sort: AdminUserSort =
@@ -329,6 +341,7 @@ export default async function AdminUsersPage({
   const unreadCount = messages.filter(
     (message) => message.status === "UNREAD",
   ).length;
+  const adminCount = directory.adminTotal;
   const adminName = getAdminDisplayName(session?.fullName);
   const mode = firstParam(params.create) === "1"
     ? "create"
@@ -432,10 +445,9 @@ export default async function AdminUsersPage({
         <div className="mx-auto grid w-full max-w-[1600px] gap-6 p-5 sm:p-8 xl:p-8 2xl:p-10">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold">Administrator accounts</h2>
+              <h2 className="text-2xl font-bold">CMS user accounts</h2>
               <p className="mt-1 text-sm text-[#718196]">
-                Manage accounts supported by the existing administrator
-                authentication system.
+                Create administrators and Bloggers with role-based access.
               </p>
             </div>
             <Link
@@ -454,7 +466,7 @@ export default async function AdminUsersPage({
           <StatusMessage
             error={
               firstParam(params.error) ??
-              (hasMissingSelection ? "Administrator account not found." : null)
+              (hasMissingSelection ? "User account not found." : null)
             }
             success={firstParam(params.success)}
           />
@@ -465,7 +477,7 @@ export default async function AdminUsersPage({
           >
             <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-6">
               <p className="text-sm font-semibold text-[#718196]">Total Users</p>
-              <p className="mt-3 text-3xl font-bold">{directory.total}</p>
+              <p className="mt-3 text-3xl font-bold">{adminCount}</p>
               <p className="mt-1 text-sm text-[#52657c]">Stored user records</p>
             </div>
             <div className="rounded-[8px] border border-[#dfe5eb] bg-white p-6">
@@ -474,7 +486,7 @@ export default async function AdminUsersPage({
               </p>
               <p className="mt-3 text-3xl font-bold">{directory.total}</p>
               <p className="mt-1 text-sm text-[#52657c]">
-                Only supported role
+                Full CMS access
               </p>
             </div>
           </section>
@@ -487,7 +499,7 @@ export default async function AdminUsersPage({
             >
               <h2 id="user-form-title" className="text-xl font-bold">
                 {mode === "create"
-                  ? "Create administrator"
+                  ? "Create CMS user"
                   : mode === "reset"
                     ? `Reset password for ${getAdminDisplayName(selectedUser!.fullName)}`
                     : `Edit ${getAdminDisplayName(selectedUser!.fullName)}`}
@@ -537,7 +549,7 @@ export default async function AdminUsersPage({
                   <dt className="text-xs font-bold uppercase text-[#718196]">
                     Role
                   </dt>
-                  <dd className="mt-2 font-semibold">Administrator</dd>
+                  <dd className="mt-2 font-semibold">{roleLabel(selectedUser.role)}</dd>
                 </div>
                 <div>
                   <dt className="text-xs font-bold uppercase text-[#718196]">
@@ -651,7 +663,7 @@ export default async function AdminUsersPage({
                                 className="size-4"
                                 aria-hidden="true"
                               />
-                              Administrator
+                              {roleLabel(user.role)}
                             </span>
                           </td>
                           <td className="px-6 py-5 text-sm text-[#52657c]">
@@ -664,7 +676,7 @@ export default async function AdminUsersPage({
                             <RowActions
                               user={user}
                               currentAdminId={session?.sub ?? ""}
-                              total={directory.total}
+                              adminCount={adminCount}
                             />
                           </td>
                         </tr>
@@ -688,12 +700,12 @@ export default async function AdminUsersPage({
                         <RowActions
                           user={user}
                           currentAdminId={session?.sub ?? ""}
-                          total={directory.total}
+                          adminCount={adminCount}
                         />
                       </div>
                       <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-[#718196]">
                         <span className="rounded-full bg-emerald-50 px-3 py-1 font-semibold text-emerald-700">
-                          Administrator
+                          {roleLabel(user.role)}
                         </span>
                         <span>Created {formatDate(user.createdAt)}</span>
                       </div>
@@ -711,7 +723,7 @@ export default async function AdminUsersPage({
                 </span>
                 <h3 className="mt-5 text-xl font-bold">No users found</h3>
                 <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#52657c]">
-                  Adjust the search or create an administrator account.
+                  Adjust the search or create a CMS user account.
                 </p>
               </div>
             )}
@@ -760,10 +772,9 @@ export default async function AdminUsersPage({
               aria-hidden="true"
             />
             <p>
-              The current Prisma User model only defines the Administrator
-              role. Phone numbers, profile photos, active/inactive status,
-              member/editor roles, and last-login timestamps are not stored, so
-              those controls are intentionally not presented.
+              Administrators have full CMS access. Bloggers can create and edit
+              only their own drafts; an administrator must publish or delete
+              those posts.
             </p>
           </aside>
         </div>

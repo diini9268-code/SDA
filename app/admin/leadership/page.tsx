@@ -26,7 +26,7 @@ import {
   deleteLeadershipAction,
   updateLeadershipAction,
 } from "@/app/admin/leadership/actions";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireAdminPageSession } from "@/lib/auth/require-admin";
 import { prismaContactRepository } from "@/lib/contact/contact-repository";
 import { prismaLeadershipRepository } from "@/lib/leadership/leadership-repository";
 import type { LeadershipProfile } from "@/lib/leadership/leadership-service";
@@ -113,7 +113,7 @@ function RowActions({ profile }: { profile: LeadershipProfile }) {
 }
 
 export default async function LeadershipAdminPage({ searchParams }: LeadershipAdminPageProps) {
-  const session = await requireAdminSession();
+  const session = await requireAdminPageSession();
   const params = (await searchParams) ?? {};
   const [profiles, applications, messages] = await Promise.all([
     prismaLeadershipRepository.listAll(),

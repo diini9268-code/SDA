@@ -8,7 +8,7 @@ const reportRepository = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/auth/require-admin", () => ({
-  requireAdminSession: vi.fn(async () => ({
+  requireAdminPageSession: vi.fn(async () => ({
     sub: "admin-id",
     email: "admin@example.com",
     fullName: "SDA Administrator",

@@ -10,7 +10,10 @@ import MembershipPage from "@/app/membership/page";
 import Home from "@/app/page";
 
 vi.mock("next/headers", () => ({
-  cookies: vi.fn(async () => ({ toString: (): string => "" })),
+  cookies: vi.fn(async () => ({
+    get: (): undefined => undefined,
+    toString: (): string => "",
+  })),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -184,11 +187,11 @@ describe("Public pages", () => {
     fetchSpy.mockRestore();
   });
 
-  it("preserves the supported administrator login without member-only controls", async () => {
+  it("preserves the supported CMS login without member-only controls", async () => {
     cleanup();
     render(await AdminLoginPage({ searchParams: Promise.resolve({}) }));
 
-    expect(screen.getByRole("heading", { level: 1, name: "Admin Login" })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: "CMS Login" })).toBeDefined();
     expect(document.querySelector('[name="email"]')).not.toBeNull();
     expect(document.querySelector('[name="password"]')).not.toBeNull();
     expect(screen.queryByLabelText(/Remember me/i)).toBeNull();

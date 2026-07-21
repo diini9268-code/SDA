@@ -32,13 +32,14 @@ export async function GET(_request: Request, context: UserRouteContext) {
   return user
     ? NextResponse.json({ user })
     : NextResponse.json(
-        { error: "Administrator account not found." },
+        { error: "User account not found." },
         { status: 404 },
       );
 }
 
 export async function PATCH(request: Request, context: UserRouteContext) {
-  if (!(await requireAdminSession())) {
+  const session = await requireAdminSession();
+  if (!session) {
     return NextResponse.json(
       { error: "Administrator authentication required." },
       { status: 401 },
@@ -57,6 +58,7 @@ export async function PATCH(request: Request, context: UserRouteContext) {
   const result = await updateAdminUser(
     id,
     body,
+    session.sub,
     prismaAdminUserDirectoryRepository,
   );
 

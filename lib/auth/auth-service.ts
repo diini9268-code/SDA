@@ -1,4 +1,5 @@
 import { verifyPassword } from "@/lib/auth/password";
+import type { UserRoleValue } from "@/lib/auth/permissions";
 import { parseLoginInput } from "@/lib/auth/validation";
 
 export type AdminUserRecord = {
@@ -6,7 +7,7 @@ export type AdminUserRecord = {
   email: string;
   fullName: string;
   passwordHash: string;
-  role: "ADMIN";
+  role: UserRoleValue;
 };
 
 export type AuthUserRepository = {

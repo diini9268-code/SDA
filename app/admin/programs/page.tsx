@@ -27,7 +27,7 @@ import {
   deleteProgramAction,
   updateProgramAction,
 } from "@/app/admin/programs/actions";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireAdminPageSession } from "@/lib/auth/require-admin";
 import { prismaContactRepository } from "@/lib/contact/contact-repository";
 import { prismaMembershipRepository } from "@/lib/membership/membership-repository";
 import { prismaProgramRepository } from "@/lib/programs/program-repository";
@@ -123,7 +123,7 @@ function ProgramActions({ program }: { program: ProgramRecord }) {
 }
 
 export default async function ProgramsAdminPage({ searchParams }: ProgramsAdminPageProps) {
-  const session = await requireAdminSession();
+  const session = await requireAdminPageSession();
   const params = (await searchParams) ?? {};
   const [programs, applications, messages] = await Promise.all([
     prismaProgramRepository.listAll(),

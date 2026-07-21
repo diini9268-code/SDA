@@ -55,21 +55,22 @@ export async function createAdminUserAction(formData: FormData) {
   if (!result.ok) redirectWithStatus(result.error, "error");
 
   revalidatePath("/admin/users");
-  redirectWithStatus("Administrator account created.", "success");
+  redirectWithStatus("User account created.", "success");
 }
 
 export async function updateAdminUserAction(id: string, formData: FormData) {
-  await requireActionAdmin();
+  const session = await requireActionAdmin();
   const result = await updateAdminUser(
     id,
     identityPayload(formData),
+    session.sub,
     prismaAdminUserDirectoryRepository,
   );
 
   if (!result.ok) redirectWithStatus(result.error, "error");
 
   revalidatePath("/admin/users");
-  redirectWithStatus("Administrator account updated.", "success");
+  redirectWithStatus("User account updated.", "success");
 }
 
 export async function resetAdminUserPasswordAction(
@@ -99,5 +100,5 @@ export async function deleteAdminUserAction(id: string) {
   if (!result.ok) redirectWithStatus(result.error, "error");
 
   revalidatePath("/admin/users");
-  redirectWithStatus("Administrator account deleted.", "success");
+  redirectWithStatus("User account deleted.", "success");
 }

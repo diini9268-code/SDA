@@ -174,6 +174,7 @@ export async function createSignedBlogMediaUpload(input: {
   name: string;
   type: string;
   size: number;
+  createdById?: string;
 }): Promise<SignedBlogMediaUpload> {
   const validated = validateUploadMetadata(input);
 
@@ -186,7 +187,8 @@ export async function createSignedBlogMediaUpload(input: {
 
   const client = getStorageClient();
   const { bucket } = getStorageConfiguration();
-  const path = `${PENDING_PREFIX}${Date.now()}-${crypto.randomUUID()}-${sanitizeFileName(validated.data.name)}`;
+  const ownerSegment = input.createdById ?? "shared";
+  const path = `${PENDING_PREFIX}${ownerSegment}/${Date.now()}-${crypto.randomUUID()}-${sanitizeFileName(validated.data.name)}`;
   const { data, error } = await client.storage
     .from(bucket)
     .createSignedUploadUrl(path);

@@ -27,6 +27,7 @@ export async function createAdminUser(
       data: await repository.createAdmin({
         fullName: input.data.fullName,
         email: input.data.email,
+        role: input.data.role,
         passwordHash: await hashPassword(input.data.password),
       }),
     };
@@ -35,7 +36,7 @@ export async function createAdminUser(
       return {
         ok: false,
         status: 409,
-        error: "An administrator account with this email already exists.",
+        error: "A user account with this email already exists.",
       };
     }
     throw error;
@@ -45,22 +46,38 @@ export async function createAdminUser(
 export async function updateAdminUser(
   id: string,
   body: unknown,
+  actorId: string,
   repository: AdminUserManagementRepository,
 ): Promise<ServiceResult<AdminUserSummary>> {
   const input = parseAdminUserUpdateInput(body);
   if (!input.ok) return { ok: false, status: 400, error: input.error };
 
+  if (id === actorId && input.data.role !== "ADMIN") {
+    return {
+      ok: false,
+      status: 409,
+      error: "You cannot remove your own administrator role.",
+    };
+  }
+
   try {
     const user = await repository.updateAdmin(id, input.data);
+    if (user === "last_admin") {
+      return {
+        ok: false,
+        status: 409,
+        error: "The last administrator cannot be changed to Blogger.",
+      };
+    }
     return user
       ? { ok: true, data: user }
-      : { ok: false, status: 404, error: "Administrator account not found." };
+      : { ok: false, status: 404, error: "User account not found." };
   } catch (error) {
     if (isUniqueConstraintError(error)) {
       return {
         ok: false,
         status: 409,
-        error: "An administrator account with this email already exists.",
+        error: "A user account with this email already exists.",
       };
     }
     throw error;
@@ -82,7 +99,7 @@ export async function resetAdminUserPassword(
 
   return user
     ? { ok: true, data: user }
-    : { ok: false, status: 404, error: "Administrator account not found." };
+    : { ok: false, status: 404, error: "User account not found." };
 }
 
 export async function deleteAdminUser(
@@ -94,7 +111,7 @@ export async function deleteAdminUser(
     return {
       ok: false,
       status: 409,
-      error: "You cannot delete the administrator account you are using.",
+      error: "You cannot delete the user account you are using.",
     };
   }
 
@@ -104,7 +121,7 @@ export async function deleteAdminUser(
     return {
       ok: false,
       status: 404,
-      error: "Administrator account not found.",
+      error: "User account not found.",
     };
   }
 

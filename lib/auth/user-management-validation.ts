@@ -1,12 +1,16 @@
+import { isUserRole, type UserRoleValue } from "@/lib/auth/permissions";
+
 export type AdminUserCreateData = {
   fullName: string;
   email: string;
   password: string;
+  role: UserRoleValue;
 };
 
 export type AdminUserUpdateData = {
   fullName: string;
   email: string;
+  role: UserRoleValue;
 };
 
 export type AdminUserPasswordData = {
@@ -47,14 +51,14 @@ function validateIdentity(
     return { ok: false, error: "Enter a valid email address." };
   }
 
-  if (role && role !== "ADMIN") {
+  if (!isUserRole(role)) {
     return {
       ok: false,
-      error: "The current user model only supports administrator accounts.",
+      error: "Select a valid user role.",
     };
   }
 
-  return { ok: true, data: { fullName, email } };
+  return { ok: true, data: { fullName, email, role } };
 }
 
 function validatePassword(

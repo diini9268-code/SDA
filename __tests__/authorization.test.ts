@@ -53,17 +53,17 @@ describe("administrator authorization", () => {
 
     const now = Math.floor(Date.now() / 1000);
     const token = createSignedToken({
-      sub: "member-user-id",
-      email: "member@example.com",
-      fullName: "SDA Member",
-      role: "MEMBER",
+      sub: "blogger-user-id",
+      email: "blogger@example.com",
+      fullName: "SDA Blogger",
+      role: "BLOGGER",
       iat: now,
       exp: now + 3600,
     });
 
     expect(authorizeAdminRequest(`${SESSION_COOKIE_NAME}=${token}`)).toEqual({
       authorized: false,
-      reason: "invalid_session",
+      reason: "insufficient_role",
     });
 
     vi.unstubAllEnvs();

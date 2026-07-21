@@ -29,6 +29,10 @@ npm run admin:create
 `ADMIN_PASSWORD` from the environment. The password is stored with the same
 scrypt hash format used by the login system.
 
+Administrators can create additional Administrator or Blogger accounts from
+`/admin/users`. Bloggers use the same CMS login and can create or edit only
+their own drafts; an Administrator must publish or delete those posts.
+
 Run the development server:
 
 ```bash

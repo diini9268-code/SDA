@@ -16,7 +16,7 @@ import { SubmitButton } from "@/app/admin/_components/form-controls";
 import { AdminBrand, getAdminDisplayName } from "@/app/admin/_components/admin-brand";
 import { LogoutButton } from "@/app/admin/_components/logout-button";
 import { updateMembershipStatusAction } from "@/app/admin/membership/actions";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireAdminPageSession } from "@/lib/auth/require-admin";
 import { prismaContactRepository } from "@/lib/contact/contact-repository";
 import { prismaMembershipRepository } from "@/lib/membership/membership-repository";
 import type { MembershipApplicationRecord } from "@/lib/membership/membership-service";
@@ -83,7 +83,7 @@ function StatusForm({ application }: { application: MembershipApplicationRecord 
 }
 
 export default async function MembershipAdminPage({ searchParams }: MembershipAdminPageProps) {
-  const session = await requireAdminSession();
+  const session = await requireAdminPageSession();
   const params = (await searchParams) ?? {};
   const [applications, messages] = await Promise.all([
     prismaMembershipRepository.listAll(),

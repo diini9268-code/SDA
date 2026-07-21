@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { ShieldCheck } from "lucide-react";
 import { BrandLogo } from "@/app/_components/home-header";
 import { AdminLoginForm } from "@/app/admin/login/login-form";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireAuthenticatedSession } from "@/lib/auth/require-admin";
 import { createPageMetadata } from "@/lib/site/metadata";
 
 export const metadata = createPageMetadata({
@@ -27,7 +27,8 @@ type AdminLoginPageProps = {
 };
 
 export default async function AdminLoginPage({ searchParams }: AdminLoginPageProps) {
-  if (await requireAdminSession()) redirect("/admin");
+  const session = await requireAuthenticatedSession();
+  if (session) redirect(session.role === "ADMIN" ? "/admin" : "/admin/blog");
 
   const params = (await searchParams) ?? {};
   const nextPath = safeNextPath(params.next);
@@ -49,9 +50,9 @@ export default async function AdminLoginPage({ searchParams }: AdminLoginPagePro
       <section aria-label="Administrator sign in" className="flex min-h-svh min-w-0 items-center justify-center px-5 py-10 sm:px-10 lg:px-14 xl:px-20">
         <div className="min-w-0 w-full max-w-[520px]">
           <Link href="/" aria-label="SDA home" className="mb-10 inline-flex rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#27b3f4] lg:hidden"><BrandLogo inverse /></Link>
-          <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-[#27b3f4]"><ShieldCheck className="size-5" aria-hidden="true" />Secure admin access</div>
-          <h1 className="mt-4 font-serif text-[42px] font-bold leading-tight sm:text-[48px]">Admin Login</h1>
-          <p className="mt-3 text-[16px] leading-7 text-white/65">Sign in with an authorized SDA administrator account.</p>
+          <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-[#27b3f4]"><ShieldCheck className="size-5" aria-hidden="true" />Secure CMS access</div>
+          <h1 className="mt-4 font-serif text-[42px] font-bold leading-tight sm:text-[48px]">CMS Login</h1>
+          <p className="mt-3 text-[16px] leading-7 text-white/65">Sign in with an authorized SDA administrator or Blogger account.</p>
           <div className="mt-10"><AdminLoginForm nextPath={nextPath} /></div>
           <div className="mt-9 border-t border-white/10 pt-7 text-center text-[14px] leading-6 text-white/45">
             Restricted access. Authorized personnel only.<br />For access issues, use the public{" "}

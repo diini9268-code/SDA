@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireBlogSession } from "@/lib/auth/require-admin";
 import { deletePendingBlogMediaPaths } from "@/lib/blog/blog-media-storage";
 
 export async function DELETE(request: Request) {
-  if (!(await requireAdminSession())) {
+  const session = await requireBlogSession();
+  if (!session) {
     return NextResponse.json(
       { error: "Administrator authentication required." },
       { status: 401 },
@@ -24,7 +25,9 @@ export async function DELETE(request: Request) {
     "paths" in body &&
     Array.isArray(body.paths) &&
     body.paths.every((path) => typeof path === "string")
-      ? body.paths
+      ? body.paths.filter((path) =>
+          path.startsWith(`pending/${session.sub}/`),
+        )
       : null;
 
   if (!paths) {

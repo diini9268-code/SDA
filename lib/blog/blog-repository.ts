@@ -44,6 +44,14 @@ export const prismaBlogRepository: BlogRepository = {
     });
   },
 
+  async listByAuthor(authorId): Promise<BlogRecord[]> {
+    return getPrismaClient().blog.findMany({
+      where: { authorId },
+      include: includeMedia,
+      orderBy: [{ publishedAt: "desc" }, { title: "asc" }],
+    });
+  },
+
   async findById(id: string): Promise<BlogRecord | null> {
     return getPrismaClient().blog.findUnique({
       where: { id },

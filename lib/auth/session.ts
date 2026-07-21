@@ -1,17 +1,20 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { isUserRole, type UserRoleValue } from "@/lib/auth/permissions";
 
 export const SESSION_COOKIE_NAME = "ssdu_admin_session";
 
-export type AdminSession = {
+export type AuthenticatedSession = {
   sub: string;
   email: string;
   fullName: string;
-  role: "ADMIN";
+  role: UserRoleValue;
   iat: number;
   exp: number;
 };
 
-type SessionInput = Omit<AdminSession, "iat" | "exp">;
+export type AdminSession = AuthenticatedSession;
+
+type SessionInput = Omit<AuthenticatedSession, "iat" | "exp">;
 
 function base64UrlEncode(value: Buffer | string): string {
   return Buffer.from(value).toString("base64url");
@@ -72,7 +75,7 @@ function signToken(unsignedToken: string): string {
 
 export function createSessionToken(input: SessionInput): string {
   const issuedAt = Math.floor(Date.now() / 1000);
-  const payload: AdminSession = {
+  const payload: AuthenticatedSession = {
     ...input,
     iat: issuedAt,
     exp: issuedAt + getSessionMaxAgeSeconds(),
@@ -84,7 +87,7 @@ export function createSessionToken(input: SessionInput): string {
   return `${unsignedToken}.${signToken(unsignedToken)}`;
 }
 
-export function verifySessionToken(token: string): AdminSession | null {
+export function verifySessionToken(token: string): AuthenticatedSession | null {
   const parts = token.split(".");
 
   if (parts.length !== 3) {
@@ -105,10 +108,16 @@ export function verifySessionToken(token: string): AdminSession | null {
   }
 
   try {
-    const session = JSON.parse(base64UrlDecode(body)) as AdminSession;
+    const session = JSON.parse(base64UrlDecode(body)) as AuthenticatedSession;
     const now = Math.floor(Date.now() / 1000);
 
-    if (session.exp <= now || session.role !== "ADMIN") {
+    if (
+      session.exp <= now ||
+      typeof session.sub !== "string" ||
+      typeof session.email !== "string" ||
+      typeof session.fullName !== "string" ||
+      !isUserRole(session.role)
+    ) {
       return null;
     }
 

@@ -5,6 +5,7 @@ import {
   updateBlogPost,
   type BlogRecord,
   type BlogRepository,
+  type BlogActor,
 } from "@/lib/blog/blog-service";
 import {
   deleteBlogMediaPaths,
@@ -33,7 +34,7 @@ type WorkflowResult =
   | { ok: true; data: BlogRecord; warnings: string[] }
   | {
       ok: false;
-      status: 400 | 404 | 409 | 500;
+      status: 400 | 403 | 404 | 409 | 500;
       error: string;
     };
 
@@ -114,6 +115,7 @@ async function cleanupPaths(paths: string[]): Promise<string[]> {
 
 export async function createBlogPostWithUploads(
   body: unknown,
+  actor: BlogActor,
   repository: BlogRepository,
 ): Promise<WorkflowResult> {
   if (!isRecord(body)) {
@@ -168,6 +170,7 @@ export async function createBlogPostWithUploads(
           displayOrder: index,
         })),
       },
+      actor,
       repository,
     );
 
@@ -186,6 +189,7 @@ export async function createBlogPostWithUploads(
 export async function updateBlogPostWithUploads(
   id: string,
   body: unknown,
+  actor: BlogActor,
   repository: BlogRepository,
 ): Promise<WorkflowResult> {
   if (!isRecord(body)) {
@@ -198,11 +202,34 @@ export async function updateBlogPostWithUploads(
     return { ok: false, status: 404, error: "Blog post not found." };
   }
 
+  if (actor.role === "BLOGGER" && current.authorId !== actor.id) {
+    return {
+      ok: false,
+      status: 403,
+      error: "You can only edit media on your own blog drafts.",
+    };
+  }
+
+  if (actor.role === "BLOGGER" && current.status !== "DRAFT") {
+    return {
+      ok: false,
+      status: 403,
+      error: "Published or archived posts can only be changed by an administrator.",
+    };
+  }
+
   const uploads = parseUploads((body as MediaMutation).uploads);
   const retained = parseRetainedMedia((body as MediaMutation).retainedMedia);
 
   if (!uploads || !retained) {
     return { ok: false, status: 400, error: "Invalid blog media payload." };
+  }
+
+  if (
+    actor.role === "BLOGGER" &&
+    uploads.some((upload) => !upload.path.startsWith(`pending/${actor.id}/`))
+  ) {
+    return { ok: false, status: 403, error: "Invalid media upload owner." };
   }
 
   if (uploads.length + retained.length > BLOG_MEDIA_MAX_FILES) {
@@ -279,6 +306,7 @@ export async function updateBlogPostWithUploads(
           })),
         ],
       },
+      actor,
       repository,
     );
 

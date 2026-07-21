@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { requireAdminSession } from "@/lib/auth/require-admin";
+import { requireBlogSession } from "@/lib/auth/require-admin";
 import { prismaBlogRepository } from "@/lib/blog/blog-repository";
-import { createBlogPost } from "@/lib/blog/blog-service";
+import { createBlogPost, listBlogPostsForActor } from "@/lib/blog/blog-service";
 import { createBlogPostWithUploads } from "@/lib/blog/blog-media-workflow";
 
 async function readJson(request: Request): Promise<unknown | null> {
@@ -13,7 +13,7 @@ async function readJson(request: Request): Promise<unknown | null> {
 }
 
 export async function GET() {
-  const session = await requireAdminSession();
+  const session = await requireBlogSession();
 
   if (!session) {
     return NextResponse.json(
@@ -22,13 +22,16 @@ export async function GET() {
     );
   }
 
-  const blog = await prismaBlogRepository.listAll();
+  const blog = await listBlogPostsForActor(
+    { id: session.sub, role: session.role },
+    prismaBlogRepository,
+  );
 
   return NextResponse.json({ blog });
 }
 
 export async function POST(request: Request) {
-  const session = await requireAdminSession();
+  const session = await requireBlogSession();
 
   if (!session) {
     return NextResponse.json(
@@ -51,8 +54,16 @@ export async function POST(request: Request) {
     body !== null &&
     "uploads" in body;
   const result = usesManagedUploads
-    ? await createBlogPostWithUploads(body, prismaBlogRepository)
-    : await createBlogPost(body, prismaBlogRepository);
+    ? await createBlogPostWithUploads(
+        body,
+        { id: session.sub, role: session.role },
+        prismaBlogRepository,
+      )
+    : await createBlogPost(
+        body,
+        { id: session.sub, role: session.role },
+        prismaBlogRepository,
+      );
 
   if (!result.ok) {
     return NextResponse.json(

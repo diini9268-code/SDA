@@ -66,3 +66,19 @@ export function authorizeAdminRequest(
     session,
   };
 }
+
+export function authorizeAuthenticatedRequest(
+  cookieHeader: string | null,
+): AuthorizationResult {
+  const token = parseCookieHeader(cookieHeader).get(SESSION_COOKIE_NAME);
+
+  if (!token) {
+    return { authorized: false, reason: "missing_session" };
+  }
+
+  const session = verifySessionToken(token);
+
+  return session
+    ? { authorized: true, session }
+    : { authorized: false, reason: "invalid_session" };
+}
