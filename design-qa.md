@@ -62,7 +62,6 @@
 ## Result
 
 final result: passed
-
 # Admin Dashboard Design QA
 
 ## Source And Constraints
@@ -313,5 +312,44 @@ final result: passed
 - P3: populated journey and gallery states could not be captured because the connected public archive currently returns no records.
 
 ## Result
+
+final result: passed
+
+---
+
+## 2026-07-21 Professional Refinement Pass
+
+- Source visual truth: the five desktop screenshots supplied with the refinement request and the approved spacing/motion plan.
+- Implementation evidence: `artifacts/design-qa/sda-home-desktop.png` at 1440 x 1000 and `artifacts/design-qa/sda-home-mobile.png` at 390 x 844.
+- State: public homepage with current CMS/database content; mobile navigation tested open and closed.
+
+### Full-view and focused comparison
+
+The implementation preserves the SDA navy/blue/white palette, Inter and Source Serif 4 typography, official imagery, content order, and conversion routes. The layout now uses a 1280px content frame, consistent section padding, denser principle and article cards, structured leadership profiles, a compact partner grid, and a shorter footer. Hero, leadership, partner, and footer regions were inspected against the supplied references.
+
+### Required fidelity surfaces
+
+- Typography: existing families retained; responsive sizes, line heights, tracking, and heading wrapping normalized.
+- Spacing/layout: consistent gutters and 80-112px section rhythm; no horizontal overflow at 390px.
+- Colors/tokens: existing brand palette retained and shared values centralized in CSS variables.
+- Images: existing optimized CMS/local assets preserved; crops and hover behavior refined.
+- Copy/content: CMS content and routes preserved; the duplicated footer Blog destination was replaced with Membership.
+
+### Verification
+
+- Mobile navigation opens and exposes all primary links.
+- Skip link, focus-visible styling, semantic heading order, and reduced-motion handling remain present.
+- Browser console errors: none.
+- Typecheck: passed.
+- ESLint: passed.
+- Tests: 79 passed.
+- Production build: passed.
+
+### Remaining P3 notes
+
+- The current local CMS has one test blog post, so the three-column article grid is sparse until production posts are published.
+- Text-only partners can be upgraded automatically when official logo assets are added in the CMS.
+
+No actionable P0, P1, or P2 findings remain.
 
 final result: passed

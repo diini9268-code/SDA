@@ -3,6 +3,13 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --sda-navy: #0a294d;
+  --sda-blue: #0874b9;
+  --sda-sky: #28b1f2;
+  --sda-ink-muted: #52657c;
+  --sda-border: #dce4eb;
+  --sda-surface: #f4f7fb;
+  --sda-container: 1280px;
 }
 
 @theme inline {
@@ -47,10 +54,48 @@ body {
   animation-delay: 140ms;
 }
 
+.home-container {
+  width: min(100% - 2.5rem, var(--sda-container));
+  margin-inline: auto;
+}
+
+.home-reveal {
+  opacity: 1;
+  transform: none;
+}
+
+@supports (animation-timeline: view()) {
+  @keyframes home-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .home-reveal {
+    animation: home-reveal 1ms ease-out both;
+    animation-timeline: view();
+    animation-range: entry 8% cover 28%;
+  }
+}
+
+@media (min-width: 768px) {
+  .home-container {
+    width: min(100% - 5rem, var(--sda-container));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-fade-up,
-  .home-fade-up-delay {
+  .home-fade-up-delay,
+  .home-reveal {
     animation: none;
+    opacity: 1;
+    transform: none;
   }
 
   .home-shell *,

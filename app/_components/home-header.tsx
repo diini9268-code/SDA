@@ -94,13 +94,13 @@ export function HomeHeader({
           : "border-white/10 bg-[#071e38]/55 shadow-none backdrop-blur-sm"
       }`}
     >
-      <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between gap-4 px-5 sm:h-[90px] md:px-10 xl:h-[72px] xl:gap-7 xl:px-10">
+      <div className="home-container flex h-20 items-center justify-between gap-4 sm:h-[84px] xl:h-[76px] xl:gap-8">
         <Link href="/" aria-label="SDA home" className="shrink-0 rounded-lg">
           <BrandLogo brand={brand} compactOnMobile inverse={!scrolled && overlay} />
         </Link>
 
         <nav
-          className="hidden items-center gap-7 xl:flex 2xl:gap-8"
+          className="hidden items-center gap-6 xl:flex 2xl:gap-7"
           aria-label="Primary"
         >
           {items.map((item) => (
@@ -108,9 +108,9 @@ export function HomeHeader({
               key={`${item.label}-${item.href}`}
               href={item.href}
               aria-current={item.href === activeHref ? "page" : undefined}
-              className={`py-3 text-[14px] transition-colors 2xl:text-[15px] ${
+              className={`relative py-3 text-[14px] transition-colors after:absolute after:inset-x-0 after:bottom-1 after:mx-auto after:h-0.5 after:w-0 after:rounded-full after:bg-[#29b6f6] after:transition-[width] hover:after:w-full 2xl:text-[15px] ${
                 item.href === activeHref
-                  ? "font-semibold text-[#29b6f6]"
+                  ? "font-semibold text-[#29b6f6] after:w-full"
                   : scrolled || !overlay
                     ? "text-[#52657c] hover:text-[#0874b9]"
                     : "text-white/85 hover:text-white"
@@ -135,7 +135,7 @@ export function HomeHeader({
           <Link
             href={joinHref}
             aria-label="Join SDA"
-            className="inline-flex h-11 items-center gap-2 rounded-[22px] bg-[#1778b8] px-4 text-[15px] font-semibold text-white shadow-md transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-lg motion-reduce:transform-none sm:gap-3 sm:px-5 sm:text-[16px] xl:h-9 xl:px-4 xl:text-[14px]"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-[#1778b8] px-4 text-[15px] font-semibold text-white shadow-[0_6px_18px_rgba(23,120,184,0.24)] transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#0a6098] hover:shadow-[0_9px_24px_rgba(23,120,184,0.3)] motion-reduce:transform-none sm:gap-3 sm:px-5 sm:text-[16px] xl:h-10 xl:px-5 xl:text-[14px]"
           >
             <span className="sm:hidden" aria-hidden="true">
               Join
