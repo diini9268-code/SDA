@@ -62,6 +62,66 @@
 ## Result
 
 final result: passed
+
+---
+
+## 2026-07-22 Remaining Homepage Sections Audit
+
+- Audit evidence: `artifacts/audit-2026-07-22/01-principles-desktop.png` through `10-footer-mobile.png`.
+- Implementation evidence: `artifacts/design-qa/sda-home-sections-desktop.png` at 1440 x 1000 and `artifacts/design-qa/sda-home-sections-mobile.png` at 390 x 844.
+- Source of truth: the current SDA homepage, supplied reference screenshots, and the established navy/blue/white visual system.
+
+### Findings and implemented corrections
+
+- Articles: the unavailable-data state previously collapsed into a shallow strip. It now preserves an intentional viewport-height composition, includes a clearer empty-state treatment, and exposes the Articles CTA on mobile.
+- Leadership: full vertical cards created excessive phone scrolling. Mobile cards now use a compact horizontal portrait/content layout while retaining the established desktop grid.
+- Membership: the fixed 520px banner now scales between 520px and 700px using the viewport height without affecting content-driven mobile behavior.
+- Partners: the single-column phone list now uses a compact two-column grid; non-link partners no longer display misleading hover movement.
+- Footer: the phone layout now uses a two-column information structure with full-width brand and contact blocks, reducing scroll length while preserving readable line lengths.
+- Principles: mobile card padding and title spacing were tightened without changing content or desktop hierarchy.
+
+### Verification
+
+- No horizontal overflow at 390 x 844 or 1440 x 1000.
+- Empty Articles section: 764px at 390 x 844 and 920px at 1440 x 1000, preserving a deliberate section boundary beneath the sticky header.
+- Leadership section reduced to 1039px on mobile with all four profiles visible as compact cards.
+- Responsive partner grid and two-column footer visually inspected at 390px.
+- Typecheck: passed.
+- ESLint: passed.
+- Tests: 79 passed across 17 files.
+- Production build: passed.
+- Browser issue indicator is caused by the Chrome inspection extension injecting `data-qb-installed`; it is not emitted by the application.
+
+No actionable P0, P1, or P2 visual findings remain.
+
+final result: passed
+
+---
+
+## 2026-07-22 Full-Viewport Responsive Fix
+
+- Source visual truth: the 1900 x 1028 desktop screenshot supplied with the viewport-fit report.
+- Implementation evidence:
+  - `artifacts/design-qa/sda-home-full-viewport-desktop.png`, 1900 x 1028.
+  - `artifacts/design-qa/sda-home-full-viewport-mobile.png`, 390 x 844.
+- Viewports verified: 1900 x 1028, 1024 x 900, and 390 x 844.
+
+The fixed 650-720px hero caps were replaced with safe viewport-relative sizing. At each verified breakpoint, the hero bottom now equals the viewport height exactly and the next section begins below the fold. Short screens remain content-driven because the rule is a minimum height rather than a fixed height.
+
+The scroll reveal keeps its vertical movement but no longer reduces content opacity, preventing partially intersecting sections from appearing blank or unfinished.
+
+- Desktop: hero 1028px in a 1028px viewport; next section begins at y=1028.
+- Tablet: hero 900px in a 900px viewport.
+- Mobile: hero 844px in an 844px viewport.
+- Horizontal overflow: none at the tested breakpoints.
+- Typecheck: passed.
+- ESLint: passed.
+- Production build: passed.
+- Console note: Chrome extension attributes (`data-qb-installed`) produced a development-only hydration warning; no application-owned console error was found.
+
+No actionable P0, P1, or P2 findings remain.
+
+final result: passed
 # Admin Dashboard Design QA
 
 ## Source And Constraints

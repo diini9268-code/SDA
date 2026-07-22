@@ -5,6 +5,7 @@ import {
   Clock3,
   Globe2,
   HeartHandshake,
+  Inbox,
   Mail,
   Target,
   UserRound,
@@ -67,8 +68,11 @@ function estimateReadingTime(content: string): number {
 
 function EmptyState({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-[20px] border border-dashed border-[#b9c7d4] bg-white px-6 py-12 text-center text-[17px] text-[#52657c]">
-      {children}
+    <div className="flex min-h-56 flex-col items-center justify-center rounded-[20px] border border-dashed border-[#b9c7d4] bg-white px-6 py-12 text-center text-[17px] text-[#52657c] shadow-[0_10px_34px_rgba(10,41,77,0.035)]">
+      <span className="flex size-12 items-center justify-center rounded-2xl bg-[#e8f1f7] text-[#0874b9]">
+        <Inbox className="size-6" strokeWidth={1.8} aria-hidden="true" />
+      </span>
+      <p className="mt-5 max-w-md leading-7">{children}</p>
     </div>
   );
 }
@@ -130,7 +134,7 @@ export default async function Home() {
         joinHref="/membership"
       />
       <main id="main-content" tabIndex={-1}>
-        <section className="relative min-h-[700px] overflow-hidden bg-[#0a294d] text-white sm:min-h-[720px] xl:min-h-[650px]">
+        <section className="relative min-h-screen min-h-[100svh] overflow-hidden bg-[#0a294d] text-white">
           <OptimizedFillImage
             src={data.cms.home.media.hero?.url ?? "/official/sda-official-venue-group.jpg"}
             alt="Somali Diplomacy Association members gathered at an official venue"
@@ -142,7 +146,7 @@ export default async function Home() {
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,24,48,0.94)_0%,rgba(4,24,48,0.76)_40%,rgba(4,24,48,0.34)_72%,rgba(4,24,48,0.18)_100%)]" />
           <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#061b34]/35 to-transparent" />
 
-          <div className="home-container relative grid min-h-[700px] items-center pb-16 pt-28 sm:min-h-[720px] sm:pt-32 xl:min-h-[650px] xl:grid-cols-[minmax(0,0.94fr)_minmax(0,1.06fr)] xl:pb-12 xl:pt-[92px]">
+          <div className="home-container relative grid min-h-screen min-h-[100svh] items-center pb-16 pt-28 sm:pt-32 xl:grid-cols-[minmax(0,0.94fr)_minmax(0,1.06fr)] xl:pb-12 xl:pt-[92px]">
             <div className="home-fade-up min-w-0 max-w-[680px] xl:max-w-[620px]">
               <p className="max-w-full text-[11px] font-bold uppercase tracking-[0.2em] text-[#2cb6f6] sm:text-[14px] sm:tracking-[0.32em]">
                 {homeContent.eyebrow}
@@ -203,7 +207,7 @@ export default async function Home() {
                 return (
                   <article
                     key={principle.title}
-                    className="home-reveal rounded-2xl border border-[#dce4eb] bg-white p-7 shadow-[0_10px_34px_rgba(10,41,77,0.045)] transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-[#b8cfde] hover:shadow-[0_18px_42px_rgba(10,41,77,0.1)] motion-reduce:transform-none sm:p-8 md:last:col-span-2 md:last:w-[calc(50%-0.75rem)] md:last:justify-self-center xl:last:col-span-1 xl:last:w-auto"
+                    className="home-reveal rounded-2xl border border-[#dce4eb] bg-white p-6 shadow-[0_10px_34px_rgba(10,41,77,0.045)] transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-[#b8cfde] hover:shadow-[0_18px_42px_rgba(10,41,77,0.1)] motion-reduce:transform-none sm:p-8 md:last:col-span-2 md:last:w-[calc(50%-0.75rem)] md:last:justify-self-center xl:last:col-span-1 xl:last:w-auto"
                   >
                     <div className="flex size-14 items-center justify-center rounded-2xl bg-[#e8f1f7] text-[#0874b9]">
                       <Icon
@@ -212,7 +216,7 @@ export default async function Home() {
                         aria-hidden="true"
                       />
                     </div>
-                    <h3 className="mt-7 font-serif text-[24px] font-bold text-[#071f3c]">
+                    <h3 className="mt-5 font-serif text-[24px] font-bold text-[#071f3c] sm:mt-7">
                       {principle.title}
                     </h3>
                     <p className="mt-4 text-[16px] leading-7 text-[#52657c]">
@@ -227,10 +231,10 @@ export default async function Home() {
 
         <section
           id="articles"
-          className="scroll-mt-20 border-y border-[#e8edf2] bg-[#f4f7fb] py-20 sm:scroll-mt-[90px] sm:py-24 lg:py-28"
+          className={`scroll-mt-20 border-y border-[#e8edf2] bg-[#f4f7fb] py-20 sm:scroll-mt-[90px] sm:py-24 lg:py-28 ${data.blog.length === 0 ? "flex min-h-[calc(100svh-5rem)] items-center" : ""}`}
         >
-          <div className="home-container">
-            <div className="home-reveal flex items-end justify-between gap-6">
+          <div className="home-container w-full">
+            <div className="home-reveal flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#0874b9]">
                   News &amp; Insights
@@ -241,7 +245,7 @@ export default async function Home() {
               </div>
               <Link
                 href="/blog"
-                className="group hidden h-12 items-center gap-3 rounded-lg border border-[#0874b9] px-5 font-semibold text-[#0874b9] transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#e7f3fb] motion-reduce:transform-none sm:inline-flex"
+                className="group inline-flex h-12 items-center gap-3 rounded-lg border border-[#0874b9] px-5 font-semibold text-[#0874b9] transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#e7f3fb] motion-reduce:transform-none"
               >
                 All Articles
                 <ArrowRight
@@ -342,19 +346,19 @@ export default async function Home() {
                 {leadershipProfiles.map((leader) => (
                   <article
                     key={leader.name}
-                    className="home-reveal group flex min-h-[340px] flex-col items-center rounded-2xl border border-[#dce4eb] bg-[#f8fafc] px-5 py-8 text-center shadow-[0_10px_32px_rgba(10,41,77,0.04)] transition-[background-color,border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-[#b8cfde] hover:bg-white hover:shadow-[0_18px_42px_rgba(10,41,77,0.1)] motion-reduce:transform-none"
+                    className="home-reveal group grid grid-cols-[88px_minmax(0,1fr)] items-center gap-4 rounded-2xl border border-[#dce4eb] bg-[#f8fafc] p-4 text-left shadow-[0_10px_32px_rgba(10,41,77,0.04)] transition-[background-color,border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-[#b8cfde] hover:bg-white hover:shadow-[0_18px_42px_rgba(10,41,77,0.1)] motion-reduce:transform-none sm:flex sm:min-h-[340px] sm:flex-col sm:px-5 sm:py-8 sm:text-center"
                   >
                     {leader.photo ? (
-                      <div className="relative mx-auto size-36 overflow-hidden rounded-2xl border border-[#c9d6e0] bg-white shadow-sm">
+                      <div className="relative size-[88px] overflow-hidden rounded-2xl border border-[#c9d6e0] bg-white shadow-sm sm:mx-auto sm:size-36">
                         <OptimizedFillImage
                           src={leader.photo}
                           alt={`Portrait of ${leader.name}`}
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transform-none"
-                          sizes="144px"
+                          sizes="(min-width: 640px) 144px, 88px"
                         />
                       </div>
                     ) : (
-                      <div className="mx-auto flex size-36 items-center justify-center rounded-2xl bg-[#e4edf5] text-[#0874b9]">
+                      <div className="flex size-[88px] items-center justify-center rounded-2xl bg-[#e4edf5] text-[#0874b9] sm:mx-auto sm:size-36">
                         <UserRound
                           className="size-12"
                           strokeWidth={1.5}
@@ -362,12 +366,14 @@ export default async function Home() {
                         />
                       </div>
                     )}
-                    <h3 className="mt-6 text-[18px] font-bold leading-6 text-[#071f3c]">
-                      {leader.name}
-                    </h3>
-                    <p className="mt-2 max-w-[260px] text-[15px] leading-6 text-[#0874b9]">
-                      {leader.position}
-                    </p>
+                    <div className="min-w-0 sm:contents">
+                      <h3 className="text-[17px] font-bold leading-6 text-[#071f3c] sm:mt-6 sm:text-[18px]">
+                        {leader.name}
+                      </h3>
+                      <p className="mt-1.5 max-w-[260px] text-[14px] leading-5 text-[#0874b9] sm:mt-2 sm:text-[15px] sm:leading-6">
+                        {leader.position}
+                      </p>
+                    </div>
                   </article>
                 ))}
               </div>
@@ -396,7 +402,7 @@ export default async function Home() {
 
         <section
           id="membership-cta"
-          className="relative min-h-[520px] scroll-mt-20 overflow-hidden bg-[#126da8] text-white sm:scroll-mt-[90px]"
+          className="relative min-h-[clamp(520px,68svh,700px)] scroll-mt-20 overflow-hidden bg-[#126da8] text-white sm:scroll-mt-[90px]"
         >
           <OptimizedFillImage
             src={data.cms.home.media.feature?.url ?? "/official/sda-workshop-provided.jpg"}
@@ -406,7 +412,7 @@ export default async function Home() {
           />
           <div className="absolute inset-0 bg-[#075d95]/68" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,61,101,0.78)_0%,rgba(8,116,185,0.62)_50%,rgba(5,61,101,0.74)_100%)]" />
-          <div className="home-container relative flex min-h-[520px] items-center justify-center py-20 text-center">
+          <div className="home-container relative flex min-h-[clamp(520px,68svh,700px)] items-center justify-center py-20 text-center">
             <div className="home-reveal max-w-[820px]">
               <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#c9e8fa]">
                 Become a Member
@@ -452,11 +458,11 @@ export default async function Home() {
             >
               Trusted Partners &amp; Supporters
             </h2>
-            <ul className="mt-9 grid items-stretch gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="mt-9 grid grid-cols-2 items-stretch gap-3 lg:grid-cols-4">
               {data.cms.partners.map((partner) => (
                 <li
                   key={partner.name}
-                  className="home-reveal flex min-h-24 items-center justify-center rounded-xl border border-[#e4eaf0] bg-[#f8fafc] px-4 py-4 text-[14px] font-medium leading-5 text-[#687b91] transition-[background-color,border-color,color,transform] duration-200 hover:-translate-y-0.5 hover:border-[#c6d7e3] hover:bg-white hover:text-[#0874b9] motion-reduce:transform-none"
+                  className={`home-reveal flex min-h-20 items-center justify-center rounded-xl border border-[#e4eaf0] bg-[#f8fafc] px-3 py-4 text-[13px] font-medium leading-5 text-[#687b91] transition-[background-color,border-color,color,transform] duration-200 sm:min-h-24 sm:px-4 sm:text-[14px] ${partner.website ? "hover:-translate-y-0.5 hover:border-[#c6d7e3] hover:bg-white hover:text-[#0874b9] motion-reduce:transform-none" : ""}`}
                 >
                   {partner.website ? (
                     <a href={partner.website} className="group grid h-full w-full place-content-center justify-items-center gap-3 transition-colors hover:text-[#0874b9]">
@@ -495,8 +501,8 @@ export default async function Home() {
       </main>
 
       <footer className="bg-[#0a294d] text-[#c3cfda]">
-        <div className="home-container grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_0.9fr_1.1fr] lg:gap-10 lg:py-18">
-          <div>
+        <div className="home-container grid grid-cols-2 gap-x-6 gap-y-10 py-12 md:grid-cols-2 md:gap-12 md:py-16 lg:grid-cols-[1.35fr_0.8fr_0.9fr_1.1fr] lg:gap-10 lg:py-18">
+          <div className="col-span-2 lg:col-span-1">
             <BrandLogo brand={brand} inverse />
             <p className="mt-6 max-w-[340px] text-[15px] leading-7">
               {globalContent.mission}
@@ -533,7 +539,7 @@ export default async function Home() {
             </ul>
           </div>
 
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-[#28b1f2]">
               Contact
             </h2>
@@ -554,7 +560,7 @@ export default async function Home() {
           <p>
             &copy; 2026 Somali Diplomacy Association. All rights reserved.
           </p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Link
               href="/contact"
               className="rounded-sm transition-colors hover:text-white"
